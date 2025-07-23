@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "upstash": {
+      "command": "npx",
+      "args": ["-y", "@upstash/cli"],
+      "transport": "stdio",
+      "env": {
+        "UPSTASH_EMAIL": "david.tran.int@gmail.com",
+        "UPSTASH_API_KEY": "34a3f14d-67f7-4962-bcea-2c2dacadfdf4"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "transport": "stdio"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"],
+      "transport": "stdio"
+    }
+  }
+}
