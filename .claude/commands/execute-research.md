@@ -1,328 +1,355 @@
 # Execute Research Process
 
 ## Purpose
-To systematically research and gather comprehensive documentation for all technologies specified in a `planning_prp.md` file using the combined power of Playwright MCP (for navigation and visual content) and Jina AI (for content extraction and processing). This command transforms a research mandate into a complete knowledge base ready for implementation.
+Research and scrape documentation for all technologies listed in a planning_prp.md file using smart content extraction to avoid navigation bloat and token waste.
 
-## Core Principles
-1. **Strategic Navigation:** Use the provided starting URLs as navigation hubs, not just single pages to scrape
-2. **Token Efficiency:** Map out all required pages BEFORE scraping to avoid wasted API calls
-3. **Comprehensive Coverage:** Gather both textual content (Jina) and visual/interactive context (Playwright)
-4. **Systematic Organization:** Store each page as separate .md files in organized directory structure
-5. **Quality Validation:** Retry failed scrapes and validate comprehensive coverage
-6. **Parallel Optimization:** Automatically assess research scope and offer parallel sub-agent deployment for large projects
+## Arguments
+- `$ARGUMENTS`: Path to planning_prp.md file
 
----
+## Execution Process
 
-## Command Flow: `/execute-research`
+### 1. **Load Research Targets** (MANDATORY)
+You MUST:
+- Read the planning_prp.md file at the specified path
+- Extract ALL research_targets with URLs and purposes from the YAML frontmatter
+- Derive project directory from planning_prp.md path (e.g., `/path/to/project/PRPs/planning_prp.md` → `/path/to/project/`)
+- Create research directories: `{project_dir}/research/{technology}/`
+- Load JINA_API_KEY from project .env file or environment variables
+- Use TodoWrite tool to track progress for each technology
 
-### Prerequisites
-- A valid `planning_prp.md` file exists with populated `research_targets` section
-- `JINA_API_KEY` environment variable is set
-- Claude Code environment with MCP Playwright tools enabled (mcp__playwright__* functions)
-- Bash tool access for Jina API curl commands
+**CHECKPOINT 1:** You MUST verify completion:
+- [ ] planning_prp.md read successfully
+- [ ] ALL research_targets extracted
+- [ ] Project directory derived correctly  
+- [ ] Research directories created
+- [ ] JINA_API_KEY loaded and verified
+- [ ] TodoWrite initialized with all technologies
 
-### Execution Process
+**FAILURE TO COMPLETE ALL CHECKPOINTS = ABORT COMMAND**
 
-#### Phase 1: Planning & Setup
-1. **Load Research Mandate**
-   - Read the `planning_prp.md` file
-   - Extract all `research_targets` with their URLs and purposes
-   - **Derive project context**: Extract project directory path from the planning_prp.md location
-     - Example: `/path/to/project/PRPs/planning_prp.md` → Project dir: `/path/to/project/`
-   - Create directory structure relative to project: `[project_dir]/research/[technology]/`
-   - Initialize progress tracking
+### 2. **Environment Validation** (MANDATORY)
+You MUST verify:
+- JINA_API_KEY is available (check env, then .env file in project directory)
+- All required MCP Playwright tools are accessible
+- **Brightdata MCP tools are available** (`mcp__brightdata__scrape_as_markdown`)
+- **WebFetch tool is available** (for hybrid Brightdata+Jina processing)
+- Research directories are created successfully
+- Exit with clear error message if any validation fails
 
-2. **Environment Validation**
-   - **Smart API Key Discovery**:
-     1. Check if `JINA_API_KEY` is already in environment
-     2. If not, look for `.env` file in the same directory as the planning_prp.md
-     3. If not found, check parent directories up to project root
-     4. Load the `.env` file using python-dotenv or source command
-   - If no API key found anywhere, display error: "JINA_API_KEY not found. Please either:
-     - Set it as environment variable: `export JINA_API_KEY='your_key'`
-     - Create a `.env` file in your project directory with: `JINA_API_KEY='your_key'`
-     - Get your free API key at: https://jina.ai/?sui=apikey"
-   - Test Playwright MCP connectivity
-   - Create all required output directories
+**CHECKPOINT 2:** You MUST log status:
+- [ ] JINA_API_KEY validated (show character count)
+- [ ] MCP Playwright tools tested with simple navigation
+- [ ] **Brightdata MCP validated** (test with simple scrape)
+- [ ] **WebFetch tool validated** (test with simple URL processing)
+- [ ] All research directories exist and are writable
 
-#### Phase 2: Strategic Reconnaissance (Playwright-Led)
-For each technology in `research_targets`:
+### 3. **Smart Content Assessment** (MANDATORY)
+For each research target URL, you MUST follow this EXACT sequence:
 
-3. **Navigation Hub Discovery**
-   - Use `mcp__playwright__browser_navigate` to navigate to the primary documentation URL
-   - Use `mcp__playwright__browser_take_screenshot` for visual context
-   - Use `mcp__playwright__browser_snapshot` to extract ALL relevant documentation links from:
-     - Navigation menus
-     - Breadcrumbs  
-     - Footer links
-     - In-content "Related" or "Next Steps" sections
-     - Table of contents
-   - Map out the complete documentation structure from snapshot data
-   - Prioritize pages based on the `purpose` field from planning_prp.md
+#### Step 3A: Navigate and Assess
+- Use `mcp__playwright__browser_navigate` to load the page
+- Use `mcp__playwright__browser_snapshot` to capture page structure
+- Identify main content selectors: `article`, `main`, `.content`, `#content`, `[role="main"]`
 
-4. **Page Validation**
-   - Use `mcp__playwright__browser_navigate` to verify each discovered URL is accessible
-   - Identify pages most relevant to the project's specific needs using snapshot content analysis
-   - Flag any 404s or problematic pages for retry
-   - Create comprehensive page list with URLs and relevance scores for systematic scraping
+#### Step 3B: Navigation Quality Check (MANDATORY)
+You MUST run this exact validation:
+```bash
+# Count navigation elements vs content  
+nav_links=$(echo "$snapshot_content" | grep -c '\[.*\](.*http' || echo 0)
+content_indicators=$(echo "$snapshot_content" | grep -c 'code\|example\|api\|method\|tutorial' || echo 0)
+nav_ratio=$((nav_links * 100 / (nav_links + content_indicators + 1)))
 
-#### Phase 3: Content Harvesting (Jina-Led)
-5. **Research Execution Strategy Assessment**
-   - Analyze the total research scope (number of technologies × pages per technology)
-   - **PARALLELIZATION CHECKPOINT:** If research scope is substantial (>20 pages total), pause and inform the user:
-     *"I've mapped out [N] technologies with approximately [M] pages to research. This is a substantial research operation that would benefit from parallel processing. You can speed this up significantly by typing: 'Please spin up multiple subagents to speed up research' - this will allow me to deploy specialized research agents for each technology simultaneously."*
-   - Wait for user decision on parallelization strategy
-   - If user requests sub-agents, deploy multiple Task agents with specific technology assignments
+if [ $nav_ratio -gt 50 ]; then
+  echo "❌ REJECTED: $nav_ratio% navigation waste - SKIPPING URL"
+  continue
+else
+  echo "✅ APPROVED: $nav_ratio% navigation, proceeding to extract"
+fi
+```
 
-6. **Smart Content Extraction** (Sequential or Parallel)
-   - **Context-Aware Page Assessment**: For each page, use MCP Playwright tools to evaluate:
-     - Use `mcp__playwright__browser_navigate` to load the page
-     - Use `mcp__playwright__browser_snapshot` to analyze content structure
-     - Assess content density vs navigation bloat ratio from snapshot YAML
-     - Identify presence of code examples, API references, tutorials in snapshot
-     - Compare with already scraped content to detect redundancy
-     - Score project-specific relevance based on planning_prp.md purpose field
+#### Step 3C: Priority Ordering
+- Create scraping priority list based on content density assessment
+- Focus on pages with highest code example / API reference ratio
+
+**CHECKPOINT 3:** You MUST verify before proceeding:
+- [ ] All URLs assessed using Playwright navigation
+- [ ] Navigation ratios calculated for each page  
+- [ ] Pages >50% navigation marked as REJECTED
+- [ ] Priority scraping order established
+- [ ] At least 2 high-quality pages identified per technology
+
+### 4. **Efficient Content Extraction** (MANDATORY)
+
+#### Step 4A: Content-First Extraction  
+For each APPROVED URL, you MUST follow this sequence:
+1. Use Playwright to identify main content area using selectors
+2. Extract ONLY the main content area (not full page HTML)
+3. Remove navigation, sidebars, headers, footers from extracted content
+4. THEN send cleaned content to Jina API
+
+#### Step 4B: Mandatory Quality Pre-Check
+Before saving ANY file, you MUST run this validation:
+```bash
+# Auto-quality validation script (COPY EXACTLY)
+validate_content() {
+  local file="$1"
+  local lines=$(wc -l < "$file")
+  local nav_links=$(grep -c '\[.*\](.*http' "$file" 2>/dev/null || echo 0)
+  local code_blocks=$(grep -c '```' "$file" 2>/dev/null || echo 0)
+  local api_refs=$(grep -ci 'api\|method\|endpoint\|client' "$file" 2>/dev/null || echo 0)
+  
+  local nav_percent=$((nav_links * 100 / lines))
+  local content_score=$((code_blocks * 2 + api_refs))
+  
+  echo "Quality check: $nav_percent% nav, $content_score content score"
+  
+  # HARD REJECTION CRITERIA
+  if [ $nav_percent -gt 30 ]; then
+    echo "❌ FAILED: >30% navigation ($nav_percent%)"  
+    rm "$file"
+    return 1
+  elif [ $content_score -lt 3 ]; then
+    echo "❌ FAILED: Low content score ($content_score)"
+    rm "$file" 
+    return 1
+  else
+    echo "✅ PASSED: Quality approved"
+    return 0
+  fi
+}
+
+# Run validation after each file creation
+validate_content "research/{technology}/page{N}_{name}.md" || continue
+```
+
+#### Step 4C: Smart Jina Integration
+- Use Jina API with cleaned content: `curl "https://r.jina.ai/" -H "Authorization: Bearer $JINA_API_KEY" -H "Content-Type: application/json" -d '{"url": "URL_HERE"}'`
+- Save as: `research/{technology}/page{N}_{descriptive_name}.md`
+- Include metadata header: URL, purpose, extraction method, content quality score
+
+#### Step 4D: Brightdata + Jina Hybrid Strategy (PREMIUM OPTION)
+**TRIGGER CONDITIONS:** Use Brightdata+Jina hybrid when:
+- Maximum quality extraction needed (>90% useful content)
+- Playwright tools are unstable or slow
+- Website has heavy bot protection that blocks Playwright
+- Research requires bulletproof reliability
+
+**HYBRID PROCESSING WORKFLOW:**
+1. **Raw Content Extraction:** Use `mcp__brightdata__scrape_as_markdown` to capture ALL page content
+2. **Intelligent Filtering:** Process raw content through WebFetch with specialized prompt:
+   ```
+   Extract comprehensive [TECHNOLOGY] documentation including:
+   1. Installation commands and dependencies
+   2. Import statements and initialization code  
+   3. API methods and usage patterns
+   4. Configuration and integration examples
+   5. Code blocks and implementation workflows
    
-   - **Intelligent Filtering Strategy**: Apply context-preserving filters based on assessment:
-     ```bash
-     # AGGRESSIVE (navigation-heavy pages):
-     # Note: $JINA_API_KEY is loaded from project .env file
-     curl -X POST "https://r.jina.ai/" \
-       -H "Authorization: Bearer $JINA_API_KEY" \
-       -H "Content-Type: application/json" \
-       -H "Accept: application/json" \
-       -H "X-Remove-Selector: .ads,.cookie-banner,.newsletter-signup,footer.site-footer,nav.sidebar" \
-       -H "X-Target-Selector: main,article,.documentation,.content,.tutorial" \
-       -H "X-With-Links-Summary: true" \
-       -H "X-Token-Budget: 3000" \
-       -H "X-Return-Format: markdown" \
-       -H "X-Timeout: 20" \
-       -d '{"url":"[PAGE_URL]"}'
-     
-     # BALANCED (content-rich pages):
-     curl -X POST "https://r.jina.ai/" \
-       -H "Authorization: Bearer $JINA_API_KEY" \
-       -H "Content-Type: application/json" \
-       -H "Accept: application/json" \
-       -H "X-Remove-Selector: .ads,.cookie-banner,.newsletter-signup" \
-       -H "X-With-Links-Summary: true" \
-       -H "X-With-Generated-Alt: true" \
-       -H "X-Token-Budget: 4000" \
-       -H "X-Return-Format: markdown" \
-       -H "X-Timeout: 20" \
-       -d '{"url":"[PAGE_URL]"}'
-       
-     # MINIMAL (essential/unique pages):
-     curl -X POST "https://r.jina.ai/" \
-       -H "Authorization: Bearer $JINA_API_KEY" \
-       -H "Content-Type: application/json" \
-       -H "Accept: application/json" \
-       -H "X-With-Links-Summary: true" \
-       -H "X-With-Generated-Alt: true" \
-       -H "X-With-Iframe: true" \
-       -H "X-Token-Budget: 5000" \
-       -H "X-Return-Format: markdown" \
-       -H "X-Timeout: 20" \
-       -d '{"url":"[PAGE_URL]"}'
-     ```
-   
-   - **Project-Specific Prioritization**: Based on planning_prp.md purpose, ensure critical sections get full token allocation:
-     - Chat interfaces: `.chat-example`, `.state-management`, `.event-handlers`, `.websocket`
-     - Database integration: `.database`, `.orm`, `.query`, `.connection`, `.async-db`
-     - API integration: `.api`, `.authentication`, `.rate-limiting`, `.error-handling`
-   
-   - **Parallel Deployment**: If using sub-agents, provide context-aware instructions:
-     ```
-     Research [TECHNOLOGY_NAME] with intelligent token efficiency. Use MCP Playwright tools (mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot) to assess each page's content density before scraping. Apply AGGRESSIVE filtering to navigation-heavy pages, BALANCED filtering to content-rich pages, and MINIMAL filtering to essential pages. Focus on [PROJECT_PURPOSE] related content. Use Bash tool with appropriate Jina curl format based on page assessment. Store results in /research/[technology]/pageN_[name].md format.
-     ```
-   
-   - Store each page as: `/research/[technology]/page[N]_[descriptive_name].md`
-   - Include metadata header with URL, purpose, filtering strategy used, and token count
-   - Retry any failed scrapes with progressively less aggressive filtering
+   Focus on implementation-ready patterns. Exclude ALL navigation menus, 
+   headers, footers, sidebars, and promotional content.
+   Return as clean markdown with properly formatted code blocks.
+   ```
+3. **Quality Validation:** Expect 90-95% useful content (premium threshold)
+4. **Metadata Marking:** Mark files as `"extraction_method": "Brightdata+Jina Hybrid (Premium)"`
 
-7. **Context Preservation Validation**
-   - **Content Completeness Check**: Analyze scraped content for project-critical elements:
-     - Code examples for implementation
-     - API endpoints and parameters
-     - Configuration and setup instructions
-     - Error handling and troubleshooting info
-     - Integration patterns specific to project purpose
-   
-   - **Context Gap Detection**: Compare scraped content against project requirements:
-     ```python
-     missing_concepts = detect_missing_implementation_details(
-         scraped_content, 
-         project_purpose_from_planning_prp
-     )
-     ```
-   
-   - **Rescue Scraping**: If critical context is missing, re-scrape specific pages with less aggressive filtering:
-     - Escalate from AGGRESSIVE → BALANCED → MINIMAL filtering
-     - Use targeted selectors for missing concept areas
-     - Append additional context to existing files rather than full re-scrape
-   
-   - **Token Efficiency Report**: Track token usage vs context quality:
-     - Total tokens used per technology
-     - Context completeness percentage
-     - Token savings compared to naive full-page scraping
-   
-   - **Parallel Coordination:** If using sub-agents, consolidate and cross-validate all findings before proceeding
+**HYBRID QUALITY EXPECTATIONS:**
+- **Target Quality:** 90-95% useful content (superior to all other methods)
+- **Navigation Waste:** 0-5% (Jina eliminates navigation pollution)
+- **Token Efficiency:** ~95% useful content ratio
+- **Implementation Ready:** Perfect copy/paste code patterns
+- **Success Rate:** 90-95% for premium extraction
 
-#### Phase 4: Visual & Interactive Enhancement (MCP Playwright-Led)
-8. **Visual Context Capture**
-   - Use `mcp__playwright__browser_take_screenshot` for key UI components, demos, and interactive examples
-   - Use `mcp__playwright__browser_console_messages` to capture browser console logs for debugging insights
-   - Document any interactive elements that Jina couldn't capture using snapshot analysis
-   - Store screenshots in `/research/[technology]/screenshots/`
+#### Step 4E: Brightdata MCP Solo Strategy (FALLBACK PROTOCOL)  
+**TRIGGER CONDITIONS:** Use Brightdata solo when:
+- Playwright tools fail or become unavailable
+- JINA_API_KEY authentication fails or WebFetch unavailable
+- Network issues prevent hybrid processing
+- Emergency backup needed
 
-9. **Interactive Content Documentation**
-   - Use `mcp__playwright__browser_click`, `mcp__playwright__browser_type` to test live demos and interactive tutorials
-   - Document form interactions, user flows, and dynamic content using MCP tools
-   - Capture any JavaScript-heavy content that requires browser rendering with snapshots
+**BRIGHTDATA SOLO PROCESS:**
+1. **Direct Extraction:** Use `mcp__brightdata__scrape_as_markdown` for the same URL
+2. **Quality Assessment:** Apply relaxed quality gates (≤40% nav, ≥2 code blocks)
+3. **Multiple Attempts:** If first extraction has >60% navigation, retry 2 more times
+4. **Manual Filtering:** Remove obvious navigation patterns:
+   ```bash
+   # Remove navigation pollution patterns
+   sed -i '/^\* \[.*\]/d' "$file"  # Remove bullet-point navigation links
+   sed -i '/^### Getting Started$/,/^###/d' "$file"  # Remove navigation sections
+   sed -i '/^### User Manual$/,/^###/d' "$file"  # Remove sidebar content
+   ```
+5. **Success Criteria:** Accept if content quality ≥60% (emergency threshold)
+6. **Metadata Marking:** Mark files as `"extraction_method": "Brightdata Solo (Emergency)"`
 
-#### Phase 5: Synthesis & Organization
-10. **Knowledge Base Assembly**
-   - Create comprehensive `research_summary.md` for each technology
-   - Cross-reference findings with original project requirements
-   - Identify implementation patterns and best practices
-   - Flag any gaps or additional research needed
+**BRIGHTDATA SOLO EXPECTATIONS:**
+- **Target Quality:** 60-80% useful content (acceptable for backup)
+- **Acceptable Navigation:** ≤40% (relaxed standards for emergency use)
+- **Retry Logic:** Up to 3 attempts per URL if quality insufficient
+- **Success Rate:** 70-80% success rate for emergency extraction
 
-11. **Research Validation**
-    - Verify all `research_targets` from planning_prp.md have been addressed
-    - Ensure sufficient depth for implementation phase
-    - Update the planning_prp.md status fields to "completed"
-    - **Parallel Summary:** If sub-agents were used, compile and cross-reference all findings
+**CHECKPOINT 4:** You MUST verify each file:
+- [ ] Content extracted from main area only (not full page)
+- [ ] Navigation content removed before Jina processing
+- [ ] Quality validation passed (≤30% nav, ≥3 content score)
+- [ ] File saved with descriptive name and metadata
+
+### 5. **Automated Quality Enforcement** (MANDATORY)
+
+#### Step 5A: Real-Time Quality Gates
+After EVERY file creation, you MUST automatically run:
+```bash
+# Immediate post-creation validation
+for file in research/{technology}/page*.md; do
+  if [ -f "$file" ]; then
+    lines=$(wc -l < "$file")
+    nav_links=$(grep -c '\[.*\](.*http' "$file" 2>/dev/null || echo 0)
+    code_blocks=$(grep -c '```' "$file" 2>/dev/null || echo 0)
+    
+    nav_percent=$((nav_links * 100 / lines))
+    
+    if [ $nav_percent -gt 30 ] || [ $code_blocks -lt 2 ]; then
+      echo "🗑️ AUTO-DELETING: $file (quality failure)"
+      rm "$file"
+    else
+      echo "✅ APPROVED: $file (quality passed)"
+    fi
+  fi
+done
+```
+
+#### Step 5B: Progressive Failure Protocol
+Track failures per technology:
+- **1st quality failure:** Warning + retry with different content selector
+- **2nd quality failure:** Skip current URL, try next priority URL  
+- **3rd quality failure:** Mark technology as "INCOMPLETE" and move to next technology
+- **4th quality failure:** ABORT entire research command with error report
+
+**CHECKPOINT 5:** You MUST log quality metrics:
+- [ ] All saved files passed automated quality checks
+- [ ] Navigation waste <30% for all approved files
+- [ ] Minimum content thresholds met
+- [ ] Failure count tracked per technology
+
+### 6. **Progress Tracking** (MANDATORY)
+You MUST use TodoWrite to:
+- Mark each technology research as "in_progress" when starting
+- Update progress as pages are successfully scraped and validated
+- Mark as "completed" only when quality thresholds met AND minimum file count achieved
+- Track failed URLs with specific error reasons and quality scores
+
+### 7. **Research Completion** (MANDATORY)
+For each technology, you MUST:
+- Create `research/{technology}/research_summary.md` with:
+  - List of successfully scraped pages with quality scores
+  - Key implementation patterns found
+  - Critical API endpoints/methods discovered  
+  - Integration examples extracted
+  - Token efficiency metrics
+- Update planning_prp.md research_targets status from "pending" to "completed"
+- Generate efficiency report: useful content tokens vs total tokens consumed
+
+### 8. **Final Validation** (MANDATORY)
+Before completing, you MUST verify:
+- All research_targets from planning_prp.md have corresponding research directories
+- Each technology directory contains ≥2 substantive documentation files
+- All files pass quality validation (≤30% navigation, ≥3 content score)
+- All research summaries created with quality metrics
+- No unresolved authentication/API errors
+- Token efficiency report shows >60% useful content extraction
+
+## Enforcement Mechanisms
+
+### Hard Quality Gates (NO EXCEPTIONS)
+**IMMEDIATE FILE DELETION if ANY of these criteria are met:**
+- >30% navigation links (`[.*](.*http` pattern count)
+- <2 code blocks AND <5 API references
+- <50 lines of content after header removal
+- File primarily contains sidebar/menu/footer content
+
+### Execution Logging (MANDATORY)
+You MUST log each step with timestamp and status:
+```
+[2025-07-24 15:30:15] ✅ CHECKPOINT 1: Environment validation passed
+[2025-07-24 15:31:22] ✅ CHECKPOINT 2: Content assessment completed  
+[2025-07-24 15:32:45] ❌ QUALITY FAILURE: page1_overview.md (45% navigation) - DELETED
+[2025-07-24 15:33:12] ✅ CHECKPOINT 3: page2_tutorial.md quality approved
+```
+
+### Command Abort Conditions
+**IMMEDIATELY STOP EXECUTION if:**
+- 3 consecutive quality failures for single technology
+- JINA_API_KEY authentication fails
+- MCP Playwright tools become unavailable
+- Unable to create research directories
+- Any CHECKPOINT fails validation
+
+## Quality Gates (All Must Pass)
+- [ ] All research_targets extracted from planning_prp.md
+- [ ] JINA_API_KEY validated and working
+- [ ] Research directories created for all technologies  
+- [ ] Each technology has ≥2 quality documentation files (≤30% nav, ≥2 code blocks)
+- [ ] No files with >30% navigation content remain
+- [ ] No unresolved authentication/API errors
+- [ ] Research summaries created for each technology with quality metrics
+- [ ] Planning_prp.md status fields updated to "completed"
+- [ ] Token usage efficiency >60%
+- [ ] All checkpoints logged with timestamps
+
+## Error Handling (MANDATORY Actions)
+- **JINA_API_KEY missing**: Display error with link to https://jina.ai/?sui=apikey and ABORT
+- **Quality validation fails**: Auto-delete file, log failure, try alternative URL
+- **3 consecutive failures**: Skip technology, mark as "INCOMPLETE", continue
+- **Playwright tools fail**: **TRY BRIGHTDATA+JINA HYBRID, then Brightdata solo**
+- **Navigation >50%**: Skip URL immediately, mark as "REJECTED - Navigation heavy"
+- **Hybrid method fails**: Fall back to Brightdata solo (emergency mode)
+
+### Extraction Method Priority (Cascading Fallback)
+1. **Primary:** Playwright + Jina (85% quality baseline)
+2. **Premium Option:** Brightdata + Jina Hybrid (90-95% quality when needed)
+3. **Backup:** Brightdata Solo (60-80% quality for emergencies)
+
+### Method-Specific Error Handling
+**Brightdata+Jina Hybrid Errors:**
+- **Brightdata fails**: Fall back to Playwright+Jina or Brightdata solo
+- **WebFetch/Jina fails**: Use raw Brightdata content with manual filtering
+- **Quality insufficient**: Retry with different extraction prompts
+
+**Brightdata Solo Errors:**
+- **Tool unavailable**: Log warning, continue with available methods only
+- **Multiple retries fail**: Mark URL as "BRIGHTDATA_FAILED", try next priority URL
+- **Quality insufficient**: Accept lower quality (≥60%) with warning in research summary
+- **Network/service errors**: Wait 30 seconds, retry once, then skip URL
+
+## Success Criteria
+- All planning_prp.md research_targets marked "completed" 
+- Research summary created for each technology with implementation-ready content
+- Token efficiency report showing >60% useful content extraction
+- All files pass automated quality validation
+- Ready for `/execute-prp` command execution
+- TodoWrite shows all research tasks completed
+- Quality enforcement log shows no unresolved failures
 
 ## Output Structure
 ```
-/research/
-├── [technology1]/
-│   ├── page1_introduction.md
-│   ├── page2_getting_started.md
-│   ├── page3_advanced_features.md
-│   ├── screenshots/
-│   │   ├── main_interface.png
-│   │   └── demo_example.png
-│   └── research_summary.md
-├── [technology2]/
+{project_dir}/research/
+├── {technology1}/
+│   ├── page1_getting_started.md      # ≤30% nav, ≥2 code blocks
+│   ├── page2_api_reference.md        # ≤30% nav, ≥5 API refs  
+│   ├── page3_examples.md             # ≤30% nav, ≥3 examples
+│   └── research_summary.md           # includes quality metrics
+├── {technology2}/
 │   └── [similar structure]
-└── research_complete.md (final report)
+├── research_complete.md               # final efficiency report
+└── quality_enforcement.log           # checkpoint and validation log
 ```
 
-## Error Handling
-- **404 Errors:** Retry with alternative URLs or skip with documentation
-- **Jina API Failures:** Retry with different headers/timeout, fall back to Playwright text extraction
-- **Rate Limiting:** Implement exponential backoff
-- **Invalid Content:** Retry scrape or supplement with Playwright
-
-## Success Criteria
-- [ ] All research_targets from planning_prp.md have corresponding research directories
-- [ ] Each technology has comprehensive coverage with intelligent token usage (typically 3000-6000 tokens per technology vs 15000+ with naive scraping)
-- [ ] Context completeness >90% for project-critical concepts
-- [ ] Visual context captured for complex concepts
-- [ ] research_summary.md created for each technology with token efficiency metrics
-- [ ] No 404s or failed scrapes remaining
-- [ ] All findings directly applicable to project requirements
-- [ ] Token usage optimized (target: 60-80% reduction vs full-page scraping)
-
-## Quality Checklist
-- [ ] Did AI navigate from provided URLs rather than improvising new starting points?
-- [ ] Are all pages stored in organized `/research/[technology]/pageN.md` format?
-- [ ] Were failed scrapes retried with progressively less aggressive filtering?
-- [ ] Does each technology have sufficient depth for implementation while optimizing token usage?
-- [ ] Are visual/interactive elements documented where Jina couldn't capture them?
-- [ ] If research scope was substantial, was parallel processing offered to the user?
-- [ ] If sub-agents were deployed, were all findings properly consolidated?
-- [ ] Was content assessed for density vs bloat before applying filtering strategies?
-- [ ] Were project-specific priorities (from planning_prp.md purpose) preserved in filtering decisions?
-- [ ] Was context validation performed to ensure no critical implementation details were lost?
-- [ ] Does the token efficiency report show meaningful savings without context compromise?
-
-## Usage
+## Command Completion Signal
+Upon successful completion, you MUST output:
 ```
-/execute-research [path_to_planning_prp.md]
+✅ RESEARCH EXECUTION COMPLETE
+- Technologies researched: {count}
+- Total pages scraped: {count}  
+- Quality failures handled: {count}
+- Navigation waste eliminated: {percentage}%
+- Token efficiency: {percentage}%
+- Status: Ready for /execute-prp
 ```
-
-Example:
-```
-/execute-research projects/narrative-factory/PRPs/planning_prp.md
-```
-
-## Concrete Execution Example
-
-**Step-by-step for Reflex.dev research:**
-
-1. **Load Environment & Read planning_prp.md**:
-   ```bash
-   # Derive project directory from planning_prp.md path
-   PROJECT_DIR="/workspaces/context-engineering-intro/projects/narrative-factory"
-   
-   # Check for .env file and load it
-   if [ -f "$PROJECT_DIR/.env" ]; then
-       export $(cat "$PROJECT_DIR/.env" | xargs)
-       echo "Loaded JINA_API_KEY from $PROJECT_DIR/.env"
-   fi
-   ```
-   → Extract: URL=`https://reflex.dev/docs/getting-started/introduction/`, Purpose="chat UI in pure Python"
-
-2. **MCP Playwright Navigation:**
-   ```
-   mcp__playwright__browser_navigate → https://reflex.dev/docs/getting-started/introduction/
-   mcp__playwright__browser_take_screenshot → reflex_intro.png  
-   mcp__playwright__browser_snapshot → Extract all documentation links from YAML
-   ```
-
-3. **Content Assessment:** Analyze snapshot YAML to identify:
-   - `/docs/getting-started/chatapp-tutorial/` → HIGH relevance (chat purpose)
-   - `/docs/state/overview/` → HIGH relevance (state management)  
-   - `/docs/library/` → MEDIUM relevance (components)
-
-4. **Smart Jina Scraping:**
-   ```bash
-   # Chatapp tutorial (essential) → MINIMAL filtering
-   curl -X POST "https://r.jina.ai/" -H "Authorization: Bearer $JINA_API_KEY" \
-     -H "X-With-Links-Summary: true" -H "X-Token-Budget: 5000" \
-     -d '{"url":"https://reflex.dev/docs/getting-started/chatapp-tutorial/"}'
-   
-   # Library docs (reference) → BALANCED filtering  
-   curl -X POST "https://r.jina.ai/" -H "Authorization: Bearer $JINA_API_KEY" \
-     -H "X-Remove-Selector: .ads,.newsletter-signup" -H "X-Token-Budget: 4000" \
-     -d '{"url":"https://reflex.dev/docs/library/"}'
-   ```
-
-5. **File Output:**
-   ```
-   /research/reflex/page1_chatapp_tutorial.md (4,500 tokens, 95% context)
-   /research/reflex/page2_state_overview.md (3,200 tokens, 92% context)  
-   /research/reflex/page3_library_components.md (2,800 tokens, 88% context)
-   ```
-
-**Result:** 10,500 tokens vs 25,000+ with naive scraping, maintaining implementation-ready context!
-
-## Token Efficiency Example
-
-**Before (Naive Full-Page Scraping):**
-```
-Reflex.dev research:
-- 10 pages × 2000 tokens avg = 20,000 tokens
-- 80% navigation/header bloat = 16,000 wasted tokens
-- Total useful content: 4,000 tokens
-- Efficiency: 20%
-```
-
-**After (Smart Context-Preserving Filtering):**
-```
-Reflex.dev research:
-- 10 pages assessed individually
-- 3 pages: AGGRESSIVE filtering (800 tokens each) = 2,400 tokens  
-- 5 pages: BALANCED filtering (1200 tokens each) = 6,000 tokens
-- 2 pages: MINIMAL filtering (2000 tokens each) = 4,000 tokens
-- Total: 12,400 tokens (38% reduction)
-- Context preservation: 95%
-- Useful content density: 90%
-```
-
-**Result: 60%+ token savings with better context quality!**
-
-## Next Steps
-After successful completion, the user should have a comprehensive research knowledge base ready for PRP implementation using the `/execute-prp` command.

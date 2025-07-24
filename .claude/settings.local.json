@@ -37,13 +37,18 @@
       "mcp__playwright__browser_snapshot",
       "mcp__playwright__browser_click",
       "mcp__playwright__browser_evaluate",
-      "mcp__playwright__browser_take_screenshot"
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_install",
+      "WebFetch(domain:docs.prefect.io)",
+      "mcp__brightdata__scraping_browser_links",
+      "mcp__brightdata__scrape_as_markdown"
     ],
     "deny": []
   },
   "enabledMcpjsonServers": [
     "upstash",
     "filesystem",
-    "playwright"
+    "playwright",
+    "brightdata"
   ]
 }
