@@ -69,9 +69,11 @@
 - Dynamic rebalancing based on performance
 
 ### Market Regime Detection
-- Statistical analysis of market conditions
-- Strategy adaptation based on detected regimes
-- Input to hypothesis generation process
+- **Sentiment-driven regime classification** using Fear & Greed Index (0-100 scale)
+- **Multi-factor analysis**: Price volatility, trading volume, social sentiment, market dominance
+- **Contrarian signal integration**: Extreme fear (0-25) = potential buy zones, extreme greed (75-100) = correction signals
+- **Strategy adaptation**: Genetic algorithms incorporate sentiment as environmental pressure
+- **Real-time regime switching**: API polling for dynamic strategy selection
 
 ## Technology Stack
 
@@ -189,10 +191,16 @@
    - Process management, Auto-restart configuration
 
 ### Priority 2 (Research During Implementation)
-1. **TimescaleDB**: Time-series best practices | https://docs.tigerdata.com/
-2. **Ray Core**: https://docs.ray.io/ (when scaling beyond multiprocessing)
-3. **pandas-ta**: Technical indicator library | https://github.com/Data-Analisis/Technical-Analysis-Indicators---Pandas
-4. **Upstash**: Redis-compatible serverless database | https://upstash.com/docs/introduction
+1. **Crypto Fear & Greed Index**: https://alternative.me/crypto/fear-and-greed-index/
+   - Market sentiment quantification (0-100 scale)
+   - API endpoint: https://api.alternative.me/fng/ (free with attribution)
+   - **Strategic use**: Market regime detection, contrarian signals, genetic algorithm input
+   - **Data sources**: Volatility, volume, social media, Bitcoin dominance, Google trends
+
+2. **TimescaleDB**: Time-series best practices | https://docs.tigerdata.com/
+3. **Ray Core**: https://docs.ray.io/ (when scaling beyond multiprocessing)
+4. **pandas-ta**: Technical indicator library | https://github.com/Data-Analisis/Technical-Analysis-Indicators---Pandas
+5. **Upstash**: Redis-compatible serverless database | https://upstash.com/docs/introduction
 
 ### Priority 3 (Research When Needed)
 1. **Docker**: Deployment phase documentation | https://docs.docker.com/
