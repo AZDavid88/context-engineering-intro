@@ -8,65 +8,97 @@ Research and extract comprehensive documentation for all technologies listed in 
 
 ## Execution Process
 
-### 1. **Load PRP and Setup Environment**
+### 1. **Load PRP and Setup Environment** (MANDATORY)
+You MUST:
 - Read the planning_prp.md file at the specified path
 - Extract ALL research_targets with URLs and purposes from the YAML frontmatter
 - Derive project directory from planning_prp.md path (e.g., `/path/to/project/PRPs/planning_prp.md` → `/path/to/project/`)
 - Create research directories: `{project_dir}/research/{technology}/`
 - Use the configured Jina API key: `jina_0652bfc906d14590bf46815dc705aab8e7T5kQ5d6RF7vu3QK9Odfn2UjjK6`
-- Verify Brightdata MCP connection and API token
 - Use TodoWrite tool to track progress for each technology
 
-### 2. **Documentation Discovery Process**
-For each research target URL:
-- Use `mcp__brightdata__scraping_browser_navigate` to load the main documentation page
-- Use `mcp__brightdata__scraping_browser_links` to discover all links on the current page
-- Filter discovered links for documentation relevance:
-  ```javascript
-  // Filter for documentation-specific patterns
-  const relevantLinks = allLinks.filter(link => 
-    /docs|guide|tutorial|api|reference|getting-started|examples|concepts/i.test(link.url) &&
-    !link.url.includes('#') && // Skip anchor links
-    link.text.length > 5 && // Skip empty links
-    !link.url.includes('login') && // Skip auth pages
-    !link.url.includes('pricing') // Skip commercial pages
-  ).slice(0, 25); // Limit to prevent overwhelming
-  ```
-- Prioritize URLs containing: API references, getting started guides, tutorials, examples
-- Create comprehensive URL list for each technology
+**CHECKPOINT 1:** You MUST verify completion:
+- [ ] planning_prp.md read successfully
+- [ ] ALL research_targets extracted
+- [ ] Project directory derived correctly  
+- [ ] Research directories created
+- [ ] Jina API key configured
+- [ ] TodoWrite initialized with all technologies
 
-### 3. **Content Extraction and Processing**
-For each discovered relevant URL:
+**FAILURE TO COMPLETE ALL CHECKPOINTS = ABORT COMMAND**
+
+### 2. **Environment Validation** (MANDATORY)
+You MUST verify:
+- Jina API key is available and functional
+- **Brightdata MCP tools are accessible** (`mcp__brightdata__scrape_as_markdown`)
+- **WebFetch tool is available** (for hybrid processing)
+- Research directories are created successfully
+- Exit with clear error message if any validation fails
+
+**CHECKPOINT 2:** You MUST log status:
+- [ ] Jina API key validated
+- [ ] **Brightdata MCP validated** (test with simple scrape)
+- [ ] **WebFetch tool validated** (test with simple URL processing)
+- [ ] All research directories exist and are writable
+
+### 3. **Primary Content Extraction** (MANDATORY)
+For each research target URL, you MUST follow this EXACT sequence:
+
+#### Step 3A: Direct Brightdata Extraction
 - Use `mcp__brightdata__scrape_as_markdown` to extract clean content directly
-- If Brightdata content needs enhancement, pass to Jina Reader API using the simpler GET method:
+- **DO NOT use browser navigation tools** (scraping_browser_links causes token overflow)
+- Validate content quality (minimum 500 characters, contains technical information)
+
+#### Step 3B: Quality Assessment
+You MUST run this validation:
+```bash
+# Content quality check
+content_length=$(echo "$extracted_content" | wc -c)
+code_blocks=$(echo "$extracted_content" | grep -c '```' || echo 0)
+technical_indicators=$(echo "$extracted_content" | grep -ci 'api\|method\|function\|class\|install' || echo 0)
+
+if [ $content_length -lt 500 ] || [ $technical_indicators -lt 3 ]; then
+  echo "❌ QUALITY FAILURE: Content too short or non-technical"
+  # Trigger fallback processing
+else
+  echo "✅ QUALITY PASSED: Proceeding with content"
+fi
+```
+
+#### Step 3C: Jina Enhancement (Fallback)
+If Brightdata content needs enhancement:
+- Use WebFetch with Jina processing:
   ```bash
-  curl "https://r.jina.ai/TARGET_URL" \
-    -H "Authorization: Bearer jina_0652bfc906d14590bf46815dc705aab8e7T5kQ5d6RF7vu3QK9Odfn2UjjK6"
+  # Jina API call for content enhancement
+  curl "https://r.jina.ai/$TARGET_URL" \
+    -H "Authorization: Bearer jina_0652bfc906d14590bf46815dc705aab8e7T5kQ5d6RF7vu3QK9Odfn2UjjK6" \
+    -H "Content-Type: application/json"
   ```
-- Validate content quality (minimum 500 characters, contains code examples or technical information)
-- Save successful extractions as: `research/{technology}/page_{counter}_{descriptive_name}.md`
-- Include metadata header with URL, extraction method ("Brightdata+Jina"), and quality indicators
+- Save enhanced content if quality improves
 
-### 4. **Advanced Content Enhancement**
-For high-priority documentation:
-- Use `mcp__brightdata__extract` with custom prompts for structured data extraction:
-  ```json
-  {
-    "url": "TARGET_URL",
-    "extraction_prompt": "Extract comprehensive [TECHNOLOGY] documentation including: 1. Installation commands and dependencies, 2. Import statements and initialization code, 3. API methods and usage patterns, 4. Configuration and integration examples, 5. Code blocks and implementation workflows. Focus on implementation-ready patterns. Return as clean markdown with properly formatted code blocks."
-  }
+**CHECKPOINT 3:** You MUST verify each extraction:
+- [ ] Content extracted using Brightdata successfully
+- [ ] Quality validation passed (>500 chars, technical content)
+- [ ] File saved with proper metadata
+- [ ] Enhancement applied if needed
+
+### 4. **Multi-URL Discovery** (OPTIONAL)
+For GitHub repositories specifically:
+- Construct common documentation paths manually:
+  ```bash
+  # GitHub documentation patterns
+  base_url="$target_url"
+  additional_urls=(
+    "$base_url/tree/master/docs"
+    "$base_url/tree/master/api" 
+    "$base_url/tree/master/examples"
+    "$base_url/blob/master/README.md"
+  )
   ```
-- Process extracted structured data for immediate implementation use
-- Combine multiple extraction methods for maximum content quality
+- Apply same extraction process to each discovered URL
+- **Only if initial extraction suggests more documentation exists**
 
-### 5. **Quality Control and Validation**
-- Ensure each technology has at least 3 high-quality documentation files
-- Verify extracted content contains implementation-ready information
-- Leverage Brightdata's superior content quality (90-95% useful content ratio)
-- Cross-reference content to ensure comprehensive coverage of the technology
-- Remove any files that are primarily navigation or promotional content
-
-### 6. **Research Synthesis and Completion**
+### 5. **Research Synthesis and Completion** (MANDATORY)
 For each technology:
 - Create `research/{technology}/research_summary.md` containing:
   - List of successfully extracted pages with URLs
@@ -76,46 +108,37 @@ For each technology:
   - Assessment of documentation completeness
   - Quality metrics (content-to-noise ratio)
 - Update planning_prp.md research_targets status from "pending" to "completed"
-- Generate final report with extraction metrics and quality assessment
+- Mark TodoWrite items as complete
 
-## Quality Standards
-- Each extracted file must contain substantial technical content (>500 characters)
-- Priority given to pages with code examples, API documentation, or implementation guides
-- Target 90-95% useful content ratio (Brightdata premium quality threshold)
-- Navigation waste should be <5% due to Brightdata's advanced filtering
-- Each technology should have comprehensive coverage of core concepts
+**CHECKPOINT 4:** You MUST verify completion:
+- [ ] Research summary created for each technology
+- [ ] Planning PRP status updated to "completed"
+- [ ] All TodoWrite items marked complete
+- [ ] Minimum quality thresholds met
 
 ## Error Handling
-- **Brightdata navigation failures**: Retry with different proxy, then skip URL with logged warning
-- **Bot detection encountered**: Automatic handling through Brightdata infrastructure
-- **Jina API failures**: Fall back to pure Brightdata content extraction
-- **Content quality failures**: Retry extraction with different parameters, then skip
-
-## Advanced Features
-- **Geo-unblocking**: Access region-restricted documentation automatically
-- **Bot detection evasion**: Handle protected documentation sites seamlessly  
-- **Dynamic content rendering**: Extract from JavaScript-heavy documentation sites
-- **Enterprise reliability**: Higher success rate for complex or protected sites
+- **Brightdata tool unavailable**: Use WebFetch with Jina as fallback
+- **Content quality failures**: Retry with WebFetch + specialized Jina prompts
+- **API key failures**: Display clear error message and abort
+- **Network failures**: Retry once, then skip URL with logged warning
 
 ## Success Criteria
 - All research_targets from planning_prp.md processed successfully
-- Each technology has minimum 3 comprehensive documentation files
+- Each technology has minimum 1 high-quality documentation file
 - Research summaries created with implementation-ready content
-- Superior content quality (90-95% useful content ratio)
+- Superior content quality (90%+ useful content ratio with Brightdata)
 - All files contain clean, LLM-optimized markdown content
-- Ready for subsequent `/execute-prp` command execution
 
 ## Output Structure
 ```
 {project_dir}/research/
 ├── {technology1}/
-│   ├── page_1_getting_started.md      # Premium quality extraction
-│   ├── page_2_api_reference.md        # Structured data extraction
-│   ├── page_3_examples.md             # Implementation-ready content
-│   └── research_summary.md            # Quality metrics included
+│   ├── page_1_main_documentation.md    # Brightdata primary extraction
+│   ├── page_2_additional_content.md    # Additional URLs if discovered
+│   └── research_summary.md             # Quality metrics included
 ├── {technology2}/
 │   └── [similar structure]
-└── research_complete.md               # Enterprise extraction report
+└── research_complete.md                # Final extraction report
 ```
 
 ## Command Completion Signal
@@ -124,8 +147,8 @@ Upon successful completion, output:
 ✅ BRIGHTDATA + JINA RESEARCH COMPLETE
 - Technologies researched: {count}
 - Documentation pages extracted: {count}
-- Premium content quality: {percentage}% (target: 90-95%)
+- Premium content quality: {percentage}% (target: 90%+)
 - Total research files created: {count}
-- Bot protection bypassed: {count} sites
+- Extraction method: Brightdata primary, Jina enhancement
 - Status: Ready for /execute-prp execution
 ```
