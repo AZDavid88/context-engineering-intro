@@ -141,12 +141,14 @@
 
 ## Development Phases
 
-### Phase 1: Foundation (Weeks 1-2) - OPTIMIZED IMPLEMENTATION PLAN
+### Phase 1: Foundation (Weeks 1-2) - ENHANCED WITH CONSULTANT RECOMMENDATIONS
 
-#### Core Deliverables (Research-Backed):
+#### Core Deliverables (Research-Backed + Consultant Validated):
 - **Hyperliquid WebSocket connection & data ingestion** ✅ Research: 9 comprehensive files
-- **Basic strategy representation (AST-based)** ✅ Research: DEAP framework, 7 files
-- **Simple backtesting engine** ✅ Research: Vectorbt integration, 4 files  
+- **Genetic Seed Library Implementation** 🆕 **CONSULTANT CRITICAL**: 12 validated seed implementations with unit tests
+- **Multi-Objective Fitness Framework** 🆕 **CONSULTANT CRITICAL**: Sharpe + Consistency + Drawdown + Turnover combined fitness
+- **Transaction Cost Integration** 🆕 **CONSULTANT CRITICAL**: Realistic slippage (0.05%) + maker/taker fees in all backtests
+- **Simple backtesting engine** ✅ Research: Vectorbt integration consolidated in vectorbt_comprehensive/
 - **CLI monitoring framework** ✅ Research: Rich/Textual patterns documented
 
 #### Required Directory Structure:
@@ -167,12 +169,19 @@
 │   │   ├── data_ingestion_engine.py # Data flow orchestration (WebSocket → Processing → Storage)
 │   │   └── fear_greed_client.py     # Market sentiment API ✅ COMPLETED
 │   ├── strategy/
-│   │   ├── ast_strategy.py          # AST-based strategy representation ✅ COMPLETED
-│   │   ├── genetic_engine.py        # ❌ CRITICAL MISSING: DEAP genetic algorithm integration
-│   │   ├── universal_strategy_engine.py # ❌ CRITICAL MISSING: Cross-asset strategy coordination
-│   │   ├── performance_analyzer.py  # ❌ CRITICAL MISSING: Fitness metrics extraction for genetic evolution
-│   │   ├── strategy_factory.py      # Basic strategy creation
-│   │   └── strategy_validator.py    # Initial validation framework
+│   │   ├── genetic_seeds/           # 🆕 CONSULTANT CRITICAL: Complete genetic seed library
+│   │   │   ├── seed_registry.py     # Central seed registration and validation
+│   │   │   ├── ema_crossover_seed.py # Seed #1: EMA crossover with genetic parameters
+│   │   │   ├── donchian_breakout_seed.py # Seed #2: Donchian breakout evolution
+│   │   │   ├── rsi_filter_seed.py   # Seed #3: RSI overbought/oversold guard
+│   │   │   ├── funding_rate_seed.py # Seed #10: Crypto funding rate carry
+│   │   │   ├── ml_classifier_seed.py # Seed #11: Linear SVC with genetic features
+│   │   │   └── [8 additional seeds] # Complete 12-seed implementation
+│   │   ├── genetic_engine.py        # ❌ ENHANCED: DEAP genetic algorithm with multi-objective fitness
+│   │   ├── universal_strategy_engine.py # ❌ ENHANCED: Cross-asset coordination with seed templates
+│   │   ├── performance_analyzer.py  # ❌ ENHANCED: Multi-objective fitness (Sharpe+Consistency+Drawdown+Turnover)
+│   │   ├── strategy_factory.py      # Enhanced: Genetic seed-based strategy creation
+│   │   └── strategy_validator.py    # Enhanced: Comprehensive validation with transaction costs
 │   ├── backtesting/
 │   │   ├── vectorbt_engine.py       # Vectorbt integration
 │   │   ├── strategy_converter.py    # ❌ CRITICAL MISSING: AST strategies → vectorbt signals conversion
@@ -364,7 +373,7 @@ CORRECTED_SYSTEM_FLOW = {
 **Time Savings**: 4-6 weeks → 3-4 days (90% reduction)
 - **Vectorbt Integration**: Replace manual backtesting with production framework
 - **Genetic Synergy**: Perfect fit with DEAP genetic algorithms 
-- **Research Status**: ✅ Complete (vectorbt research available)
+- **Research Status**: ✅ Complete (vectorbt research consolidated in vectorbt_comprehensive/)
 - **Implementation**: Convert AST strategies to vectorbt signals automatically
 
 ### 🎯 UNIVERSAL STRATEGY FIRST (⭐⭐⭐⭐⭐ GAME CHANGER)  
@@ -1356,10 +1365,373 @@ OPTIMIZATION_RESULTS = {
 }
 ```
 
+## Consultant Integration & Enhanced Validation Framework
+
+### 🎯 CONSULTANT RECOMMENDATIONS INTEGRATION (9-Point Enhancement)
+
+**Implementation Philosophy**: Extend existing research-backed architecture with proven validation patterns and robustness requirements.
+
+#### **Recommendation 1: Strategy Seed Validation** 🆕 **CRITICAL ENHANCEMENT**
+```python
+# Enhanced Phase 1 Deliverable: Complete Genetic Seed Implementation Library
+GENETIC_SEED_VALIDATION_REQUIREMENTS = {
+    'implementation_target': 'src/strategy/genetic_seeds/',
+    'validation_method': 'Unit tests with known outputs for each of 12 seeds',
+    'integration_point': 'DEAP genetic algorithm fitness evaluation',
+    'success_criteria': 'Each seed generates valid entry/exit signals on synthetic data'
+}
+
+# Required implementations (extending existing seed architecture):
+CONSULTANT_SEED_IMPLEMENTATIONS = [
+    'ema_crossover_seed.py',      # EMA(9,21) with genetic parameter evolution
+    'donchian_breakout_seed.py',   # Seed #2: Channel breakout evolution  
+    'rsi_filter_seed.py',         # Seed #3: Overbought/oversold guard
+    'stochastic_oscillator_seed.py', # Seed #4: Momentum oscillator
+    'sma_trend_filter_seed.py',   # Seed #5: Simple moving average filter
+    'atr_stop_loss_seed.py',      # Seed #6: Volatility-based stops
+    'ichimoku_cloud_seed.py',     # Seed #7: Comprehensive momentum system
+    'vwap_reversion_seed.py',     # Seed #8: Volume-weighted reversion
+    'volatility_scaling_seed.py', # Seed #9: Adaptive position sizing
+    'funding_rate_carry_seed.py', # Seed #10: Crypto funding exploitation
+    'linear_svc_classifier_seed.py', # Seed #11: ML-based entry sizing
+    'pca_tree_quantile_seed.py'   # Seed #12: Advanced ML composite
+]
+
+# 🚨 ADVANCED SEED MODULE (Phase 2+ Implementation)
+ADVANCED_SEED_IMPLEMENTATIONS = [
+    'fibonacci_retracement_seed.py'  # ⚠️ COMPLEX: Context-dependent pivot detection
+]
+
+# ⚠️ FIBONACCI RETRACEMENT COMPLEXITY ANALYSIS (Consultant Advisory)
+FIBONACCI_IMPLEMENTATION_WARNINGS = {
+    'complexity_factors': {
+        'parameter_explosion': 'Requires lookback window + pivot detection method',
+        'context_dependency': 'Manual swing high/low selection or separate algorithm needed',
+        'asset_variance': 'Different assets/timeframes produce wildly different pivots',
+        'signal_instability': 'Retracement bounces inconsistent in intraday crypto vs daily'
+    },
+    'genetic_algorithm_challenges': {
+        'cycle_waste': 'GA spends more cycles learning pivot selection than signal generation',
+        'ambiguity_resolution': 'Multiple valid pivot detection methods create noise',
+        'reduced_robustness': 'Less universal compared to self-contained primitives'
+    },
+    'implementation_strategy': {
+        'phase_timing': 'Phase 2+ only - after core 12 seeds are validated and stable',
+        'prerequisite': 'GA system must demonstrate Sharpe > 1.5 on core seeds first',
+        'approach': 'Inject as advanced gene block for alpha discovery validation'
+    }
+}
+
+# Advanced Fibonacci Genetic Parameters (Phase 2+ Implementation)
+FIBONACCI_GENETIC_GENOME = {
+    'fibonacci_window': [20, 50, 100],  # Swing high/low lookback periods
+    'fibonacci_levels': [0.236, 0.382, 0.618, 0.786],  # Standard retracement levels
+    'pivot_detection_method': ['highest_close', 'highest_high_low', 'swing_detection'],
+    'confluence_threshold': [0.01, 0.02, 0.05],  # Price proximity to Fibonacci level
+    'trend_confirmation': [0.0, 0.5, 1.0],  # Weight for trend direction validation
+    'volume_confirmation': [0.0, 0.5, 1.0]   # Weight for volume validation at levels
+}
+```
+
+#### **Recommendation 2: Multi-Objective Fitness Framework** 🆕 **CRITICAL ENHANCEMENT**
+```python
+# Enhanced Fitness Function (extends existing Sharpe > 2 requirement)
+MULTI_OBJECTIVE_FITNESS_FORMULA = {
+    'combined_fitness': '(Sharpe_norm*0.5 + Consistency*0.3 - Drawdown_norm*0.2)',
+    'validation_method': 'DEAP toy example with 10 strategies before scaling to 1000',
+    'components': {
+        'sharpe_norm': 'Normalized Sharpe ratio (target: >2.0)',
+        'consistency': 'Win rate and trade frequency stability',
+        'drawdown_norm': 'Maximum drawdown penalty (target: <10%)',
+        'turnover_penalty': 'Transaction frequency cost adjustment'
+    },
+    'integration_point': 'src/strategy/performance_analyzer.py enhancement'
+}
+```
+
+#### **Recommendation 3: Data Granularity & Latency Specification** 🆕 **CRITICAL SPECIFICATION**
+```yaml
+# Enhanced Data Pipeline Requirements (extends existing AsyncIO → DuckDB flow)
+data_granularity_specs:
+  minimum_timeframe: "1m"  # 1-minute bars (consultant recommendation)
+  latency_requirement: "<500ms"  # WebSocket → signal generation
+  hyperliquid_data_source: "REST API historical + WebSocket real-time"
+  validation_method: "End-to-end latency measurement in Phase 1"
+  
+# Implementation enhancement for existing data pipeline:
+pipeline_enhancements:
+  - "Prototype AsyncIO → DuckDB flow on 1-minute data first"
+  - "Measure WebSocket→signal latency to confirm <500ms requirement"
+  - "Validate data availability from Hyperliquid historical API"
+  - "Set up candle aggregation from tick data (if needed)"
+```
+
+#### **Recommendation 4: Transaction Costs & Slippage Integration** 🆕 **CRITICAL ENHANCEMENT**
+```python
+# Enhanced VectorBT Engine Configuration (extends existing backtesting)
+REALISTIC_TRADING_COSTS = {
+    'hyperliquid_fees': {
+        'maker_fee': 0.0002,  # 0.02% maker fee
+        'taker_fee': 0.0005,  # 0.05% taker fee  
+        'slippage': 0.0005    # 0.05% realistic slippage
+    },
+    'partial_fill_simulation': {
+        'method': 'Book first 3 levels simulation',
+        'implementation': 'src/backtesting/vectorbt_engine.py enhancement'
+    },
+    'validation_requirement': 'Best evolved strategies must survive these frictions',
+    'integration_point': 'All genetic fitness evaluations include realistic costs'
+}
+```
+
+#### **Recommendation 5: Execution Robustness & Resilience Testing** 🆕 **CRITICAL TESTING**
+```python
+# Enhanced Infrastructure Testing (extends existing VPN automation)
+RESILIENCE_TESTING_FRAMEWORK = {
+    'test_script': 'scripts/resilience_test.py',
+    'stress_testing': {
+        'vpn_kill_restart': '10x per day automatic testing',
+        'websocket_disconnection': 'Planned disconnection recovery testing',
+        'supervisor_recovery': 'Process restart validation'
+    },
+    'validation_criteria': 'No data bar drops during connection recovery',
+    'integration_point': 'config/supervisor/supervisord.conf enhancement'
+}
+```
+
+#### **Recommendation 6: Parallel Genetic Evaluation Scaling** 🆕 **CRITICAL PERFORMANCE**
+```python
+# Enhanced Parallel Processing (extends existing multiprocessing approach)
+SCALING_ARCHITECTURE = {
+    'phase_1_target': 'Ray or Dask integration for parallel backtests',
+    'performance_requirement': '24h job → 4h with 16 cores',
+    'population_scale': '1000 strategies × 50 assets capability',
+    'validation_method': 'Prove parallel efficiency in Phase 1',
+    'implementation': 'src/strategy/genetic_engine.py Ray integration'
+}
+```
+
+#### **Recommendation 7: Modular Regime Detection** 🆕 **SMART PHASING**
+```python
+# Enhanced Regime Detection Strategy (extends existing Fear & Greed integration)
+REGIME_DETECTION_PHASES = {
+    'phase_1_minimal': {
+        'implementation': 'Volatility-only regime (rolling σ > X)',
+        'rationale': 'Ship simple version first, prove concept'
+    },
+    'phase_2_enhanced': {
+        'implementation': 'Layer in Fear & Greed Index integration',
+        'modular_design': 'Hot-swappable regime modules'
+    },
+    'integration_point': 'src/strategy/regime_detection.py modular architecture'
+}
+```
+
+#### **Recommendation 8: Enhanced CI/CD Testing Coverage** 🆕 **CRITICAL AUTOMATION**
+```python
+# Enhanced GitHub Actions Integration (extends existing CI/CD plans)
+CI_CD_SMOKE_TESTS = {
+    'test_directory': 'tests/integration/consultant_validation/',
+    'required_tests': [
+        'test_seed_signal_generation.py',  # Each seed fires entry/exit on synthetic data
+        'test_genetic_evolution_improvement.py',  # Fitness improves across 3 generations
+        'test_vectorbt_integration.py',    # AST → VectorBT signal conversion
+        'test_transaction_cost_impact.py', # Strategies survive realistic costs
+        'test_data_pipeline_latency.py'   # <500ms WebSocket → signal requirement
+    ],
+    'automation': 'GitHub Actions runs on every commit',
+    'integration_point': '.github/workflows/consultant-validation.yml'
+}
+```
+
+#### **Recommendation 9: Live-Paper Feedback Loop Validation** 🆕 **CRITICAL SANDBOX**
+```python
+# Enhanced Paper Trading Validation (extends existing testnet planning)
+LIVE_PAPER_VALIDATION = {
+    'setup_requirement': 'Hyperliquid testnet account ASAP',
+    'validation_method': 'GeneticPaperTradingValidator with 1 week accelerated replay',
+    'data_speed': 'Historic data at 10x speed to confirm live-loop logic',
+    'success_criteria': 'Genetic evolution improves based on live market feedback',
+    'implementation': 'src/execution/paper_trading_validator.py'
+}
+```
+
+### 📅 ENHANCED DEVELOPMENT SEQUENCE (Consultant-Validated)
+
+#### **Weeks 1-2: Foundation + Validation** (ENHANCED)
+```python
+ENHANCED_WEEK_1_2_DELIVERABLES = {
+    # Original deliverables + consultant enhancements
+    'genetic_seed_library': {
+        'implementation': 'Complete 12 seed Python implementations',
+        'validation': 'Unit tests with known outputs for each seed',
+        'integration': 'DEAP genetic algorithm fitness evaluation'
+    },
+    'data_pipeline_enhanced': {
+        'implementation': 'AsyncIO → DuckDB pipeline on 1-minute bars',
+        'validation': 'End-to-end latency measurement <500ms',
+        'hyperliquid_integration': 'Historical data access + WebSocket feeds'
+    },
+    'vectorbt_realistic_costs': {
+        'implementation': 'Slippage (0.05%) + maker/taker fees integration',
+        'validation': 'Strategies survive realistic trading frictions',
+        'baseline_testing': 'Single strategy backtest with full cost model'
+    },
+    'consultant_success_criteria': [
+        'Each genetic seed generates valid signals on synthetic data',
+        'Data pipeline processes 1-minute bars with <500ms latency',
+        'VectorBT backtests include realistic Hyperliquid costs',
+        'Unit tests pass for all 12 genetic seed implementations'
+    ]
+}
+```
+
+#### **Weeks 3-4: Genetic Evolution + Multi-Objective Fitness** (ENHANCED)
+```python
+ENHANCED_WEEK_3_4_DELIVERABLES = {
+    'deap_toy_validation': {
+        'implementation': '10-strategy toy set with DEAP genetic evolution',
+        'validation': 'Multi-objective fitness function prototyping',
+        'success_criteria': 'Fitness improves across 3 generations'
+    },
+    'parallel_processing_poc': {
+        'implementation': 'Ray parallel backtesting proof-of-concept',
+        'validation': '24h job → 4h with parallel processing',
+        'scalability_test': 'Prepare for 1000 strategy populations'
+    },
+    'ci_cd_automation': {
+        'implementation': 'GitHub Actions with consultant smoke tests',
+        'validation': 'Automated testing on every commit',
+        'test_coverage': '5 critical integration tests passing'
+    },
+    'consultant_success_criteria': [
+        'DEAP genetic evolution shows measurable fitness improvement',
+        'Multi-objective fitness combines Sharpe + Consistency + Drawdown',
+        'Ray parallel processing proves 4x speed improvement',
+        'CI/CD pipeline automatically validates all genetic seeds'
+    ]
+}
+```
+
+#### **Weeks 5-6: Production Scaling + Live Validation** (ENHANCED)
+```python
+ENHANCED_WEEK_5_6_DELIVERABLES = {
+    'full_population_evolution': {
+        'implementation': '1000-strategy genetic evolution on 5 assets',
+        'validation': 'Sharpe > 2.0 strategies discovered through evolution',
+        'performance': 'Ray scaling handles full population efficiently'
+    },
+    'live_paper_accelerated': {
+        'implementation': 'Hyperliquid testnet + accelerated replay (10x speed)',
+        'validation': 'GeneticPaperTradingValidator live-loop logic',
+        'feedback_integration': 'Genetic evolution adapts to live market data'
+    },
+    'resilience_testing': {
+        'implementation': 'VPN/WebSocket failover stress testing',
+        'validation': '10x daily reconnection with zero data loss',
+        'automation': 'Supervisor config handles all recovery scenarios'
+    },
+    'consultant_success_criteria': [
+        'Genetic algorithm discovers Sharpe > 1.5 strategies on live data',
+        'Live paper trading shows positive genetic evolution feedback',
+        'Resilience testing proves 99.9% uptime capability',
+        'Full system scales to 50+ asset universe'
+    ]
+}
+```
+
+#### **Phase 2+ Advanced Enhancements** (POST-VALIDATION)
+```python
+FIBONACCI_ADVANCED_MODULE = {
+    'prerequisites': {
+        'core_seed_validation': 'All 12 core seeds demonstrate stable Sharpe > 1.5',
+        'genetic_system_stability': 'GA evolution shows consistent improvement over 50+ generations',
+        'production_readiness': 'Live paper trading validates core genetic framework'
+    },
+    'fibonacci_implementation': {
+        'complexity_warning': 'Context-dependent pivot detection adds significant parameter space',
+        'implementation_approach': 'Inject as advanced gene block for alpha discovery',
+        'genetic_parameters': 'fibonacci_window, fibonacci_levels, pivot_detection_method',
+        'validation_requirements': 'Must outperform core seeds to justify complexity'
+    },
+    'consultant_advisory': {
+        'timing': 'Only after core system proves robust and profitable',
+        'rationale': 'Start with deterministic, self-contained primitives first',
+        'expected_outcome': 'GA discovers if/when retracements add alpha across assets',
+        'risk_mitigation': 'Can be disabled if performance degrades'
+    }
+}
+```
+
+### 🎯 CONSULTANT VALIDATION GATES
+
+#### **Week 2 Enhanced Gate**: Foundation + Validation
+```python
+WEEK_2_CONSULTANT_GATE = {
+    'original_criteria': 'Data quality >95%, vectorbt backtesting operational',
+    'enhanced_criteria': [
+        'All 12 genetic seeds pass unit tests with known outputs',
+        'Data pipeline latency <500ms measured end-to-end',
+        'VectorBT backtests survive realistic transaction costs',
+        'Genetic seed library ready for DEAP integration'
+    ],
+    'fail_action': 'Fix genetic seed implementations before genetic evolution'
+}
+```
+
+#### **Week 4 Enhanced Gate**: Genetic Evolution + Multi-Objective
+```python
+WEEK_4_CONSULTANT_GATE = {
+    'original_criteria': 'Positive Sharpe >0.5 on multiple assets',
+    'enhanced_criteria': [
+        'DEAP genetic evolution improves fitness across 3+ generations',
+        'Multi-objective fitness function validates on 10-strategy toy set',
+        'Ray parallel processing proves 4x performance improvement',
+        'CI/CD pipeline automatically validates genetic evolution'
+    ],
+    'fail_action': 'Redesign fitness function or genetic operators'
+}
+```
+
+#### **Week 6 Enhanced Gate**: Production + Live Validation  
+```python
+WEEK_6_CONSULTANT_GATE = {
+    'original_criteria': 'Genetic evolution Sharpe >1.0, live validation positive',
+    'enhanced_criteria': [
+        'Live paper trading with accelerated replay shows genetic adaptation',
+        'Resilience testing proves system survives 10x daily reconnections',
+        'Full population genetic evolution scales to 1000+ strategies',
+        'Hyperliquid testnet integration validates live-loop logic'
+    ],
+    'fail_action': 'Focus on resilience and live feedback loop fixes'
+}
+```
+
 ## Next Steps
+
+### 🚀 IMMEDIATE IMPLEMENTATION PRIORITIES (Consultant-Enhanced)
+
+1. **Week 1 Focus**: Complete 12 core genetic seed library with unit test validation
+2. **Data Pipeline Enhancement**: Implement 1-minute bar processing with <500ms latency  
+3. **VectorBT Cost Integration**: Add realistic slippage and fees to all backtests
+4. **DEAP Toy Validation**: Build 10-strategy genetic evolution proof-of-concept
+5. **CI/CD Smoke Tests**: Implement automated validation for all genetic seeds
+
+### 📋 ADVANCED ENHANCEMENTS (Phase 2+ Only)
+
+6. **🔮 Fibonacci Retracement Module**: Context-dependent advanced seed (after core validation)
+   - **Warning**: Parameter explosion and pivot detection complexity
+   - **Prerequisite**: Core 12 seeds achieve Sharpe > 1.5 consistently
+   - **Approach**: Inject as advanced gene block for alpha discovery validation
+
+### 📋 NEXT ACTIONS (Ready to Execute)
 
 1. **Execute Priority 1.8 Research**: Universal strategies, vectorbt integration, GitHub Actions
 2. **Begin Week 1-2 Implementation**: Vectorbt + data pipeline + automated validation  
 3. **Implement Timeboxing Gates**: Hard stops at Week 2, 4, 6 for validation
 4. **Set up GitHub Actions**: Automated strategy validation on every commit
 5. **Configure Hyperliquid Testnet**: Paper trading environment for live validation
+6. **🆕 Build Genetic Seed Library**: Complete 12 seed implementations with unit tests
+7. **🆕 Enhance VectorBT Engine**: Integrate realistic transaction costs and slippage
+8. **🆕 Create Resilience Testing**: VPN/WebSocket stress testing framework
+9. **🆕 Set up Ray Integration**: Parallel genetic evaluation proof-of-concept
