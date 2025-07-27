@@ -176,6 +176,7 @@ class FearGreedClient:
         # HTTP session configuration
         self.timeout = aiohttp.ClientTimeout(total=30.0)
         self.session: Optional[aiohttp.ClientSession] = None
+        self._session_is_shared = False  # Track if session is externally managed
         
         # Data cache
         self._cache: Dict[str, FearGreedData] = {}
@@ -209,12 +210,22 @@ class FearGreedClient:
             
             self.logger.info(f"Fear & Greed client connected to {self.api_url}")
     
+    def set_shared_session(self, session: aiohttp.ClientSession) -> None:
+        """Set a shared session that should not be closed by this client."""
+        self.session = session
+        self._session_is_shared = True
+        self.logger.info("Fear & Greed client using shared session")
+    
     async def disconnect(self) -> None:
         """Close HTTP session."""
-        if self.session:
+        if self.session and not self._session_is_shared:
             await self.session.close()
             self.session = None
             self.logger.info("Fear & Greed client disconnected")
+        elif self.session and self._session_is_shared:
+            # Don't close shared sessions, just remove reference
+            self.session = None
+            self.logger.info("Fear & Greed client disconnected (shared session preserved)")
     
     async def get_current_index(self, use_cache: bool = True) -> FearGreedData:
         """Get current Fear & Greed Index value.
@@ -240,7 +251,10 @@ class FearGreedClient:
                 return cached_data
         
         if not self.session:
-            await self.connect()
+            if self._session_is_shared:
+                raise RuntimeError("Shared session is None - TradingSystemManager may not be active")
+            else:
+                await self.connect()
         
         try:
             async with self.session.get(self.api_url) as response:
@@ -288,7 +302,10 @@ class FearGreedClient:
             List of historical Fear & Greed data points
         """
         if not self.session:
-            await self.connect()
+            if self._session_is_shared:
+                raise RuntimeError("Shared session is None - TradingSystemManager may not be active")
+            else:
+                await self.connect()
         
         try:
             params = {"limit": str(days), "format": "json"}

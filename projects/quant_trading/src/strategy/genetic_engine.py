@@ -1,0 +1,643 @@
+
+
+
+import random
+import logging
+import multiprocessing
+from typing import Dict, List, Tuple, Optional, Any, Callable
+from dataclasses import dataclass
+from enum import Enum
+import numpy as np
+import pandas as pd
+
+
+from src.utils.pandas_compatibility import safe_fillna_false, safe_fillna_zero, safe_fillna
+
+
+from src.strategy.genetic_seeds import SeedRegistry, get_registry, BaseSeed
+from src.strategy.genetic_seeds.base_seed import SeedGenes, SeedFitness, SeedType
+from src.config.settings import get_settings, Settings
+
+# Configure logging
+
+from src.utils.pandas_compatibility import safe_fillna_false, safe_fillna_zero, safe_fillna
+
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+
+
+    
+        
+        
+        
+        
+        
+    
+        
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+    
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+            
+    
+        
+            
+    
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+    
+        
+            
+        
+        
+        
+    
+        
+            
+        
+        
+        
+    
+        
+        
+    
+        
+        
+        
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+            
+        
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+            
+            
+            
+            
+            
+        
+    
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+    
+"""
+Genetic Evolution Engine - Core DEAP Integration
+This module implements the core genetic algorithm engine using DEAP framework
+for evolving trading strategies. Based on research-backed patterns and 
+consultant recommendations for multi-objective optimization.
+Key Features:
+- DEAP genetic algorithm framework integration
+- Multi-objective fitness optimization (Sharpe + Consistency + Drawdown)
+- Parallel strategy evaluation with multiprocessing
+- Genetic seed-based population initialization
+- Production-ready error handling and monitoring
+"""
+try:
+    from deap import base, creator, tools, algorithms
+    DEAP_AVAILABLE = True
+except ImportError:
+    DEAP_AVAILABLE = False
+    # Create mock classes for testing
+    class MockBase:
+        def __init__(self): pass
+    creator = MockBase()
+    tools = MockBase()
+    algorithms = MockBase()
+logger = logging.getLogger(__name__)
+class EvolutionStatus(str, Enum):
+    """Status of genetic evolution process."""
+    INITIALIZING = "initializing"
+    RUNNING = "running" 
+    PAUSED = "paused"
+    COMPLETED = "completed"
+    FAILED = "failed"
+@dataclass
+class EvolutionConfig:
+    """Configuration for genetic evolution parameters."""
+    # Population parameters
+    population_size: int = 100
+    n_generations: int = 50
+    # Genetic operators
+    crossover_prob: float = 0.7
+    mutation_prob: float = 0.2
+    elite_size: int = 10
+    # Selection parameters
+    tournament_size: int = 3
+    selection_pressure: float = 1.5
+    # Multi-objective weights (Sharpe, Consistency, Drawdown, Turnover)
+    fitness_weights: Tuple[float, float, float, float] = (0.5, 0.3, 0.15, 0.05)
+    # Performance thresholds
+    min_sharpe_ratio: float = 0.5
+    max_drawdown: float = 0.2
+    min_win_rate: float = 0.45
+    # Parallel processing
+    use_multiprocessing: bool = True
+    n_processes: Optional[int] = None  # None = auto-detect
+    # Validation
+    validation_split: float = 0.3  # 30% for out-of-sample
+    min_trades: int = 10
+@dataclass
+class EvolutionResults:
+    """Results from genetic evolution process."""
+    best_individual: Optional[BaseSeed] = None
+    population: List[BaseSeed] = None
+    fitness_history: List[List[float]] = None
+    generation_stats: List[Dict[str, float]] = None
+    convergence_data: Dict[str, Any] = None
+    execution_time: float = 0.0
+    status: EvolutionStatus = EvolutionStatus.INITIALIZING
+class GeneticEngine:
+    """Core genetic algorithm engine for trading strategy evolution."""
+    def __init__(self, config: Optional[EvolutionConfig] = None, 
+                 settings: Optional[Settings] = None):
+        """Initialize genetic engine.
+        Args:
+            config: Evolution configuration parameters
+            settings: System settings
+        """
+        self.config = config or EvolutionConfig()
+        self.settings = settings or get_settings()
+        self.seed_registry = get_registry()
+        # Evolution state
+        self.status = EvolutionStatus.INITIALIZING
+        self.current_generation = 0
+        self.population = []
+        self.fitness_history = []
+        self.best_individual = None
+        # DEAP framework setup
+        self.toolbox = None
+        self._setup_deap_framework()
+        # Multiprocessing pool
+        self.process_pool = None
+        logger.info("Genetic engine initialized")
+    def _setup_deap_framework(self) -> None:
+        """Set up DEAP genetic algorithm framework."""
+        if not DEAP_AVAILABLE:
+            logger.warning("DEAP not available, using fallback implementation")
+            return
+        try:
+            # Create fitness class for multi-objective optimization
+            # weights: (Sharpe+, Consistency+, Drawdown-, Turnover-)
+            if not hasattr(creator, "TradingFitness"):
+                creator.create("TradingFitness", base.Fitness, 
+                             weights=self.config.fitness_weights)
+            # Create primitive set for trading strategies - strongly typed GP from research
+            from deap import gp
+            import pandas as pd
+            import operator
+            # Trading primitive set: market data → trading signals
+            self.pset = gp.PrimitiveSetTyped("trading_strategy", [pd.DataFrame], bool)
+            # Technical indicator primitives: DataFrame → float
+            self.pset.addPrimitive(lambda df: df['close'].iloc[-1] if 'close' in df.columns else 0.0, 
+                                 [pd.DataFrame], float, name="current_price")
+            self.pset.addPrimitive(lambda df: df['rsi'].iloc[-1] if 'rsi' in df.columns else 50.0, 
+                                 [pd.DataFrame], float, name="rsi_value")
+            # Comparison operators: float, float → bool
+            self.pset.addPrimitive(operator.gt, [float, float], bool, name="greater_than")
+            self.pset.addPrimitive(operator.lt, [float, float], bool, name="less_than")
+            # Logical operators: bool, bool → bool
+            self.pset.addPrimitive(operator.and_, [bool, bool], bool, name="and_op")
+            self.pset.addPrimitive(operator.or_, [bool, bool], bool, name="or_op")
+            # Ephemeral constants for thresholds (research pattern)
+            self.pset.addEphemeralConstant("rsi_threshold", lambda: random.uniform(20, 80), float)
+            self.pset.addEphemeralConstant("price_threshold", lambda: random.uniform(0.95, 1.05), float)
+            # Boolean constants
+            self.pset.addTerminal(True, bool)
+            self.pset.addTerminal(False, bool)
+            # Create individual class - DEAP GP tree-based following research patterns
+            if not hasattr(creator, "Individual"):
+                creator.create("Individual", gp.PrimitiveTree, fitness=creator.TradingFitness, pset=self.pset)
+            # Initialize toolbox
+            self.toolbox = base.Toolbox()
+            # Register genetic operators
+            self._register_genetic_operators()
+            logger.info("DEAP framework setup completed")
+        except Exception as e:
+            logger.error(f"Failed to setup DEAP framework: {e}")
+            raise
+    def _register_genetic_operators(self) -> None:
+        """Register genetic operators with DEAP toolbox."""
+        if not self.toolbox:
+            return
+        # Individual creation
+        self.toolbox.register("individual", self._create_random_individual)
+        self.toolbox.register("population", tools.initRepeat, list, 
+                            self.toolbox.individual)
+        # Genetic operators
+        self.toolbox.register("mate", self._crossover)
+        self.toolbox.register("mutate", self._mutate)
+        self.toolbox.register("select", tools.selTournament, 
+                            tournsize=self.config.tournament_size)
+        # Evaluation
+        self.toolbox.register("evaluate", self._evaluate_individual)
+        # Multi-processing (if enabled)
+        if self.config.use_multiprocessing:
+            n_processes = self.config.n_processes or multiprocessing.cpu_count()
+            self.process_pool = multiprocessing.Pool(n_processes)
+            self.toolbox.register("map", self.process_pool.map)
+            logger.info(f"Multiprocessing enabled with {n_processes} processes")
+    def _create_random_individual(self) -> BaseSeed:
+        """Create a random individual from available genetic seeds."""
+        # Get available seed classes
+        seed_classes = self.seed_registry.get_all_registered_seeds()
+        if not seed_classes:
+            raise ValueError("No genetic seeds registered")
+        # Select random seed type
+        seed_class = random.choice(list(seed_classes.values()))
+        # Create random genetic parameters
+        parameter_bounds = seed_class({}).parameter_bounds
+        parameters = {}
+        for param_name, (min_val, max_val) in parameter_bounds.items():
+            parameters[param_name] = random.uniform(min_val, max_val)
+        # Create seed genes
+        genes = SeedGenes(
+            seed_id=f"gen_{self.current_generation}_{random.randint(1000, 9999)}",
+            seed_type=SeedType.MOMENTUM,  # Will be set by seed constructor
+            generation=self.current_generation,
+            parameters=parameters
+        )
+        # Create and return individual
+        individual = seed_class(genes, self.settings)
+        return individual
+    def _crossover(self, ind1: BaseSeed, ind2: BaseSeed) -> Tuple[BaseSeed, BaseSeed]:
+        """Perform crossover between two individuals.
+        Args:
+            ind1: First parent individual
+            ind2: Second parent individual
+        Returns:
+            Tuple of two offspring individuals
+        """
+        # Use seed's built-in crossover method
+        try:
+            child1, child2 = ind1.crossover(ind2)
+            return child1, child2
+        except Exception as e:
+            logger.warning(f"Crossover failed: {e}, returning parents")
+            return ind1, ind2
+    def _mutate(self, individual: BaseSeed) -> Tuple[BaseSeed]:
+        """Perform mutation on an individual.
+        Args:
+            individual: Individual to mutate
+        Returns:
+            Tuple containing mutated individual
+        """
+        # Use seed's built-in mutation method
+        try:
+            mutated = individual.mutate(self.config.mutation_prob)
+            return (mutated,)
+        except Exception as e:
+            logger.warning(f"Mutation failed: {e}, returning original")
+            return (individual,)
+    def _evaluate_individual(self, individual: BaseSeed) -> Tuple[float, float, float, float]:
+        """Evaluate fitness of an individual strategy.
+        Args:
+            individual: Strategy to evaluate
+        Returns:
+            Tuple of fitness values (sharpe, consistency, drawdown, turnover)
+        """
+        try:
+            # Generate synthetic backtest data for evaluation
+            # In production, this would use real market data
+            synthetic_data = self._generate_synthetic_market_data()
+            # Generate signals using the strategy
+            signals = individual.generate_signals(synthetic_data)
+            # Calculate basic performance metrics
+            returns = self._calculate_strategy_returns(signals, synthetic_data)
+            # Multi-objective fitness components
+            sharpe_ratio = self._calculate_sharpe_ratio(returns)
+            consistency = self._calculate_consistency(returns)
+            max_drawdown = self._calculate_max_drawdown(returns)
+            turnover = self._calculate_turnover(signals)
+            # Ensure valid fitness values
+            sharpe_ratio = max(0.0, min(5.0, sharpe_ratio))
+            consistency = max(0.0, min(1.0, consistency))
+            max_drawdown = max(0.0, min(1.0, max_drawdown))
+            turnover = max(0.0, min(10.0, turnover))
+            # Apply constraints
+            if sharpe_ratio < self.config.min_sharpe_ratio:
+                sharpe_ratio *= 0.5  # Penalty for low Sharpe
+            if max_drawdown > self.config.max_drawdown:
+                max_drawdown *= 2.0  # Penalty for high drawdown
+            # Log evaluation for debugging
+            if random.random() < 0.1:  # Log 10% of evaluations
+                logger.debug(f"Evaluated {individual.seed_name}: "
+                           f"Sharpe={sharpe_ratio:.3f}, Consistency={consistency:.3f}, "
+                           f"Drawdown={max_drawdown:.3f}, Turnover={turnover:.3f}")
+            return sharpe_ratio, consistency, max_drawdown, turnover
+        except Exception as e:
+            logger.error(f"Evaluation failed for {individual.seed_name}: {e}")
+            # Return poor fitness for failed evaluation
+            return 0.0, 0.0, 1.0, 10.0
+    def _generate_synthetic_market_data(self, periods: int = 252) -> pd.DataFrame:
+        """Generate synthetic market data for backtesting.
+        Args:
+            periods: Number of periods to generate
+        Returns:
+            DataFrame with OHLCV data
+        """
+        # Generate realistic price series with trend and noise
+        dates = pd.date_range('2023-01-01', periods=periods, freq='1h')
+        # Price evolution with trend and volatility
+        returns = np.random.normal(0.0002, 0.02, periods)  # Small positive drift
+        prices = 100 * np.exp(np.cumsum(returns))
+        # Create OHLCV data
+        data = pd.DataFrame(index=dates)
+        data['close'] = prices
+        data['open'] = data['close'].shift(1).fillna(prices[0])
+        data['high'] = data[['open', 'close']].max(axis=1) * (1 + np.random.uniform(0, 0.005, periods))
+        data['low'] = data[['open', 'close']].min(axis=1) * (1 - np.random.uniform(0, 0.005, periods))
+        data['volume'] = np.random.uniform(1000, 10000, periods)
+        return data
+    def _calculate_strategy_returns(self, signals: pd.Series, data: pd.DataFrame) -> pd.Series:
+        """Calculate strategy returns from signals and price data.
+        Args:
+            signals: Trading signals (-1, 0, 1)
+            data: Market data with price information
+        Returns:
+            Series of strategy returns
+        """
+        # Calculate price returns
+        price_returns = data['close'].pct_change().fillna(0)
+        # Strategy returns = signals * price returns (with lag)
+        strategy_returns = signals.shift(1) * price_returns
+        # Apply transaction costs (0.1% per trade)
+        trade_costs = abs(signals.diff()) * 0.001
+        strategy_returns = strategy_returns - trade_costs
+        return safe_fillna_zero(strategy_returns)
+    def _calculate_sharpe_ratio(self, returns: pd.Series) -> float:
+        """Calculate annualized Sharpe ratio."""
+        if len(returns) == 0 or returns.std() == 0:
+            return 0.0
+        # Annualized Sharpe ratio (assuming hourly data)
+        mean_return = returns.mean() * 24 * 365  # Annualized
+        return_std = returns.std() * np.sqrt(24 * 365)  # Annualized
+        sharpe = mean_return / return_std if return_std > 0 else 0.0
+        return sharpe
+    def _calculate_consistency(self, returns: pd.Series) -> float:
+        """Calculate strategy consistency (rolling Sharpe stability)."""
+        if len(returns) < 50:
+            return 0.0
+        # Calculate rolling 30-day Sharpe ratios
+        rolling_sharpe = []
+        window = 30 * 24  # 30 days in hours
+        for i in range(window, len(returns)):
+            window_returns = returns.iloc[i-window:i]
+            if window_returns.std() > 0:
+                sharpe = window_returns.mean() / window_returns.std()
+                rolling_sharpe.append(sharpe)
+        if not rolling_sharpe:
+            return 0.0
+        # Consistency = 1 - coefficient of variation of rolling Sharpe
+        rolling_sharpe = pd.Series(rolling_sharpe)
+        cv = rolling_sharpe.std() / abs(rolling_sharpe.mean()) if rolling_sharpe.mean() != 0 else float('inf')
+        consistency = max(0.0, 1.0 - cv)
+        return consistency
+    def _calculate_max_drawdown(self, returns: pd.Series) -> float:
+        """Calculate maximum drawdown."""
+        if len(returns) == 0:
+            return 0.0
+        cumulative = (1 + returns).cumprod()
+        rolling_max = cumulative.expanding().max()
+        drawdown = (cumulative - rolling_max) / rolling_max
+        max_dd = abs(drawdown.min())
+        return min(max_dd, 1.0)  # Cap at 100%
+    def _calculate_turnover(self, signals: pd.Series) -> float:
+        """Calculate strategy turnover (position changes per period)."""
+        if len(signals) == 0:
+            return 0.0
+        # Count position changes
+        position_changes = abs(signals.diff()).sum()
+        turnover = position_changes / len(signals)
+        return turnover
+    def evolve(self, market_data: Optional[pd.DataFrame] = None,
+               n_generations: Optional[int] = None) -> EvolutionResults:
+        """Run genetic evolution process.
+        Args:
+            market_data: Historical market data for evaluation
+            n_generations: Number of generations to evolve
+        Returns:
+            Evolution results and statistics
+        """
+        logger.info("Starting genetic evolution")
+        self.status = EvolutionStatus.RUNNING
+        start_time = pd.Timestamp.now()
+        try:
+            # Initialize population
+            population = self._initialize_population()
+            # Evolution parameters
+            n_gen = n_generations or self.config.n_generations
+            # Track evolution statistics
+            stats = tools.Statistics(lambda ind: ind.fitness.values)
+            stats.register("avg", np.mean, axis=0)
+            stats.register("std", np.std, axis=0)
+            stats.register("min", np.min, axis=0)
+            stats.register("max", np.max, axis=0)
+            # Run evolution
+            if DEAP_AVAILABLE and self.toolbox:
+                population, logbook = self._run_deap_evolution(population, n_gen, stats)
+            else:
+                population, logbook = self._run_fallback_evolution(population, n_gen)
+            # Extract results
+            best_ind = self._find_best_individual(population)
+            # Calculate execution time
+            execution_time = (pd.Timestamp.now() - start_time).total_seconds()
+            # Create results
+            results = EvolutionResults(
+                best_individual=best_ind,
+                population=population,
+                fitness_history=self.fitness_history,
+                generation_stats=[record for record in logbook] if logbook else [],
+                execution_time=execution_time,
+                status=EvolutionStatus.COMPLETED
+            )
+            logger.info(f"Evolution completed in {execution_time:.2f}s. "
+                       f"Best fitness: {best_ind.fitness.values if best_ind.fitness else 'N/A'}")
+            self.status = EvolutionStatus.COMPLETED
+            return results
+        except Exception as e:
+            logger.error(f"Evolution failed: {e}")
+            self.status = EvolutionStatus.FAILED
+            raise
+        finally:
+            # Clean up multiprocessing pool
+            if self.process_pool:
+                self.process_pool.close()
+                self.process_pool.join()
+    def _initialize_population(self) -> List[BaseSeed]:
+        """Initialize population of genetic individuals."""
+        if DEAP_AVAILABLE and self.toolbox:
+            population = self.toolbox.population(n=self.config.population_size)
+        else:
+            population = []
+            for _ in range(self.config.population_size):
+                individual = self._create_random_individual()
+                population.append(individual)
+        logger.info(f"Initialized population of {len(population)} individuals")
+        return population
+    def _run_deap_evolution(self, population: List[BaseSeed], n_generations: int,
+                           stats: tools.Statistics) -> Tuple[List[BaseSeed], Any]:
+        """Run evolution using DEAP algorithms."""
+        # Use NSGA-II for multi-objective optimization
+        final_pop, logbook = algorithms.eaMuPlusLambda(
+            population, self.toolbox, 
+            mu=self.config.population_size,
+            lambda_=self.config.population_size,
+            cxpb=self.config.crossover_prob,
+            mutpb=self.config.mutation_prob,
+            ngen=n_generations,
+            stats=stats,
+            halloffame=None,
+            verbose=True
+        )
+        return final_pop, logbook
+    def _run_fallback_evolution(self, population: List[BaseSeed], 
+                               n_generations: int) -> Tuple[List[BaseSeed], None]:
+        """Run simple evolution when DEAP is not available."""
+        logger.warning("Running fallback evolution (DEAP not available)")
+        for generation in range(n_generations):
+            self.current_generation = generation
+            # Evaluate population
+            for individual in population:
+                if not individual.fitness:
+                    fitness_values = self._evaluate_individual(individual)
+                    # Create mock fitness object
+                    individual.fitness = type('MockFitness', (), {'values': fitness_values})()
+            # Simple selection: keep top 50%
+            population.sort(key=lambda ind: ind.fitness.values[0], reverse=True)
+            survivors = population[:self.config.population_size // 2]
+            # Create offspring through mutation
+            offspring = []
+            for individual in survivors:
+                child = self._mutate(individual)[0]
+                offspring.append(child)
+            # Replace population
+            population = survivors + offspring
+            # Log progress
+            if generation % 10 == 0:
+                best_fitness = population[0].fitness.values[0]
+                logger.info(f"Generation {generation}: Best fitness = {best_fitness:.3f}")
+        return population, None
+    def _find_best_individual(self, population: List[BaseSeed]) -> Optional[BaseSeed]:
+        """Find the best individual in the population."""
+        if not population:
+            return None
+        # For multi-objective, use first objective (Sharpe ratio) as primary
+        best_individual = None
+        best_fitness = float('-inf')
+        for individual in population:
+            if individual.fitness and individual.fitness.values:
+                primary_fitness = individual.fitness.values[0]  # Sharpe ratio
+                if primary_fitness > best_fitness:
+                    best_fitness = primary_fitness
+                    best_individual = individual
+        return best_individual
+    def get_population_diversity(self, population: List[BaseSeed]) -> Dict[str, float]:
+        """Calculate population diversity metrics."""
+        if not population:
+            return {}
+        # Seed type diversity
+        seed_types = [ind.genes.seed_type.value for ind in population]
+        unique_types = len(set(seed_types))
+        type_diversity = unique_types / len(SeedType)
+        # Parameter diversity (average std dev of parameters)
+        param_stds = []
+        for param_name in population[0].genes.parameters.keys():
+            param_values = [ind.genes.parameters.get(param_name, 0) for ind in population]
+            param_stds.append(np.std(param_values))
+        avg_param_diversity = np.mean(param_stds) if param_stds else 0.0
+        # Fitness diversity
+        fitness_values = [ind.fitness.values[0] if ind.fitness else 0 for ind in population]
+        fitness_diversity = np.std(fitness_values)
+        return {
+            'type_diversity': type_diversity,
+            'parameter_diversity': avg_param_diversity,
+            'fitness_diversity': fitness_diversity,
+            'unique_seed_types': unique_types
+        }
+    def __del__(self):
+        """Cleanup multiprocessing pool on deletion."""
+        if hasattr(self, 'process_pool') and self.process_pool:
+            self.process_pool.close()
+            self.process_pool.join()

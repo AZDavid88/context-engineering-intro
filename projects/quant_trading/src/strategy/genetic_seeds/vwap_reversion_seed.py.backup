@@ -1,0 +1,827 @@
+"""
+VWAP Reversion Genetic Seed - Seed #8
+
+This seed implements Volume Weighted Average Price (VWAP) mean reversion strategy
+with genetic parameter evolution for optimal reversion detection and volume analysis.
+
+Key Features:
+- Multi-timeframe VWAP calculation and analysis through genetic evolution
+- Volume-weighted mean reversion signals with deviation bands
+- VWAP breakout vs reversion regime detection
+- Volume profile analysis and institutional flow detection
+"""
+
+from typing import Dict, List, Tuple
+import pandas as pd
+import numpy as np
+
+from .base_seed import BaseSeed, SeedType, SeedGenes
+from .seed_registry import genetic_seed
+from src.config.settings import Settings, Optional
+
+
+@genetic_seed
+class VWAPReversionSeed(BaseSeed):
+    """VWAP Reversion trading seed with genetic parameter evolution."""
+    
+    @property
+    def seed_name(self) -> str:
+        """Return human-readable seed name."""
+        return "VWAP_Reversion"
+    
+    @property
+    def seed_description(self) -> str:
+        """Return detailed seed description."""
+        return ("VWAP-based mean reversion strategy. Uses Volume Weighted Average Price "
+                "with standard deviation bands for reversion signals. Analyzes volume "
+                "profile, institutional flow, and multi-timeframe VWAP relationships.")
+    
+    @property
+    def required_parameters(self) -> List[str]:
+        """Return list of required genetic parameters."""
+        return [
+            'vwap_period',
+            'reversion_threshold',
+            'volume_confirmation',
+            'deviation_multiplier',
+            'regime_detection_weight'
+        ]
+    
+    @property
+    def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
+        """Return bounds for genetic parameters (min, max)."""
+        return {
+            'vwap_period': (10.0, 200.0),           # VWAP calculation period (10-200 bars)
+            'reversion_threshold': (0.5, 3.0),      # Standard deviations for reversion signal
+            'volume_confirmation': (0.5, 2.5),      # Volume confirmation multiplier
+            'deviation_multiplier': (1.0, 4.0),     # VWAP band multiplier
+            'regime_detection_weight': (0.0, 1.0)   # Regime detection importance
+        }
+    
+    def __init__(self, genes: SeedGenes, settings: Optional[Settings] = None):
+        """Initialize VWAP Reversion seed.
+        
+        Args:
+            genes: Genetic parameters
+            settings: Configuration settings
+        """
+        # Set seed type
+        genes.seed_type = SeedType.MEAN_REVERSION
+        
+        # Initialize default parameters if not provided
+        if not genes.parameters:
+            genes.parameters = {
+                'vwap_period': 50.0,
+                'reversion_threshold': 1.5,
+                'volume_confirmation': 1.2,
+                'deviation_multiplier': 2.0,
+                'regime_detection_weight': 0.6
+            }
+        
+        super().__init__(genes, settings)
+    
+    def calculate_technical_indicators(self, data: pd.DataFrame) -> Dict[str, pd.Series]:
+        """Calculate VWAP and related volume-weighted indicators.
+        
+        Args:
+            data: OHLCV market data
+            
+        Returns:
+            Dictionary of indicator name -> indicator values
+        """
+        # Get genetic parameters
+        vwap_period = int(self.genes.parameters['vwap_period'])
+        deviation_multiplier = self.genes.parameters['deviation_multiplier']
+        
+        # Calculate primary VWAP
+        vwap_indicators = self._calculate_vwap_indicators(data, vwap_period)
+        
+        # Calculate VWAP bands
+        vwap_bands = self._calculate_vwap_bands(data, vwap_indicators, deviation_multiplier)
+        
+        # Calculate volume analysis indicators
+        volume_indicators = self._calculate_volume_indicators(data)
+        
+        # Calculate multi-timeframe VWAP
+        multi_tf_vwap = self._calculate_multi_timeframe_vwap(data, vwap_period)
+        
+        # Calculate reversion signals
+        reversion_signals = self._calculate_reversion_signals(data, vwap_indicators, vwap_bands)
+        
+        # Calculate regime detection indicators
+        regime_indicators = self._calculate_regime_indicators(data, vwap_indicators, volume_indicators)
+        
+        # Calculate institutional flow indicators
+        institutional_flow = self._calculate_institutional_flow(data, vwap_indicators)
+        
+        # Combine all indicators
+        all_indicators = {}
+        all_indicators.update(vwap_indicators)
+        all_indicators.update(vwap_bands)
+        all_indicators.update(volume_indicators)
+        all_indicators.update(multi_tf_vwap)
+        all_indicators.update(reversion_signals)
+        all_indicators.update(regime_indicators)
+        all_indicators.update(institutional_flow)
+        
+        return all_indicators
+    
+    def _calculate_vwap_indicators(self, data: pd.DataFrame, period: int) -> Dict[str, pd.Series]:
+        """Calculate VWAP and related indicators.
+        
+        Args:
+            data: OHLCV data
+            period: VWAP calculation period
+            
+        Returns:
+            Dictionary of VWAP indicators
+        """
+        # Handle missing volume data
+        if 'volume' not in data.columns:
+            data = data.copy()
+            data['volume'] = 1.0  # Equal weighting if no volume data
+        
+        # Calculate typical price
+        typical_price = (data['high'] + data['low'] + data['close']) / 3
+        
+        # Calculate rolling VWAP
+        volume_price = (typical_price * data['volume']).rolling(window=period).sum()
+        volume_sum = data['volume'].rolling(window=period).sum()
+        vwap = volume_price / volume_sum
+        
+        # Calculate VWAP standard deviation
+        price_variance = ((typical_price - vwap) ** 2 * data['volume']).rolling(window=period).sum()
+        vwap_variance = price_variance / volume_sum
+        vwap_std = np.sqrt(vwap_variance)
+        
+        # Price distance from VWAP
+        vwap_distance = typical_price - vwap
+        vwap_distance_pct = (vwap_distance / vwap) * 100
+        vwap_distance_std = vwap_distance / vwap_std
+        
+        # VWAP slope (trend indicator)
+        vwap_slope = vwap.diff(periods=5)
+        vwap_slope_ma = vwap_slope.rolling(window=3).mean()
+        
+        # Volume-weighted price momentum
+        vw_momentum = ((data['close'] / data['close'].shift(5) - 1) * data['volume']).rolling(window=10).sum() / data['volume'].rolling(window=10).sum()
+        
+        return {
+            'vwap': vwap,
+            'vwap_std': vwap_std,
+            'vwap_distance': vwap_distance,
+            'vwap_distance_pct': vwap_distance_pct,
+            'vwap_distance_std': vwap_distance_std,
+            'vwap_slope': vwap_slope,
+            'vwap_slope_ma': vwap_slope_ma,
+            'vw_momentum': vw_momentum,
+            'typical_price': typical_price
+        }
+    
+    def _calculate_vwap_bands(self, data: pd.DataFrame, vwap_indicators: Dict[str, pd.Series], 
+                            multiplier: float) -> Dict[str, pd.Series]:
+        """Calculate VWAP standard deviation bands.
+        
+        Args:
+            data: OHLCV data
+            vwap_indicators: Dictionary of VWAP indicators
+            multiplier: Standard deviation multiplier
+            
+        Returns:
+            Dictionary of VWAP bands
+        """
+        vwap = vwap_indicators['vwap']
+        vwap_std = vwap_indicators['vwap_std']
+        
+        # VWAP bands
+        vwap_upper_1 = vwap + (vwap_std * 1.0)
+        vwap_lower_1 = vwap - (vwap_std * 1.0)
+        vwap_upper_2 = vwap + (vwap_std * multiplier)
+        vwap_lower_2 = vwap - (vwap_std * multiplier)
+        
+        # Extreme bands
+        vwap_upper_extreme = vwap + (vwap_std * multiplier * 1.5)
+        vwap_lower_extreme = vwap - (vwap_std * multiplier * 1.5)
+        
+        # Band width (volatility indicator)
+        band_width = (vwap_upper_2 - vwap_lower_2) / vwap * 100
+        band_width_ma = band_width.rolling(window=20).mean()
+        
+        # Band position (where price is within bands)
+        band_position = (data['close'] - vwap_lower_2) / (vwap_upper_2 - vwap_lower_2)
+        
+        return {
+            'vwap_upper_1': vwap_upper_1,
+            'vwap_lower_1': vwap_lower_1,
+            'vwap_upper_2': vwap_upper_2,
+            'vwap_lower_2': vwap_lower_2,
+            'vwap_upper_extreme': vwap_upper_extreme,
+            'vwap_lower_extreme': vwap_lower_extreme,
+            'band_width': band_width,
+            'band_width_ma': band_width_ma,
+            'band_position': band_position
+        }
+    
+    def _calculate_volume_indicators(self, data: pd.DataFrame) -> Dict[str, pd.Series]:
+        """Calculate volume-based indicators.
+        
+        Args:
+            data: OHLCV data
+            
+        Returns:
+            Dictionary of volume indicators
+        """
+        if 'volume' not in data.columns:
+            # Return default indicators if no volume data
+            return {
+                'volume_ma': pd.Series(1.0, index=data.index),
+                'volume_ratio': pd.Series(1.0, index=data.index),
+                'volume_trend': pd.Series(True, index=data.index),
+                'high_volume': pd.Series(False, index=data.index),
+                'low_volume': pd.Series(False, index=data.index)
+            }
+        
+        # Volume moving averages
+        volume_ma_short = data['volume'].rolling(window=10).mean()
+        volume_ma_long = data['volume'].rolling(window=50).mean()
+        
+        # Volume ratio (current vs average)
+        volume_ratio = data['volume'] / volume_ma_short
+        
+        # Volume trend
+        volume_trend = volume_ma_short > volume_ma_long
+        
+        # Volume extremes
+        volume_percentile = data['volume'].rolling(window=100).rank(pct=True)
+        high_volume = volume_percentile > 0.8
+        low_volume = volume_percentile < 0.2
+        
+        # Volume oscillator
+        volume_oscillator = (volume_ma_short - volume_ma_long) / volume_ma_long * 100
+        
+        # On-Balance Volume approximation
+        obv = (data['close'].diff() > 0).astype(int) * data['volume'] - (data['close'].diff() < 0).astype(int) * data['volume']
+        obv_cumulative = obv.cumsum()
+        obv_ma = obv_cumulative.rolling(window=20).mean()
+        
+        return {
+            'volume_ma': volume_ma_short,
+            'volume_ma_long': volume_ma_long,
+            'volume_ratio': volume_ratio,
+            'volume_trend': volume_trend,
+            'high_volume': high_volume,
+            'low_volume': low_volume,
+            'volume_oscillator': volume_oscillator,
+            'obv': obv_cumulative,
+            'obv_ma': obv_ma
+        }
+    
+    def _calculate_multi_timeframe_vwap(self, data: pd.DataFrame, base_period: int) -> Dict[str, pd.Series]:
+        """Calculate multi-timeframe VWAP for confirmation.
+        
+        Args:
+            data: OHLCV data
+            base_period: Base VWAP period
+            
+        Returns:
+            Dictionary of multi-timeframe VWAP indicators
+        """
+        # Handle missing volume data
+        if 'volume' not in data.columns:
+            data = data.copy()
+            data['volume'] = 1.0
+        
+        typical_price = (data['high'] + data['low'] + data['close']) / 3
+        
+        # Short-term VWAP
+        short_period = max(5, base_period // 2)
+        short_vp = (typical_price * data['volume']).rolling(window=short_period).sum()
+        short_v = data['volume'].rolling(window=short_period).sum()
+        vwap_short = short_vp / short_v
+        
+        # Long-term VWAP
+        long_period = min(500, base_period * 2)
+        long_vp = (typical_price * data['volume']).rolling(window=long_period).sum()
+        long_v = data['volume'].rolling(window=long_period).sum()
+        vwap_long = long_vp / long_v
+        
+        # VWAP relationships
+        price_above_short_vwap = data['close'] > vwap_short
+        price_above_long_vwap = data['close'] > vwap_long
+        short_above_long_vwap = vwap_short > vwap_long
+        
+        # Multi-timeframe alignment
+        mtf_bullish_alignment = price_above_short_vwap & price_above_long_vwap & short_above_long_vwap
+        mtf_bearish_alignment = ~price_above_short_vwap & ~price_above_long_vwap & ~short_above_long_vwap
+        
+        return {
+            'vwap_short': vwap_short,
+            'vwap_long': vwap_long,
+            'price_above_short_vwap': price_above_short_vwap,
+            'price_above_long_vwap': price_above_long_vwap,
+            'short_above_long_vwap': short_above_long_vwap,
+            'mtf_bullish_alignment': mtf_bullish_alignment,
+            'mtf_bearish_alignment': mtf_bearish_alignment
+        }
+    
+    def _calculate_reversion_signals(self, data: pd.DataFrame, vwap_indicators: Dict[str, pd.Series],
+                                   vwap_bands: Dict[str, pd.Series]) -> Dict[str, pd.Series]:
+        """Calculate mean reversion signals.
+        
+        Args:
+            data: OHLCV data
+            vwap_indicators: VWAP indicators
+            vwap_bands: VWAP bands
+            
+        Returns:
+            Dictionary of reversion signals
+        """
+        # Price positions relative to bands
+        price_above_upper_1 = data['close'] > vwap_bands['vwap_upper_1']
+        price_below_lower_1 = data['close'] < vwap_bands['vwap_lower_1']
+        price_above_upper_2 = data['close'] > vwap_bands['vwap_upper_2']
+        price_below_lower_2 = data['close'] < vwap_bands['vwap_lower_2']
+        price_above_extreme = data['close'] > vwap_bands['vwap_upper_extreme']
+        price_below_extreme = data['close'] < vwap_bands['vwap_lower_extreme']
+        
+        # Reversion conditions
+        oversold_reversion = price_below_lower_2 & (data['close'] > data['close'].shift(1))
+        overbought_reversion = price_above_upper_2 & (data['close'] < data['close'].shift(1))
+        
+        # Extreme reversion conditions
+        extreme_oversold = price_below_extreme
+        extreme_overbought = price_above_extreme
+        
+        # VWAP convergence (price moving back toward VWAP)
+        distance_std = vwap_indicators['vwap_distance_std']
+        convergence_signal = (
+            (distance_std > 1.5) & 
+            (abs(distance_std) < abs(distance_std.shift(2)))
+        )
+        
+        # Band squeeze (low volatility before reversion)
+        band_squeeze = vwap_bands['band_width'] < vwap_bands['band_width_ma'] * 0.8
+        
+        return {
+            'price_above_upper_1': price_above_upper_1,
+            'price_below_lower_1': price_below_lower_1,
+            'price_above_upper_2': price_above_upper_2,
+            'price_below_lower_2': price_below_lower_2,
+            'price_above_extreme': price_above_extreme,
+            'price_below_extreme': price_below_extreme,
+            'oversold_reversion': oversold_reversion,
+            'overbought_reversion': overbought_reversion,
+            'extreme_oversold': extreme_oversold,
+            'extreme_overbought': extreme_overbought,
+            'convergence_signal': convergence_signal,
+            'band_squeeze': band_squeeze
+        }
+    
+    def _calculate_regime_indicators(self, data: pd.DataFrame, vwap_indicators: Dict[str, pd.Series],
+                                   volume_indicators: Dict[str, pd.Series]) -> Dict[str, pd.Series]:
+        """Calculate regime detection indicators (trending vs mean-reverting).
+        
+        Args:
+            data: OHLCV data
+            vwap_indicators: VWAP indicators
+            volume_indicators: Volume indicators
+            
+        Returns:
+            Dictionary of regime indicators
+        """
+        # VWAP slope analysis for trend detection
+        vwap_slope = vwap_indicators['vwap_slope']
+        vwap_slope_ma = vwap_indicators['vwap_slope_ma']
+        
+        # Trending regime indicators
+        strong_vwap_trend = abs(vwap_slope_ma) > vwap_indicators['vwap_std'] * 0.1
+        vwap_trending_up = vwap_slope_ma > vwap_indicators['vwap_std'] * 0.1
+        vwap_trending_down = vwap_slope_ma < -vwap_indicators['vwap_std'] * 0.1
+        
+        # Mean-reverting regime indicators
+        vwap_sideways = abs(vwap_slope_ma) < vwap_indicators['vwap_std'] * 0.05
+        
+        # Volume-based regime detection
+        volume_breakout = volume_indicators['volume_ratio'] > 2.0
+        volume_exhaustion = volume_indicators['volume_ratio'] < 0.5
+        
+        # Price vs VWAP persistence (trending characteristic)
+        price_above_vwap = data['close'] > vwap_indicators['vwap']
+        vwap_persistence = price_above_vwap.rolling(window=20).mean()
+        persistent_trend = (vwap_persistence > 0.7) | (vwap_persistence < 0.3)
+        
+        # Regime classification
+        trending_regime = strong_vwap_trend | persistent_trend
+        reverting_regime = vwap_sideways & ~persistent_trend
+        
+        return {
+            'strong_vwap_trend': strong_vwap_trend,
+            'vwap_trending_up': vwap_trending_up,
+            'vwap_trending_down': vwap_trending_down,
+            'vwap_sideways': vwap_sideways,
+            'volume_breakout': volume_breakout,
+            'volume_exhaustion': volume_exhaustion,
+            'vwap_persistence': vwap_persistence,
+            'persistent_trend': persistent_trend,
+            'trending_regime': trending_regime,
+            'reverting_regime': reverting_regime
+        }
+    
+    def _calculate_institutional_flow(self, data: pd.DataFrame, 
+                                    vwap_indicators: Dict[str, pd.Series]) -> Dict[str, pd.Series]:
+        """Calculate institutional flow indicators.
+        
+        Args:
+            data: OHLCV data
+            vwap_indicators: VWAP indicators
+            
+        Returns:
+            Dictionary of institutional flow indicators
+        """
+        if 'volume' not in data.columns:
+            # Return default indicators if no volume data
+            return {
+                'institutional_buying': pd.Series(False, index=data.index),
+                'institutional_selling': pd.Series(False, index=data.index),
+                'smart_money_flow': pd.Series(0.0, index=data.index),
+                'retail_exhaustion': pd.Series(False, index=data.index)
+            }
+        
+        # Institutional buying: price above VWAP with high volume
+        institutional_buying = (
+            (data['close'] > vwap_indicators['vwap']) &
+            (data['volume'] > data['volume'].rolling(window=20).mean() * 1.5) &
+            (data['close'] > data['open'])  # Up day
+        )
+        
+        # Institutional selling: price below VWAP with high volume
+        institutional_selling = (
+            (data['close'] < vwap_indicators['vwap']) &
+            (data['volume'] > data['volume'].rolling(window=20).mean() * 1.5) &
+            (data['close'] < data['open'])  # Down day
+        )
+        
+        # Smart money flow (volume-weighted price movement)
+        price_change = data['close'].pct_change()
+        volume_weight = data['volume'] / data['volume'].rolling(window=20).mean()
+        smart_money_flow = (price_change * volume_weight).rolling(window=10).sum()
+        
+        # Retail exhaustion (high volume but price not following)
+        retail_exhaustion = (
+            (data['volume'] > data['volume'].rolling(window=50).quantile(0.9)) &
+            (abs(price_change) < data['close'].pct_change().rolling(window=20).std())
+        )
+        
+        return {
+            'institutional_buying': institutional_buying,
+            'institutional_selling': institutional_selling,
+            'smart_money_flow': smart_money_flow,
+            'retail_exhaustion': retail_exhaustion
+        }
+    
+    def generate_signals(self, data: pd.DataFrame) -> pd.Series:
+        """Generate VWAP reversion trading signals.
+        
+        Args:
+            data: OHLCV market data
+            
+        Returns:
+            Series of trading signals: 1 (buy), 0 (hold), -1 (sell)
+        """
+        # Calculate technical indicators
+        indicators = self.calculate_technical_indicators(data)
+        
+        # Get genetic parameters
+        reversion_threshold = self.genes.parameters['reversion_threshold']
+        volume_confirmation = self.genes.parameters['volume_confirmation']
+        regime_weight = self.genes.parameters['regime_detection_weight']
+        
+        # Initialize signals
+        signals = pd.Series(0.0, index=data.index)
+        
+        # Signal 1: Mean reversion signals
+        reversion_signals = self._generate_reversion_signals(indicators, reversion_threshold)
+        
+        # Signal 2: Volume confirmation signals
+        volume_signals = self._generate_volume_confirmation_signals(indicators, volume_confirmation)
+        
+        # Signal 3: Multi-timeframe VWAP signals
+        mtf_signals = self._generate_multi_timeframe_signals(indicators)
+        
+        # Signal 4: Institutional flow signals
+        institutional_signals = self._generate_institutional_signals(indicators)
+        
+        # Combine signals with regime weighting
+        base_signals = (
+            reversion_signals * 0.4 +
+            volume_signals * 0.25 +
+            mtf_signals * 0.2 +
+            institutional_signals * 0.15
+        )
+        
+        # Apply regime-based adjustments
+        signals = self._apply_regime_adjustments(base_signals, indicators, regime_weight)
+        
+        # Ensure signals are within valid range
+        signals = signals.clip(-1.0, 1.0)
+        
+        # Fill any NaN values
+        signals = signals.fillna(0)
+        
+        return signals
+    
+    def _generate_reversion_signals(self, indicators: Dict[str, pd.Series], 
+                                  threshold: float) -> pd.Series:
+        """Generate mean reversion signals.
+        
+        Args:
+            indicators: Dictionary of calculated indicators
+            threshold: Reversion threshold in standard deviations
+            
+        Returns:
+            Reversion signals
+        """
+        signals = pd.Series(0.0, index=indicators['vwap'].index)
+        
+        # Standard deviation based signals
+        distance_std = indicators['vwap_distance_std']
+        
+        # Oversold reversion (price below VWAP, turning up)
+        oversold_conditions = (
+            (distance_std < -threshold) &
+            indicators['oversold_reversion']
+        )
+        
+        # Overbought reversion (price above VWAP, turning down)
+        overbought_conditions = (
+            (distance_std > threshold) &
+            indicators['overbought_reversion']
+        )
+        
+        # Extreme reversion signals
+        extreme_oversold = indicators['extreme_oversold']
+        extreme_overbought = indicators['extreme_overbought']
+        
+        # Calculate signal strength based on distance and reversion confirmation
+        oversold_strength = np.where(
+            extreme_oversold,
+            np.minimum(1.0, abs(distance_std) * 0.3),
+            np.where(
+                oversold_conditions,
+                np.minimum(0.8, abs(distance_std) * 0.2),
+                0.0
+            )
+        )
+        
+        overbought_strength = np.where(
+            extreme_overbought,
+            -np.minimum(1.0, abs(distance_std) * 0.3),
+            np.where(
+                overbought_conditions,
+                -np.minimum(0.8, abs(distance_std) * 0.2),
+                0.0
+            )
+        )
+        
+        signals = pd.Series(oversold_strength + overbought_strength, 
+                          index=indicators['vwap'].index)
+        
+        return signals
+    
+    def _generate_volume_confirmation_signals(self, indicators: Dict[str, pd.Series],
+                                            confirmation_threshold: float) -> pd.Series:
+        """Generate volume confirmation signals.
+        
+        Args:
+            indicators: Dictionary of calculated indicators
+            confirmation_threshold: Volume confirmation threshold
+            
+        Returns:
+            Volume-confirmed signals
+        """
+        signals = pd.Series(0.0, index=indicators['vwap'].index)
+        
+        # Volume confirmation conditions
+        volume_confirmed = indicators['volume_ratio'] > confirmation_threshold
+        high_volume = indicators['high_volume']
+        
+        # Reversion with volume confirmation
+        oversold_with_volume = (
+            indicators['oversold_reversion'] &
+            volume_confirmed
+        )
+        
+        overbought_with_volume = (
+            indicators['overbought_reversion'] &
+            volume_confirmed
+        )
+        
+        # Institutional flow confirmation
+        institutional_buying = indicators['institutional_buying']
+        institutional_selling = indicators['institutional_selling']
+        
+        # Volume-confirmed signal strength
+        volume_bull_strength = np.where(
+            oversold_with_volume | institutional_buying,
+            np.minimum(0.7, indicators['volume_ratio'] * 0.3),
+            0.0
+        )
+        
+        volume_bear_strength = np.where(
+            overbought_with_volume | institutional_selling,
+            -np.minimum(0.7, indicators['volume_ratio'] * 0.3),
+            0.0
+        )
+        
+        signals = pd.Series(volume_bull_strength + volume_bear_strength,
+                          index=indicators['vwap'].index)
+        
+        return signals
+    
+    def _generate_multi_timeframe_signals(self, indicators: Dict[str, pd.Series]) -> pd.Series:
+        """Generate multi-timeframe VWAP signals.
+        
+        Args:
+            indicators: Dictionary of calculated indicators
+            
+        Returns:
+            Multi-timeframe signals
+        """
+        signals = pd.Series(0.0, index=indicators['vwap'].index)
+        
+        # Multi-timeframe alignment
+        mtf_bullish = indicators['mtf_bullish_alignment']
+        mtf_bearish = indicators['mtf_bearish_alignment']
+        
+        # VWAP convergence with multi-timeframe confirmation
+        convergence = indicators['convergence_signal']
+        
+        # Multi-timeframe confirmed signals
+        mtf_bull_signals = mtf_bullish & convergence & indicators['price_below_lower_1']
+        mtf_bear_signals = mtf_bearish & convergence & indicators['price_above_upper_1']
+        
+        # Signal strength based on alignment quality
+        mtf_bull_strength = np.where(mtf_bull_signals, 0.6, 0.0)
+        mtf_bear_strength = np.where(mtf_bear_signals, -0.6, 0.0)
+        
+        signals = pd.Series(mtf_bull_strength + mtf_bear_strength,
+                          index=indicators['vwap'].index)
+        
+        return signals
+    
+    def _generate_institutional_signals(self, indicators: Dict[str, pd.Series]) -> pd.Series:
+        """Generate institutional flow signals.
+        
+        Args:
+            indicators: Dictionary of calculated indicators
+            
+        Returns:
+            Institutional flow signals
+        """
+        signals = pd.Series(0.0, index=indicators['vwap'].index)
+        
+        # Smart money flow
+        smart_money = indicators['smart_money_flow']
+        
+        # Retail exhaustion signals
+        retail_exhaustion = indicators['retail_exhaustion']
+        
+        # Institutional buying/selling pressure
+        institutional_buying = indicators['institutional_buying']
+        institutional_selling = indicators['institutional_selling']
+        
+        # Smart money divergence signals
+        smart_money_bull = (smart_money > smart_money.rolling(window=20).quantile(0.7))
+        smart_money_bear = (smart_money < smart_money.rolling(window=20).quantile(0.3))
+        
+        # Institutional signal strength
+        institutional_bull_strength = np.where(
+            (institutional_buying & indicators['price_below_lower_2']) | smart_money_bull,
+            0.5,
+            0.0
+        )
+        
+        institutional_bear_strength = np.where(
+            (institutional_selling & indicators['price_above_upper_2']) | smart_money_bear,
+            -0.5,
+            0.0
+        )
+        
+        signals = pd.Series(institutional_bull_strength + institutional_bear_strength,
+                          index=indicators['vwap'].index)
+        
+        return signals
+    
+    def _apply_regime_adjustments(self, signals: pd.Series, indicators: Dict[str, pd.Series],
+                                regime_weight: float) -> pd.Series:
+        """Apply regime-based adjustments to signals.
+        
+        Args:
+            signals: Base signals
+            indicators: Dictionary of indicators
+            regime_weight: Weight for regime adjustments
+            
+        Returns:
+            Regime-adjusted signals
+        """
+        adjusted_signals = signals.copy()
+        
+        # Get regime indicators
+        trending_regime = indicators['trending_regime']
+        reverting_regime = indicators['reverting_regime']
+        
+        # Regime adjustments
+        for i in range(len(signals)):
+            if abs(signals.iloc[i]) > 0.1:  # Significant signal
+                current_signal = signals.iloc[i]
+                
+                # In trending regime: reduce reversion signals
+                if trending_regime.iloc[i]:
+                    adjusted_signals.iloc[i] = current_signal * (1 - regime_weight * 0.4)
+                
+                # In reverting regime: enhance reversion signals
+                elif reverting_regime.iloc[i]:
+                    adjusted_signals.iloc[i] = current_signal * (1 + regime_weight * 0.3)
+        
+        return adjusted_signals.clip(-1.0, 1.0)
+    
+    def get_vwap_regime(self, data: pd.DataFrame) -> str:
+        """Identify current VWAP regime.
+        
+        Args:
+            data: OHLCV market data
+            
+        Returns:
+            String describing current VWAP regime
+        """
+        indicators = self.calculate_technical_indicators(data)
+        
+        if len(data) == 0:
+            return "unknown"
+        
+        trending = indicators['trending_regime'].iloc[-1]
+        reverting = indicators['reverting_regime'].iloc[-1]
+        distance_std = indicators['vwap_distance_std'].iloc[-1]
+        
+        if trending:
+            if distance_std > 1:
+                return "trending_extended"
+            else:
+                return "trending"
+        elif reverting:
+            if abs(distance_std) > 2:
+                return "reverting_extreme"
+            else:
+                return "reverting"
+        else:
+            return "neutral"
+    
+    def calculate_position_size(self, data: pd.DataFrame, signal: float) -> float:
+        """Calculate position size based on VWAP conditions.
+        
+        Args:
+            data: Current market data
+            signal: Signal strength (-1 to 1)
+            
+        Returns:
+            Position size as percentage of capital
+        """
+        if abs(signal) < self.genes.filter_threshold:
+            return 0.0
+        
+        # Get VWAP conditions
+        indicators = self.calculate_technical_indicators(data)
+        
+        if len(data) == 0:
+            return 0.0
+        
+        distance_std = abs(indicators['vwap_distance_std'].iloc[-1])
+        volume_ratio = indicators['volume_ratio'].iloc[-1]
+        
+        # Base position size from genes
+        base_size = self.genes.position_size
+        
+        # Adjust based on VWAP distance (larger positions for extreme deviations)
+        distance_adjustment = max(0.5, min(1.5, distance_std / 2))
+        
+        # Adjust based on volume confirmation
+        volume_adjustment = max(0.7, min(1.3, volume_ratio))
+        
+        # Adjust for signal strength
+        signal_adjustment = abs(signal)
+        
+        # Calculate final position size
+        position_size = base_size * signal_adjustment * distance_adjustment * volume_adjustment
+        
+        # Apply maximum position size limit
+        max_size = self.settings.trading.max_position_size
+        return min(position_size, max_size)
+    
+    def __str__(self) -> str:
+        """String representation with genetic parameters."""
+        vwap_period = self.genes.parameters.get('vwap_period', 50)
+        reversion_threshold = self.genes.parameters.get('reversion_threshold', 1.5)
+        volume_confirmation = self.genes.parameters.get('volume_confirmation', 1.2)
+        
+        fitness_str = f" (fitness={self.fitness.composite_fitness:.3f})" if self.fitness else ""
+        return f"VWAP({vwap_period:.0f},{reversion_threshold:.1f})[{volume_confirmation:.1f}]{fitness_str}"

@@ -97,6 +97,9 @@ class TradingConfig(BaseModel):
     
     # Strategy Correlation Limits
     max_strategy_correlation: float = Field(default=0.7, ge=0.1, le=0.95)
+    
+    # Data Processing
+    bar_duration_minutes: int = Field(default=1, ge=1, le=1440)  # 1 minute to 1 day bars
 
 
 class GeneticAlgorithmConfig(BaseModel):
