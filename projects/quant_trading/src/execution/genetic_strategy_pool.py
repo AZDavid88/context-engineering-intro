@@ -157,12 +157,12 @@ if RAY_AVAILABLE:
             from src.strategy.genetic_seeds.seed_registry import get_registry
             
             registry = get_registry()
-            available_seeds = registry.get_seeds_by_type(seed_type)
-            if not available_seeds:
+            available_seed_names = registry._type_index[seed_type]
+            if not available_seed_names:
                 raise ValueError(f"No seeds available for type {seed_type}")
             
-            # Use first available seed of this type
-            seed_name = list(available_seeds.keys())[0]
+            # Use first available seed name of this type
+            seed_name = available_seed_names[0]
             seed_instance = registry.create_seed_instance(seed_name, genes)
             
             # Run backtesting evaluation - generate signals and calculate fitness
@@ -306,6 +306,14 @@ class GeneticStrategyPool:
         self.current_generation = 0
         logger.info(f"Initialized population of {len(self.population)} individuals")
         
+        # ANTI-HALLUCINATION: Smart validation with innovation tolerance
+        validation_result = self._validate_population_with_tolerance()
+        if validation_result['critical_failures'] > 0:
+            raise RuntimeError(f"Critical validation failed: {validation_result['critical_failures']} individuals with fatal errors")
+        
+        if validation_result['warnings'] > 0:
+            logger.warning(f"Population initialized with {validation_result['warnings']} tolerance warnings (acceptable for genetic diversity)")
+        
         return len(self.population)
     
     async def evolve_strategies(
@@ -386,13 +394,13 @@ class GeneticStrategyPool:
         
         try:
             # Create seed instance from registry  
-            # Need to get seed name from registry for the seed type
-            available_seeds = self.seed_registry.get_seeds_by_type(individual.seed_type)
-            if not available_seeds:
+            # Get seed names directly from the type index (returns List[str])
+            available_seed_names = self.seed_registry._type_index[individual.seed_type]
+            if not available_seed_names:
                 raise ValueError(f"No seeds available for type {individual.seed_type}")
             
-            # Use first available seed of this type
-            seed_name = list(available_seeds.keys())[0]
+            # Use first available seed name of this type
+            seed_name = available_seed_names[0]
             seed_instance = self.seed_registry.create_seed_instance(seed_name, individual.genes)
             
             # Run fitness evaluation - generate signals and calculate fitness
@@ -617,33 +625,50 @@ class GeneticStrategyPool:
         return Individual(seed_type=individual.seed_type, genes=mutated_genes)
     
     def _generate_random_genes(self, seed_type: SeedType, generation: int) -> SeedGenes:
-        """Generate random genes for initial population."""
-        # Generate default parameters based on seed type
-        # This is a simplified parameter generation for the genetic algorithm
+        """Generate random genes using actual seed parameter bounds (research-driven approach)."""
+        # Get actual seed classes for this type using registry
+        available_seed_names = self.seed_registry._type_index[seed_type]
+        if not available_seed_names:
+            raise ValueError(f"No seeds available for type {seed_type}")
         
+        # Use first available seed to get parameter requirements
+        seed_name = available_seed_names[0]
+        seed_class = self.seed_registry.get_seed_class(seed_name)
+        if not seed_class:
+            raise ValueError(f"Could not get seed class for {seed_name}")
+        
+        # Create dummy instance to get parameter bounds
+        dummy_genes = SeedGenes(
+            seed_id="bounds_check",
+            seed_type=seed_type,
+            generation=0,
+            parameters={}
+        )
+        
+        try:
+            dummy_instance = seed_class(dummy_genes, self.seed_registry.settings)
+            parameter_bounds = dummy_instance.parameter_bounds
+            required_params = dummy_instance.required_parameters
+        except Exception as e:
+            # Fallback to default bounds if seed creation fails
+            logger.warning(f"Could not get bounds for {seed_name}: {e}")
+            parameter_bounds = {
+                'lookback_period': (10.0, 50.0),
+                'entry_threshold': (0.1, 0.9),
+                'exit_threshold': (0.1, 0.9)
+            }
+            required_params = list(parameter_bounds.keys())
+        
+        # Generate parameters within actual bounds
         parameters = {}
-        
-        # Common parameters for all seed types
-        parameters['lookback_period'] = random.randint(10, 50)
-        parameters['entry_threshold'] = random.uniform(0.1, 0.9)
-        parameters['exit_threshold'] = random.uniform(0.1, 0.9)
-        parameters['position_size'] = random.uniform(0.01, 0.1)
-        parameters['stop_loss'] = random.uniform(0.01, 0.05)
-        parameters['take_profit'] = random.uniform(0.02, 0.1)
-        
-        # Seed type specific parameters
-        if seed_type == SeedType.MOMENTUM:
-            parameters['momentum_period'] = random.randint(5, 30)
-            parameters['momentum_threshold'] = random.uniform(0.01, 0.05)
-        elif seed_type == SeedType.MEAN_REVERSION:
-            parameters['deviation_threshold'] = random.uniform(1.0, 3.0)
-            parameters['reversion_period'] = random.randint(10, 100)
-        elif seed_type == SeedType.BREAKOUT:
-            parameters['breakout_period'] = random.randint(10, 50)
-            parameters['breakout_threshold'] = random.uniform(0.5, 2.0)
-        elif seed_type == SeedType.VOLATILITY:
-            parameters['volatility_period'] = random.randint(10, 30)
-            parameters['volatility_threshold'] = random.uniform(0.01, 0.03)
+        for param_name, (min_val, max_val) in parameter_bounds.items():
+            if param_name in required_params:
+                # Required parameter - must be generated
+                parameters[param_name] = random.uniform(min_val, max_val)
+            else:
+                # Optional parameter - generate with 70% probability
+                if random.random() < 0.7:
+                    parameters[param_name] = random.uniform(min_val, max_val)
         
         return SeedGenes(
             seed_id=f"init_{generation}_{random.randint(1000, 9999)}",
@@ -651,6 +676,88 @@ class GeneticStrategyPool:
             generation=generation,
             parameters=parameters
         )
+    
+    def _validate_population_with_tolerance(self) -> Dict[str, int]:
+        """
+        Smart validation with innovation tolerance.
+        
+        CRITICAL FAILURES: Block deployment (missing required params, invalid seed types)
+        WARNINGS: Log but allow (parameters slightly outside bounds, novel combinations)
+        
+        Returns:
+            Dict with 'critical_failures' and 'warnings' counts
+        """
+        critical_failures = 0
+        warnings = 0
+        
+        for individual in self.population:
+            try:
+                # Get seed requirements for validation
+                available_seed_names = self.seed_registry._type_index[individual.seed_type]
+                if not available_seed_names:
+                    logger.error(f"CRITICAL: No seeds available for type {individual.seed_type}")
+                    critical_failures += 1
+                    continue
+                
+                seed_name = available_seed_names[0]
+                seed_class = self.seed_registry.get_seed_class(seed_name)
+                if not seed_class:
+                    logger.error(f"CRITICAL: Cannot load seed class for {seed_name}")
+                    critical_failures += 1
+                    continue
+                
+                # Create dummy instance to check requirements
+                dummy_genes = SeedGenes(
+                    seed_id="validation",
+                    seed_type=individual.seed_type,
+                    generation=0,
+                    parameters={}
+                )
+                
+                try:
+                    dummy_instance = seed_class(dummy_genes, self.seed_registry.settings)
+                    required_params = dummy_instance.required_parameters
+                    parameter_bounds = dummy_instance.parameter_bounds
+                except Exception as e:
+                    logger.error(f"CRITICAL: Cannot create seed instance for validation: {e}")
+                    critical_failures += 1
+                    continue
+                
+                # CHECK 1: Required parameters (CRITICAL - must have)
+                missing_required = [p for p in required_params if p not in individual.genes.parameters]
+                if missing_required:
+                    logger.error(f"CRITICAL: Individual {individual.genes.seed_id} missing required parameters: {missing_required}")
+                    critical_failures += 1
+                    continue
+                
+                # CHECK 2: Parameter bounds (TOLERANT - allow genetic diversity)
+                for param_name, param_value in individual.genes.parameters.items():
+                    if param_name in parameter_bounds:
+                        min_val, max_val = parameter_bounds[param_name]
+                        
+                        # STRICT bounds for technical impossibilities
+                        strict_multiplier = 3.0  # Allow 3x outside bounds for genetic exploration
+                        if not (min_val / strict_multiplier <= param_value <= max_val * strict_multiplier):
+                            logger.error(f"CRITICAL: Parameter {param_name}={param_value} extremely outside bounds ({min_val}, {max_val})")
+                            critical_failures += 1
+                            break
+                        
+                        # TOLERANT bounds for normal genetic variation
+                        tolerant_multiplier = 1.5  # Warn if 1.5x outside bounds
+                        if not (min_val / tolerant_multiplier <= param_value <= max_val * tolerant_multiplier):
+                            logger.warning(f"TOLERANCE: Parameter {param_name}={param_value} outside normal bounds ({min_val}, {max_val}) - genetic diversity")
+                            warnings += 1
+                
+            except Exception as e:
+                logger.error(f"CRITICAL: Validation error for individual {individual.genes.seed_id}: {e}")
+                critical_failures += 1
+        
+        logger.info(f"Population validation: {critical_failures} critical failures, {warnings} tolerance warnings")
+        return {
+            'critical_failures': critical_failures,
+            'warnings': warnings,
+            'total_individuals': len(self.population)
+        }
     
     def _calculate_generation_metrics(self, generation: int, evaluation_time: float) -> EvolutionMetrics:
         """Calculate metrics for current generation."""

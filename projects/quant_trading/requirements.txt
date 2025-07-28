@@ -8,7 +8,7 @@ pydantic-settings>=2.1.0
 python-dotenv>=1.0.0
 
 # Hyperliquid Integration - from V3 research
-hyperliquid-python-sdk>=1.0.0
+hyperliquid-python-sdk>=0.16.0
 websockets>=12.0
 aiohttp>=3.9.0
 requests>=2.31.0
@@ -24,15 +24,15 @@ deap>=1.4.1
 scoop>=0.7.1.1  # For distributed computing
 
 # Additional dependencies for AST strategy system
-talib>=0.4.0  # Technical analysis library (C extension)
+# talib>=0.4.0  # REMOVED: Package doesn't exist, use ta-lib instead (see line 35)
 scipy>=1.11.0  # Scientific computing for optimization
 
 # Backtesting Engine - Vectorbt research
 vectorbt>=0.26.0
 
-# Technical Analysis - Official pandas.pydata.org APIs (PRIMARY)
+# Technical Analysis - Using vectorbt built-in indicators (PRIMARY)
 # pandas-ta-openbb>=0.4.22  # DISABLED: importlib.metadata issues, fails import  
-ta-lib>=0.5.0  # Optional C library enhancement (pandas APIs are primary)
+# ta-lib>=0.5.0  # REMOVED: Optional dependency, vectorbt has built-in indicators
 
 # CLI & Monitoring - Rich/Textual
 rich>=13.7.0
@@ -77,8 +77,8 @@ ipython>=8.17.0
 cryptography>=41.0.8
 keyring>=24.3.0
 
-# Performance
-numba>=0.58.1  # For vectorbt acceleration
+# Performance  
+numba>=0.56.0,<0.57.0  # Compatible with vectorbt requirements
 bottleneck>=1.3.7  # Pandas performance
 
 # HTTP & API

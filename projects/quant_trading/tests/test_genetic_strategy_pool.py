@@ -118,8 +118,11 @@ def sample_market_data():
 
 @pytest.fixture
 def mock_seed_registry():
-    """Mock SeedRegistry with test seeds."""
+    """Mock SeedRegistry with production-realistic test seeds."""
     registry = Mock(spec=SeedRegistry)
+    
+    # Add settings attribute that production validation expects
+    registry.settings = get_settings()
     
     # Mock list_all_seeds to return proper format
     mock_seeds = {
@@ -132,7 +135,81 @@ def mock_seed_registry():
     registry.list_all_seeds.return_value = mock_seeds
     registry.get_seeds_by_type.return_value = [Mock(), Mock()]  # Return list of classes
     
-    # Mock seed instance with basic methods
+    # Mock _type_index for seed name lookup by type
+    from collections import defaultdict
+    registry._type_index = defaultdict(list)
+    registry._type_index[SeedType.MOMENTUM] = ['momentum_seed_1']
+    registry._type_index[SeedType.MEAN_REVERSION] = ['mean_reversion_seed_1']
+    registry._type_index[SeedType.BREAKOUT] = ['breakout_seed_1'] 
+    registry._type_index[SeedType.VOLATILITY] = ['volatility_seed_1']
+    
+    # Create production-realistic mock seed classes that can be instantiated
+    def create_mock_seed_class(seed_type, required_params, param_bounds):
+        """Create a mock seed class that behaves like a real seed for validation."""
+        class MockSeedClass:
+            def __init__(self, genes, settings):
+                self.genes = genes
+                self.settings = settings
+                self.required_parameters = required_params
+                self.parameter_bounds = param_bounds
+            
+            def generate_signals(self, market_data):
+                return pd.Series(
+                    [0, 1, -1, 0, 1] * 200,  # Sample signals
+                    index=pd.date_range('2024-01-01', periods=1000, freq='1h')
+                )
+        
+        return MockSeedClass
+    
+    # Create realistic mock seed classes for each type
+    mock_seed_classes = {
+        'momentum_seed_1': create_mock_seed_class(
+            SeedType.MOMENTUM,
+            ['fast_ema_period', 'slow_ema_period', 'momentum_threshold'],
+            {
+                'fast_ema_period': (5.0, 50.0),
+                'slow_ema_period': (20.0, 200.0), 
+                'momentum_threshold': (0.001, 0.1),
+                'signal_strength': (0.0, 1.0)
+            }
+        ),
+        'mean_reversion_seed_1': create_mock_seed_class(
+            SeedType.MEAN_REVERSION,
+            ['rsi_period', 'oversold_threshold', 'overbought_threshold'],
+            {
+                'rsi_period': (7.0, 35.0),
+                'oversold_threshold': (15.0, 35.0),
+                'overbought_threshold': (65.0, 85.0),
+                'operation_mode': (0.0, 1.0)
+            }
+        ),
+        'breakout_seed_1': create_mock_seed_class(
+            SeedType.BREAKOUT,
+            ['channel_period', 'breakout_threshold'],
+            {
+                'channel_period': (10.0, 100.0),
+                'breakout_threshold': (0.5, 3.0),
+                'volume_confirmation': (0.0, 1.0)
+            }
+        ),
+        'volatility_seed_1': create_mock_seed_class(
+            SeedType.VOLATILITY,
+            ['volatility_window', 'threshold_multiplier'],
+            {
+                'volatility_window': (10.0, 50.0),
+                'threshold_multiplier': (1.0, 4.0),
+                'regime_filter': (0.0, 1.0)
+            }
+        )
+    }
+    
+    # Mock get_seed_class to return the appropriate mock class
+    def mock_get_seed_class(seed_name):
+        return mock_seed_classes.get(seed_name)
+    
+    registry.get_seed_class.side_effect = mock_get_seed_class
+    
+    # Mock seed instance creation
     mock_seed_instance = Mock()
     mock_seed_instance.generate_signals.return_value = pd.Series(
         [0, 1, -1, 0, 1] * 200,  # Sample signals
@@ -378,15 +455,23 @@ class TestEvolutionCycles:
                 'error': None
             }
             
-            # Mock the evaluate_individual_distributed function in the module
+            # Mock the Ray evaluation system properly
             with patch.object(sys.modules['src.execution.genetic_strategy_pool'], 'evaluate_individual_distributed', create=True) as mock_eval:
-                mock_eval.remote.return_value = AsyncMock(return_value=mock_result)
+                # Mock the remote function to return a mock future
+                mock_future = Mock()
+                mock_eval.remote.return_value = mock_future
                 
+                # Create the pool
                 pool = GeneticStrategyPool(
                     connection_optimizer=mock_connection_optimizer,
                     evolution_config=evolution_config,
                     use_ray=True
                 )
+                
+                # Mock the _ray_get_async method to return our mock result
+                async def mock_ray_get_async(future):
+                    return mock_result
+                pool._ray_get_async = mock_ray_get_async
                 
                 # Initialize population
                 await pool.initialize_population()
