@@ -1,6 +1,4 @@
 
-
-
 from typing import Dict, List, Tuple
 import pandas as pd
 import numpy as np
@@ -9,85 +7,8 @@ from .base_seed import BaseSeed, SeedType, SeedGenes
 from .seed_registry import genetic_seed
 from src.config.settings import Settings, Optional
 
-
-
 from src.utils.pandas_compatibility import safe_fillna_false, safe_fillna_zero, safe_fillna
 
-    
-    
-    
-    
-    
-        
-        
-        
-    
-        
-            
-        
-        
-        
-        
-        
-    
-        
-            
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-    
-        
-            
-        
-        
-        
-        
-        
-    
-        
-            
-        
-        
-        
-        
-    
-        
-            
-        
-        
-        
-        
-        
-        
-    
-        
-            
-        
-        
-        
-        
-        
-    
-        
-            
-        
-        
-        
-        
-        
-        
-    
-        
 """
 EMA Crossover Genetic Seed - Seed #1
 This seed implements the Exponential Moving Average crossover strategy,
