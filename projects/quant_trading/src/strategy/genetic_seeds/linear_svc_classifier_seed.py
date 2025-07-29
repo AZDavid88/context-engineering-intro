@@ -254,10 +254,15 @@ class LinearSVCClassifierSeed(BaseSeed):
             momentum = data['close'].pct_change(5)
             predictions = pd.Series(np.where(momentum > 0, 1, -1), index=data.index)
         # Convert predictions to trading signals
-        signals = pd.Series(0, index=data.index)
+        signals = pd.Series(0.0, index=data.index)
+        
         if isinstance(predictions, pd.Series) and len(predictions) > 0:
             # Map predictions to signals: 1 -> buy, 0 -> sell
-            signals = predictions.map({1: 1, 0: -1}).fillna(0)
+            signals = predictions.map({1: 1.0, 0: -1.0, -1: -1.0}).fillna(0.0)
+        
+        # Apply safety filters
+        signals = safe_fillna_zero(signals)
+        
         return signals
     def _train_and_predict(self, X_train: pd.DataFrame, y_train: pd.Series, 
                           X_full: pd.DataFrame, regularization: float,

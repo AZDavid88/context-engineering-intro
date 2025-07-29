@@ -147,6 +147,7 @@ markers = [
     "genetic: marks tests related to genetic algorithms",
     "backtesting: marks tests related to backtesting",
     "data: marks tests related to data processing",
+    "performance: marks tests that measure performance metrics",
 ]
 asyncio_mode = "auto"
 

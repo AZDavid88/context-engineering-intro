@@ -204,34 +204,28 @@ class StochasticOscillatorSeed(BaseSeed):
             Crossover-based signals
         """
         signals = pd.Series(0.0, index=indicators['k_percent'].index)
-        # Bullish crossover in oversold zone
+        # Simplified crossover logic (following research pattern)
+        # Remove restrictive zone requirements - crossovers are valuable anywhere
         bullish_crossover = (
-            indicators['k_crosses_above_d'] &
-            indicators['oversold_zone'] &
-            (indicators['k_momentum'] > 0)  # %K gaining momentum
+            indicators['k_crosses_above_d'] |  # Basic crossover signal
+            (indicators['k_crosses_above_d'] & indicators['oversold_zone'])  # OR enhanced in oversold
         )
-        # Bearish crossover in overbought zone
         bearish_crossover = (
-            indicators['k_crosses_below_d'] &
-            indicators['overbought_zone'] &
-            (indicators['k_momentum'] < 0)  # %K losing momentum
+            indicators['k_crosses_below_d'] |  # Basic crossover signal  
+            (indicators['k_crosses_below_d'] & indicators['overbought_zone'])  # OR enhanced in overbought
         )
-        # Volume confirmation
+        # Volume and momentum as signal enhancers, not requirements
         volume_confirmed = indicators['volume_ratio'] >= 1.0
-        # Price momentum confirmation
         momentum_up = indicators['price_momentum'] > 0
         momentum_down = indicators['price_momentum'] < 0
-        # Generate buy signals
+        # Simplified signal generation - use OR logic for flexibility
         buy_conditions = (
-            bullish_crossover &
-            volume_confirmed &
-            momentum_up
+            bullish_crossover |  # Basic crossover
+            (bullish_crossover & volume_confirmed)  # OR volume-enhanced crossover
         )
-        # Generate sell signals
         sell_conditions = (
-            bearish_crossover &
-            volume_confirmed &
-            momentum_down
+            bearish_crossover |  # Basic crossover
+            (bearish_crossover & volume_confirmed)  # OR volume-enhanced crossover
         )
         # Calculate signal strength based on distance from extreme levels
         buy_strength = np.where(
@@ -277,17 +271,15 @@ class StochasticOscillatorSeed(BaseSeed):
             Zone-based signals
         """
         signals = pd.Series(0.0, index=indicators['k_percent'].index)
-        # Buy in oversold zone when %K starts turning up
+        # Simplified zone logic (following research pattern)
+        # Basic zone signals with optional momentum confirmation
         oversold_buy = (
-            indicators['oversold_zone'] &
-            (indicators['k_velocity'] > 0) &  # %K accelerating up
-            (indicators['d_momentum'] > 0)    # %D also turning up
+            indicators['oversold_zone'] |  # Basic oversold signal
+            (indicators['oversold_zone'] & (indicators['k_velocity'] > 0))  # OR momentum-confirmed
         )
-        # Sell in overbought zone when %K starts turning down
         overbought_sell = (
-            indicators['overbought_zone'] &
-            (indicators['k_velocity'] < 0) &  # %K accelerating down
-            (indicators['d_momentum'] < 0)    # %D also turning down
+            indicators['overbought_zone'] |  # Basic overbought signal
+            (indicators['overbought_zone'] & (indicators['k_velocity'] < 0))  # OR momentum-confirmed
         )
         # Signal strength based on how extreme the levels are
         buy_strength = np.where(

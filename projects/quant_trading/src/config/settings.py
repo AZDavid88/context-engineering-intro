@@ -50,8 +50,8 @@ class HyperliquidConfig(BaseModel):
     private_key: Optional[SecretStr] = None
     wallet_address: Optional[str] = None
     
-    # Rate Limiting - from research (200k orders/second)
-    max_requests_per_second: int = Field(default=100, ge=1, le=200000)
+    # Rate Limiting - from research (1200 requests per minute = 20 per second)
+    max_requests_per_second: int = Field(default=20, ge=1, le=200000)
     max_websocket_subscriptions: int = Field(default=50, ge=1, le=100)
     
     # Connection Settings

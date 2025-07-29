@@ -140,17 +140,18 @@ class DonchianBreakoutSeed(BaseSeed):
         trend_bias = self.genes.parameters['trend_bias']
         # Initialize signals
         signals = pd.Series(0.0, index=data.index)
-        # RESEARCH PATTERN: Breakout detection with multiplication factor
-        breakout_factor = 1.0 + breakout_threshold  # Convert threshold to multiplication factor
-        upper_breakout = data['close'] > (indicators['donchian_high'] * breakout_factor)
-        lower_breakout = data['close'] < (indicators['donchian_low'] * (2.0 - breakout_factor))
+        # RESEARCH PATTERN: Simple breakout detection (price > channel)
+        # Use threshold as additive buffer instead of multiplicative
+        upper_breakout = data['close'] > (indicators['donchian_high'] + breakout_threshold)
+        lower_breakout = data['close'] < (indicators['donchian_low'] - breakout_threshold)
         # RESEARCH PATTERN: Simple, clean signal generation
         # Generate buy signals (upper breakout) - research shows simple logic works best
         buy_signals = upper_breakout
         # Generate sell signals (lower breakout) 
         sell_signals = lower_breakout
-        # Apply minimal volume confirmation if specified
-        if volume_confirmation > 1.0:
+        # Simplified volume confirmation (following research pattern)
+        # Only apply volume filter if parameter is very high (> 2.0)
+        if volume_confirmation > 2.0:
             volume_filter = indicators['volume_ratio'] >= volume_confirmation
             buy_signals = buy_signals & volume_filter
             sell_signals = sell_signals & volume_filter

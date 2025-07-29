@@ -127,26 +127,19 @@ class EMACrossoverSeed(BaseSeed):
         trend_filter = self.genes.parameters['trend_filter']
         # Initialize signals
         signals = pd.Series(0, index=data.index)
-        # Basic crossover signals
+        # Ultra-simplified crossover signals (matching working seeds)
         crossover_up = (fast_ema > slow_ema) & (fast_ema.shift(1) <= slow_ema.shift(1))
         crossover_down = (fast_ema < slow_ema) & (fast_ema.shift(1) >= slow_ema.shift(1))
-        # Apply momentum filter
-        momentum_filter = abs(price_momentum) >= momentum_threshold
-        # Apply trend filter (ensure significant EMA spread)
-        trend_filter_condition = abs(ema_spread) >= trend_filter
-        # Volume confirmation (higher volume = stronger signal)
-        volume_confirmation = volume_ratio >= 1.0
-        # Generate buy signals (more practical logic)
+        
+        # Simple trend following (no complex filters)
         buy_conditions = (
-            crossover_up &
-            (momentum_filter | volume_confirmation) &  # Either momentum OR volume (not both)
-            trend_filter_condition
+            crossover_up |                          # EMA crossover up
+            (fast_ema > slow_ema * 1.005)          # Fast EMA significantly above slow
         )
-        # Generate sell signals (more practical logic)
+        
         sell_conditions = (
-            crossover_down &
-            (momentum_filter | volume_confirmation) &  # Either momentum OR volume (not both)
-            trend_filter_condition
+            crossover_down |                        # EMA crossover down  
+            (fast_ema < slow_ema * 0.995)          # Fast EMA significantly below slow
         )
         # Apply signal strength (fix: use actual signal_strength value)
         signals[buy_conditions] = 1.0  # Full strength buy signal

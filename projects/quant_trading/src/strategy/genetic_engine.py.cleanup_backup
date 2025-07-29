@@ -1,4 +1,6 @@
 
+
+
 import random
 import logging
 import multiprocessing
@@ -8,7 +10,9 @@ from enum import Enum
 import numpy as np
 import pandas as pd
 
+
 from src.utils.pandas_compatibility import safe_fillna_false, safe_fillna_zero, safe_fillna
+
 
 from src.strategy.genetic_seeds import SeedRegistry, get_registry, BaseSeed
 from src.strategy.genetic_seeds.base_seed import SeedGenes, SeedFitness, SeedType
@@ -18,6 +22,146 @@ from src.config.settings import get_settings, Settings
 
 from src.utils.pandas_compatibility import safe_fillna_false, safe_fillna_zero, safe_fillna
 
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+
+
+    
+        
+        
+        
+        
+        
+    
+        
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+    
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+            
+    
+        
+            
+    
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+    
+        
+            
+        
+        
+        
+    
+        
+            
+        
+        
+        
+    
+        
+        
+    
+        
+        
+        
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+            
+        
+        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+            
+            
+            
+            
+            
+        
+    
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+    
 """
 Genetic Evolution Engine - Core DEAP Integration
 This module implements the core genetic algorithm engine using DEAP framework
@@ -177,7 +321,7 @@ class GeneticEngine:
     def _create_random_individual(self) -> BaseSeed:
         """Create a random individual from available genetic seeds."""
         # Get available seed classes
-        seed_classes = self.seed_registry.list_all_seeds()
+        seed_classes = self.seed_registry.get_all_registered_seeds()
         if not seed_classes:
             raise ValueError("No genetic seeds registered")
         # Select random seed type

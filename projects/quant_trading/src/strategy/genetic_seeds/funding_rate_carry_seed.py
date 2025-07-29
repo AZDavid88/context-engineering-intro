@@ -64,11 +64,11 @@ class FundingRateCarrySeed(BaseSeed):
         # Initialize default parameters if not provided
         if not genes.parameters:
             genes.parameters = {
-                'funding_threshold': 0.001,    # 0.1% funding threshold
+                'funding_threshold': 0.0001,   # Lower threshold (following research min_funding=0 principle)
                 'carry_duration': 8.0,         # 8 hours default carry
-                'rate_momentum': 0.5,          # 50% momentum weight
-                'reversal_sensitivity': 0.7,   # 70% reversal sensitivity
-                'funding_persistence': 6.0     # 6 hours persistence
+                'rate_momentum': 0.3,          # Reduced momentum weight for more signals
+                'reversal_sensitivity': 0.8,   # Higher sensitivity (less restrictive)
+                'funding_persistence': 4.0     # Reduced persistence requirement
             }
         super().__init__(genes, settings)
     def calculate_technical_indicators(self, data: pd.DataFrame) -> Dict[str, pd.Series]:
@@ -154,25 +154,28 @@ class FundingRateCarrySeed(BaseSeed):
         funding_rate = indicators['funding_rate']
         funding_momentum = indicators['funding_momentum']
         reversal_strength = indicators['reversal_strength']
-        # Positive funding rate carry (short perpetual, earn funding)
+        # Simplified carry logic (following research pattern)
+        # Basic funding rate signals with optional persistence confirmation
         positive_carry_conditions = (
-            (funding_rate > funding_threshold) &  # High enough funding rate
-            (indicators['positive_persistence'] >= 2) &  # Persistent positive funding
-            (reversal_strength < reversal_sensitivity)  # No strong reversal signal
+            (funding_rate > funding_threshold) |  # Basic positive funding
+            (funding_rate > funding_threshold * 0.5) & (indicators['positive_persistence'] >= 2)  # OR persistence-confirmed
         )
-        # Negative funding rate carry (long perpetual, pay negative funding)
         negative_carry_conditions = (
-            (funding_rate < -funding_threshold) &  # High enough negative funding rate
-            (indicators['negative_persistence'] >= 2) &  # Persistent negative funding
-            (reversal_strength < reversal_sensitivity)  # No strong reversal signal
+            (funding_rate < -funding_threshold) |  # Basic negative funding
+            (funding_rate < -funding_threshold * 0.5) & (indicators['negative_persistence'] >= 2)  # OR persistence-confirmed
         )
-        # Apply momentum filter if genetic parameter > 0.3
+        # Apply momentum enhancement (not restriction) if genetic parameter > 0.3
         if rate_momentum > 0.3:
-            # Strengthen signals when momentum aligns
+            # Enhance signals when momentum aligns, but don't restrict
             momentum_boost_positive = funding_momentum > 0
             momentum_boost_negative = funding_momentum < 0
-            positive_carry_conditions = positive_carry_conditions & momentum_boost_positive
-            negative_carry_conditions = negative_carry_conditions & momentum_boost_negative
+            # Use OR logic to add momentum-enhanced signals
+            positive_carry_conditions = positive_carry_conditions | (
+                (funding_rate > funding_threshold * 0.5) & momentum_boost_positive
+            )
+            negative_carry_conditions = negative_carry_conditions | (
+                (funding_rate < -funding_threshold * 0.5) & momentum_boost_negative
+            )
         # Extreme funding rate opportunities (higher signal strength)
         extreme_positive_carry = (
             indicators['extreme_positive'] &

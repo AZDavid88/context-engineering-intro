@@ -190,9 +190,10 @@ class RSIFilterSeed(BaseSeed):
             Mean reversion signals
         """
         signals = pd.Series(0.0, index=indicators['rsi'].index)
-        # Basic mean reversion: buy oversold, sell overbought
-        oversold_signals = indicators['oversold_zone'] & (indicators['rsi_momentum'] > 0)
-        overbought_signals = indicators['overbought_zone'] & (indicators['rsi_momentum'] < 0)
+        # Simplified mean reversion (following research pattern)
+        # Remove restrictive momentum condition
+        oversold_signals = indicators['oversold_zone']
+        overbought_signals = indicators['overbought_zone']
         # Multi-timeframe confirmation
         mtf_bullish = (
             (indicators['rsi_short'] <= indicators['rsi'] * 1.1) &  # Short-term aligned
@@ -213,19 +214,16 @@ class RSIFilterSeed(BaseSeed):
             (indicators['price_momentum'] >= 0) &  # Positive price momentum
             (indicators['rsi_velocity'] < 0)          # But RSI starting to turn down
         )
-        # Generate buy signals (oversold mean reversion)
+        # Simplified signal generation (following research pattern)
+        # Generate buy signals (oversold mean reversion) - use OR logic for flexibility
         buy_conditions = (
-            oversold_signals &
-            mtf_bullish &
-            volume_confirmed &
-            momentum_exhaustion_buy
+            oversold_signals |                     # Basic oversold condition
+            (oversold_signals & volume_confirmed)  # OR volume-confirmed oversold
         )
-        # Generate sell signals (overbought mean reversion)
+        # Generate sell signals (overbought mean reversion) - use OR logic for flexibility  
         sell_conditions = (
-            overbought_signals &
-            mtf_bearish &
-            volume_confirmed &
-            momentum_exhaustion_sell
+            overbought_signals |                    # Basic overbought condition
+            (overbought_signals & volume_confirmed) # OR volume-confirmed overbought
         )
         # Calculate signal strength based on RSI extreme level
         oversold_strength = np.where(
