@@ -251,7 +251,7 @@ class HyperliquidRESTClient:
             List of OHLCV candles
         """
         payload = {
-            "type": "candle",
+            "type": "candleSnapshot",
             "req": {
                 "coin": symbol,
                 "interval": interval
@@ -271,8 +271,10 @@ class HyperliquidRESTClient:
         Returns:
             List of asset contexts with leverage limits, size decimals, etc.
         """
-        payload = {"type": "assetCtxs"}
-        return await self._make_request("/info", payload)
+        payload = {"type": "meta"}
+        response = await self._make_request("/info", payload)
+        # Extract universe array from meta response
+        return response.get("universe", [])
 
 
 class HyperliquidWebSocketClient:
@@ -599,9 +601,11 @@ class HyperliquidClient:
         """Get all mid prices."""
         return await self.rest_client.get_all_mids()
     
-    async def get_candles(self, symbol: str, interval: str = "1h") -> List[Dict[str, Any]]:
+    async def get_candles(self, symbol: str, interval: str = "1h", 
+                         start_time: Optional[int] = None,
+                         end_time: Optional[int] = None) -> List[Dict[str, Any]]:
         """Get candlestick data."""
-        return await self.rest_client.get_candles(symbol, interval)
+        return await self.rest_client.get_candles(symbol, interval, start_time, end_time)
     
     async def get_asset_contexts(self) -> List[Dict[str, Any]]:
         """Get asset contexts."""

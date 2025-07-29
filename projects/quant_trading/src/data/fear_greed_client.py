@@ -24,7 +24,7 @@ from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Optional, Tuple, Union
 from enum import Enum
 import aiohttp
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 # Import our centralized configuration system
 from src.config.settings import get_settings, Settings
@@ -63,13 +63,14 @@ class FearGreedData(BaseModel):
     trading_signal: TradingSignal = Field(..., description="Derived trading signal")
     contrarian_strength: float = Field(..., ge=0.0, le=1.0, description="Contrarian signal strength")
     
-    @validator('regime', pre=True, always=True)
-    def classify_regime(cls, v, values):
+    @field_validator('regime', mode='before')
+    @classmethod
+    def classify_regime(cls, v, info):
         """Classify market regime based on index value."""
-        if 'value' not in values:
+        if 'value' not in info.data:
             return MarketRegime.NEUTRAL
         
-        value = values['value']
+        value = info.data['value']
         if value <= 25:
             return MarketRegime.EXTREME_FEAR
         elif value <= 45:
@@ -81,13 +82,14 @@ class FearGreedData(BaseModel):
         else:
             return MarketRegime.EXTREME_GREED
     
-    @validator('trading_signal', pre=True, always=True)
-    def derive_trading_signal(cls, v, values):
+    @field_validator('trading_signal', mode='before')
+    @classmethod
+    def derive_trading_signal(cls, v, info):
         """Derive contrarian trading signal from regime."""
-        if 'regime' not in values:
+        if 'regime' not in info.data:
             return TradingSignal.HOLD
         
-        regime = values['regime']
+        regime = info.data['regime']
         signal_map = {
             MarketRegime.EXTREME_FEAR: TradingSignal.STRONG_BUY,
             MarketRegime.FEAR: TradingSignal.WEAK_BUY,
@@ -97,13 +99,14 @@ class FearGreedData(BaseModel):
         }
         return signal_map.get(regime, TradingSignal.HOLD)
     
-    @validator('contrarian_strength', pre=True, always=True)
-    def calculate_contrarian_strength(cls, v, values):
+    @field_validator('contrarian_strength', mode='before')
+    @classmethod
+    def calculate_contrarian_strength(cls, v, info):
         """Calculate contrarian signal strength (0.0 = weak, 1.0 = strong)."""
-        if 'value' not in values:
+        if 'value' not in info.data:
             return 0.0
         
-        value = values['value']
+        value = info.data['value']
         
         # Extreme values have highest contrarian strength
         if value <= 25:  # Extreme fear
@@ -129,14 +132,15 @@ class FearGreedTrend(BaseModel):
     trend_strength: float = Field(..., description="Trend strength (0.0-1.0)")
     volatility: float = Field(..., description="Index volatility measure")
     
-    @validator('trend_direction', pre=True, always=True)
-    def calculate_trend_direction(cls, v, values):
+    @field_validator('trend_direction', mode='before')
+    @classmethod
+    def calculate_trend_direction(cls, v, info):
         """Calculate trend direction."""
-        if 'current_value' not in values or 'previous_value' not in values:
+        if 'current_value' not in info.data or 'previous_value' not in info.data:
             return "stable"
         
-        current = values['current_value']
-        previous = values['previous_value']
+        current = info.data['current_value']
+        previous = info.data['previous_value']
         
         if current > previous + 2:
             return "up"
@@ -145,14 +149,15 @@ class FearGreedTrend(BaseModel):
         else:
             return "stable"
     
-    @validator('trend_strength', pre=True, always=True)
-    def calculate_trend_strength(cls, v, values):
+    @field_validator('trend_strength', mode='before')
+    @classmethod
+    def calculate_trend_strength(cls, v, info):
         """Calculate trend strength based on change magnitude."""
-        if 'current_value' not in values or 'previous_value' not in values:
+        if 'current_value' not in info.data or 'previous_value' not in info.data:
             return 0.0
         
-        current = values['current_value']
-        previous = values['previous_value']
+        current = info.data['current_value']
+        previous = info.data['previous_value']
         
         # Normalize change to 0-1 scale
         change = abs(current - previous)

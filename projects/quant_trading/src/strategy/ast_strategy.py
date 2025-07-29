@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from enum import Enum
 import numpy as np
 import pandas as pd
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 import warnings
 
 from src.utils.pandas_compatibility import safe_fillna_false, safe_fillna_zero, safe_fillna
@@ -233,10 +233,11 @@ class StrategyFitness(BaseModel):
     in_sample_fitness: float = Field(..., description="In-sample fitness score")
     out_of_sample_fitness: float = Field(..., description="Out-of-sample fitness score")
     walk_forward_fitness: float = Field(..., description="Walk-forward fitness score")
-    @validator('composite_fitness', pre=True, always=True)
-    def calculate_composite_fitness(cls, v, values):
+    @field_validator('composite_fitness', mode='before')
+    @classmethod
+    def calculate_composite_fitness(cls, v, info):
         """Calculate weighted composite fitness score."""
-        if not all(key in values for key in ['sharpe_ratio', 'max_drawdown', 'win_rate', 'consistency']):
+        if not all(key in info.data for key in ['sharpe_ratio', 'max_drawdown', 'win_rate', 'consistency']):
             return 0.0
         # Weights from settings (configurable)
         weights = {
@@ -246,10 +247,10 @@ class StrategyFitness(BaseModel):
             'consistency': 0.1
         }
         # Normalize and weight components
-        sharpe_component = max(0, values['sharpe_ratio']) / 5.0  # Normalize to 0-1 (assuming max Sharpe ~5)
-        drawdown_component = max(0, 1.0 - values['max_drawdown'])  # Invert (lower drawdown is better)
-        win_rate_component = values['win_rate']  # Already 0-1
-        consistency_component = values['consistency']  # Already 0-1
+        sharpe_component = max(0, info.data['sharpe_ratio']) / 5.0  # Normalize to 0-1 (assuming max Sharpe ~5)
+        drawdown_component = max(0, 1.0 - info.data['max_drawdown'])  # Invert (lower drawdown is better)
+        win_rate_component = info.data['win_rate']  # Already 0-1
+        consistency_component = info.data['consistency']  # Already 0-1
         composite = (
             weights['sharpe_ratio'] * sharpe_component +
             weights['max_drawdown'] * drawdown_component +

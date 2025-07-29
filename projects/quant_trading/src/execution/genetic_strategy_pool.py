@@ -104,7 +104,7 @@ class Individual:
         """Convert to dictionary for serialization."""
         return {
             'seed_type': self.seed_type.value,
-            'genes': self.genes.dict(),
+            'genes': self.genes.model_dump(),
             'fitness': self.fitness,
             'metrics': self.metrics,
             'evaluation_time': self.evaluation_time,
@@ -467,7 +467,7 @@ class GeneticStrategyPool:
             if individual.fitness is None:  # Only evaluate if not already evaluated
                 future = evaluate_individual_distributed.remote(
                     individual.seed_type.value,
-                    individual.genes.dict(),
+                    individual.genes.model_dump(),
                     self.market_data_ref
                 )
                 futures.append((individual, future))

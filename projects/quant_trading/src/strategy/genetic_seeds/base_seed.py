@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 from enum import Enum
 import numpy as np
 import pandas as pd
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 from src.config.settings import get_settings, Settings
 from src.utils.pandas_compatibility import safe_fillna_false, safe_fillna_zero, safe_fillna
@@ -65,7 +65,7 @@ class SeedGenes(BaseModel):
     # Position sizing
     position_size: float = Field(default=0.1, ge=0.01, le=0.25, description="Position size percentage")
     
-    @validator('parameters')
+    @field_validator('parameters')
     @classmethod
     def validate_parameters(cls, v):
         """Validate that all parameters are numeric."""
@@ -102,11 +102,11 @@ class SeedFitness(BaseModel):
     out_of_sample_fitness: float = Field(..., description="Out-of-sample fitness score")
     walk_forward_fitness: float = Field(..., description="Walk-forward fitness score")
     
-    @validator('composite_fitness', pre=True, always=True)
+    @field_validator('composite_fitness', mode='before')
     @classmethod
-    def calculate_composite_fitness(cls, v, values):
+    def calculate_composite_fitness(cls, v, info):
         """Calculate weighted composite fitness score."""
-        if not all(key in values for key in ['sharpe_ratio', 'max_drawdown', 'win_rate', 'consistency']):
+        if not all(key in info.data for key in ['sharpe_ratio', 'max_drawdown', 'win_rate', 'consistency']):
             return 0.0
             
         # Multi-objective fitness weights from consultant recommendations
@@ -118,10 +118,10 @@ class SeedFitness(BaseModel):
         }
         
         # Normalize components to 0-1 scale
-        sharpe_component = max(0, min(values['sharpe_ratio'] / 5.0, 1.0))  # Max Sharpe ~5
-        drawdown_component = max(0, 1.0 - values['max_drawdown'])  # Lower is better
-        win_rate_component = values['win_rate']  # Already 0-1
-        consistency_component = values['consistency']  # Already 0-1
+        sharpe_component = max(0, min(info.data['sharpe_ratio'] / 5.0, 1.0))  # Max Sharpe ~5
+        drawdown_component = max(0, 1.0 - info.data['max_drawdown'])  # Lower is better
+        win_rate_component = info.data['win_rate']  # Already 0-1
+        consistency_component = info.data['consistency']  # Already 0-1
         
         # Calculate weighted composite
         composite = (
@@ -233,7 +233,7 @@ class BaseSeed(ABC):
             'seed_id': self.genes.seed_id,
             'generation': self.genes.generation,
             'parameters': self.genes.parameters,
-            'fitness': self.fitness.dict() if self.fitness else None
+            'fitness': self.fitness.model_dump() if self.fitness else None
         }
     
     def clone_with_mutations(self, mutations: Dict[str, float]) -> 'BaseSeed':
