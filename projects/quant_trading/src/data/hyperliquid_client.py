@@ -28,6 +28,7 @@ from pydantic import BaseModel, Field, validator
 
 # Import our configuration system - THIS IS THE KEY CONNECTION
 from src.config.settings import get_settings, Settings
+from src.config.rate_limiter import get_rate_limiter, APIEndpointType
 
 
 class ConnectionState(str, Enum):

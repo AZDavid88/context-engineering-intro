@@ -14,6 +14,13 @@ from src.strategy.genetic_seeds import SeedRegistry, get_registry, BaseSeed
 from src.strategy.genetic_seeds.base_seed import SeedGenes, SeedFitness, SeedType
 from src.config.settings import get_settings, Settings
 
+# Import for multi-timeframe data support
+try:
+    from src.data.dynamic_asset_data_collector import AssetDataSet
+except ImportError:
+    # Fallback for systems without advanced data collector
+    AssetDataSet = None
+
 # Configure logging
 
 from src.utils.pandas_compatibility import safe_fillna_false, safe_fillna_zero, safe_fillna
@@ -62,8 +69,8 @@ class EvolutionConfig:
     # Selection parameters
     tournament_size: int = 3
     selection_pressure: float = 1.5
-    # Multi-objective weights (Sharpe, Consistency, Drawdown, Turnover)
-    fitness_weights: Tuple[float, float, float, float] = (0.5, 0.3, 0.15, 0.05)
+    # Multi-objective weights (Compatible with Settings dictionary format)
+    fitness_weights: Dict[str, float] = None  # Will be loaded from Settings
     # Performance thresholds
     min_sharpe_ratio: float = 0.5
     max_drawdown: float = 0.2
@@ -74,6 +81,28 @@ class EvolutionConfig:
     # Validation
     validation_split: float = 0.3  # 30% for out-of-sample
     min_trades: int = 10
+    
+    # Advanced features for large-scale genetic evolution (research-backed patterns)
+    # Large population support (DEAP research: 100-200 -> 1000+ strategies)
+    enable_large_populations: bool = False
+    max_population_size: int = 1000
+    memory_chunk_size: int = 100  # Process in chunks to manage memory
+    
+    # Multi-timeframe fitness evaluation (VectorBT research: 0.7/0.3 weighting)
+    enable_multi_timeframe: bool = False
+    strategic_timeframe_weight: float = 0.7  # 1h strategic weight
+    tactical_timeframe_weight: float = 0.3   # 15m tactical weight
+    timeframe_priorities: Tuple[str, str] = ("1h", "15m")
+    
+    # Walk-forward validation (DEAP research: overfitting prevention)
+    enable_walk_forward: bool = False
+    walk_forward_periods: int = 3  # Number of validation periods
+    validation_window_days: int = 60  # Days per validation window
+    
+    # Memory optimization (VectorBT research: vectorized evaluation)
+    enable_vectorized_evaluation: bool = False
+    precompute_indicators: bool = True
+    batch_evaluation_size: int = 50
 @dataclass
 class EvolutionResults:
     """Results from genetic evolution process."""
@@ -95,6 +124,11 @@ class GeneticEngine:
         """
         self.config = config or EvolutionConfig()
         self.settings = settings or get_settings()
+        
+        # Load fitness weights from Settings if not provided in config
+        if self.config.fitness_weights is None:
+            self.config.fitness_weights = self.settings.genetic_algorithm.fitness_weights
+        
         self.seed_registry = get_registry()
         # Evolution state
         self.status = EvolutionStatus.INITIALIZING
@@ -105,8 +139,7 @@ class GeneticEngine:
         # DEAP framework setup
         self.toolbox = None
         self._setup_deap_framework()
-        # Multiprocessing pool
-        self.process_pool = None
+        # Note: multiprocessing pool is created on-demand with context managers
         logger.info("Genetic engine initialized")
     def _setup_deap_framework(self) -> None:
         """Set up DEAP genetic algorithm framework."""
@@ -115,10 +148,22 @@ class GeneticEngine:
             return
         try:
             # Create fitness class for multi-objective optimization
-            # weights: (Sharpe+, Consistency+, Drawdown-, Turnover-)
+            # Convert dictionary weights to tuple format expected by DEAP
+            if isinstance(self.config.fitness_weights, dict):
+                # Standard order: sharpe_ratio, consistency, max_drawdown (negative), win_rate
+                weights_tuple = (
+                    self.config.fitness_weights.get("sharpe_ratio", 1.0),
+                    self.config.fitness_weights.get("consistency", 0.3), 
+                    self.config.fitness_weights.get("max_drawdown", -1.0),  # Minimize drawdown
+                    self.config.fitness_weights.get("win_rate", 0.5)
+                )
+            else:
+                # Fallback to default tuple format
+                weights_tuple = (1.0, 0.3, -1.0, 0.5)
+            
             if not hasattr(creator, "TradingFitness"):
                 creator.create("TradingFitness", base.Fitness, 
-                             weights=self.config.fitness_weights)
+                             weights=weights_tuple)
             # Create primitive set for trading strategies - strongly typed GP from research
             from deap import gp
             import pandas as pd
@@ -168,25 +213,62 @@ class GeneticEngine:
                             tournsize=self.config.tournament_size)
         # Evaluation
         self.toolbox.register("evaluate", self._evaluate_individual)
-        # Multi-processing (if enabled)
+        # Multi-processing (configured but pool created on-demand)
         if self.config.use_multiprocessing:
             n_processes = self.config.n_processes or multiprocessing.cpu_count()
-            self.process_pool = multiprocessing.Pool(n_processes)
-            self.toolbox.register("map", self.process_pool.map)
+            # Register map function that will create pool when needed
+            self.toolbox.register("map", self._multiprocessing_map)
             logger.info(f"Multiprocessing enabled with {n_processes} processes")
+    
+    def _multiprocessing_map(self, func, iterable):
+        """Multiprocessing map with context manager to avoid serialization issues."""
+        n_processes = self.config.n_processes or multiprocessing.cpu_count()
+        
+        # Use context manager to ensure proper cleanup
+        with multiprocessing.Pool(n_processes) as pool:
+            return pool.map(func, iterable)
+    
     def _create_random_individual(self) -> BaseSeed:
         """Create a random individual from available genetic seeds."""
-        # Get available seed classes
-        seed_classes = self.seed_registry.list_all_seeds()
+        # Get available seed classes using the proper registry interface
+        try:
+            # Import the function that returns actual seed classes
+            from src.strategy.genetic_seeds import get_all_genetic_seeds
+            seed_classes = get_all_genetic_seeds()
+        except ImportError:
+            # Fallback: use registry but access the actual classes
+            registry_dict = self.seed_registry.list_all_seeds()
+            if not registry_dict:
+                raise ValueError("No genetic seeds registered")
+            # Extract actual seed classes from registry
+            seed_classes = []
+            for seed_name, seed_info in registry_dict.items():
+                # Try to get the actual class from the registry
+                registration = self.seed_registry._registry.get(seed_name)
+                if registration and registration.status.value == "registered":
+                    seed_classes.append(registration.seed_class)
+            
         if not seed_classes:
-            raise ValueError("No genetic seeds registered")
+            raise ValueError("No genetic seeds available for evolution")
+            
         # Select random seed type
-        seed_class = random.choice(list(seed_classes.values()))
+        seed_class = random.choice(seed_classes)
+        
+        # Create dummy genes to access parameter bounds
+        dummy_genes = SeedGenes(
+            seed_id="dummy",
+            seed_type=SeedType.MOMENTUM,
+            generation=0,
+            parameters={}
+        )
+        dummy_instance = seed_class(dummy_genes, self.settings)
+        parameter_bounds = dummy_instance.parameter_bounds
+        
         # Create random genetic parameters
-        parameter_bounds = seed_class({}).parameter_bounds
         parameters = {}
         for param_name, (min_val, max_val) in parameter_bounds.items():
             parameters[param_name] = random.uniform(min_val, max_val)
+            
         # Create seed genes
         genes = SeedGenes(
             seed_id=f"gen_{self.current_generation}_{random.randint(1000, 9999)}",
@@ -194,8 +276,21 @@ class GeneticEngine:
             generation=self.current_generation,
             parameters=parameters
         )
+        
         # Create and return individual
         individual = seed_class(genes, self.settings)
+        
+        # Initialize DEAP fitness object (required for DEAP algorithms)
+        if DEAP_AVAILABLE and hasattr(creator, "TradingFitness"):
+            individual.fitness = creator.TradingFitness()
+        else:
+            # Fallback fitness object with valid attribute
+            class MockFitness:
+                def __init__(self):
+                    self.valid = False
+                    self.values = None
+            individual.fitness = MockFitness()
+            
         return individual
     def _crossover(self, ind1: BaseSeed, ind2: BaseSeed) -> Tuple[BaseSeed, BaseSeed]:
         """Perform crossover between two individuals.
@@ -348,30 +443,71 @@ class GeneticEngine:
         turnover = position_changes / len(signals)
         return turnover
     def evolve(self, market_data: Optional[pd.DataFrame] = None,
-               n_generations: Optional[int] = None) -> EvolutionResults:
-        """Run genetic evolution process.
+               n_generations: Optional[int] = None,
+               asset_dataset: Optional[Any] = None) -> EvolutionResults:
+        """Run genetic evolution process with multi-timeframe support.
+        
         Args:
-            market_data: Historical market data for evaluation
+            market_data: Historical market data for evaluation (legacy single timeframe)
             n_generations: Number of generations to evolve
+            asset_dataset: AssetDataSet with multi-timeframe data for advanced evaluation
+            
         Returns:
             Evolution results and statistics
         """
         logger.info("Starting genetic evolution")
         self.status = EvolutionStatus.RUNNING
         start_time = pd.Timestamp.now()
+        
+        # Multi-timeframe data preparation (research-backed pattern)
+        multi_timeframe_data = None
+        if asset_dataset and AssetDataSet and hasattr(asset_dataset, 'timeframe_data'):
+            multi_timeframe_data = asset_dataset.timeframe_data
+            logger.info(f"✅ Multi-timeframe evolution enabled with timeframes: {list(multi_timeframe_data.keys())}")
+        elif market_data is not None:
+            logger.info("Using legacy single-timeframe market data")
+        else:
+            logger.warning("No market data provided, using synthetic data")
+        
         try:
-            # Initialize population
-            population = self._initialize_population()
+            # Adjust population size for large population support
+            effective_population_size = self.config.population_size
+            if (self.config.enable_large_populations and 
+                self.config.population_size > 100):
+                effective_population_size = min(
+                    self.config.population_size, 
+                    self.config.max_population_size
+                )
+                logger.info(f"🚀 Large population mode: {effective_population_size} individuals")
+            
+            # Initialize population with memory management for large populations
+            if (self.config.enable_large_populations and 
+                effective_population_size > self.config.memory_chunk_size):
+                population = self._initialize_large_population(effective_population_size)
+            else:
+                population = self._initialize_population()
             # Evolution parameters
             n_gen = n_generations or self.config.n_generations
+            # Setup advanced evaluation context for this evolution run
+            self._setup_advanced_evaluation_context(
+                multi_timeframe_data=multi_timeframe_data,
+                legacy_market_data=market_data,
+                population_size=effective_population_size
+            )
+            
             # Track evolution statistics
             stats = tools.Statistics(lambda ind: ind.fitness.values)
             stats.register("avg", np.mean, axis=0)
             stats.register("std", np.std, axis=0)
             stats.register("min", np.min, axis=0)
             stats.register("max", np.max, axis=0)
-            # Run evolution
-            if DEAP_AVAILABLE and self.toolbox:
+            
+            # Run evolution with advanced features
+            if self.config.enable_walk_forward and multi_timeframe_data:
+                population, logbook = self._run_walk_forward_evolution(
+                    population, n_gen, stats, multi_timeframe_data
+                )
+            elif DEAP_AVAILABLE and self.toolbox:
                 population, logbook = self._run_deap_evolution(population, n_gen, stats)
             else:
                 population, logbook = self._run_fallback_evolution(population, n_gen)
@@ -397,10 +533,8 @@ class GeneticEngine:
             self.status = EvolutionStatus.FAILED
             raise
         finally:
-            # Clean up multiprocessing pool
-            if self.process_pool:
-                self.process_pool.close()
-                self.process_pool.join()
+            # Multiprocessing pools are managed with context managers - no cleanup needed
+            pass
     def _initialize_population(self) -> List[BaseSeed]:
         """Initialize population of genetic individuals."""
         if DEAP_AVAILABLE and self.toolbox:
@@ -492,8 +626,230 @@ class GeneticEngine:
             'fitness_diversity': fitness_diversity,
             'unique_seed_types': unique_types
         }
+    
+    # Advanced Features Implementation (Research-Backed Patterns)
+    
+    def _initialize_large_population(self, population_size: int) -> List[BaseSeed]:
+        """Initialize large population with memory-optimized chunked processing.
+        
+        Based on VectorBT research patterns for 1000+ strategy populations.
+        """
+        logger.info(f"🚀 Initializing large population: {population_size} individuals")
+        
+        population = []
+        chunk_size = self.config.memory_chunk_size
+        
+        # Process in chunks to manage memory (research-backed pattern)
+        for chunk_start in range(0, population_size, chunk_size):
+            chunk_end = min(chunk_start + chunk_size, population_size)
+            chunk_size_actual = chunk_end - chunk_start
+            
+            logger.debug(f"Initializing chunk {chunk_start//chunk_size + 1}: "
+                        f"{chunk_size_actual} individuals")
+            
+            # Create chunk using standard initialization
+            if DEAP_AVAILABLE and self.toolbox:
+                chunk_population = self.toolbox.population(n=chunk_size_actual)
+            else:
+                chunk_population = []
+                for _ in range(chunk_size_actual):
+                    individual = self._create_random_individual()
+                    chunk_population.append(individual)
+            
+            population.extend(chunk_population)
+            
+            # Memory management: force garbage collection between chunks
+            import gc
+            gc.collect()
+        
+        logger.info(f"✅ Large population initialized: {len(population)} individuals")
+        return population
+    
+    def _setup_advanced_evaluation_context(self, multi_timeframe_data: Optional[Dict] = None,
+                                         legacy_market_data: Optional[pd.DataFrame] = None,
+                                         population_size: int = 100) -> None:
+        """Setup evaluation context for advanced features.
+        
+        Prepares the engine for multi-timeframe evaluation, chunked processing,
+        and other advanced capabilities based on research patterns.
+        """
+        # Store evaluation context in instance variables
+        self._current_multi_timeframe_data = multi_timeframe_data
+        self._current_legacy_data = legacy_market_data
+        self._current_population_size = population_size
+        
+        # Setup multi-timeframe evaluation if enabled
+        if self.config.enable_multi_timeframe and multi_timeframe_data:
+            self._setup_multi_timeframe_evaluation(multi_timeframe_data)
+        
+        # Setup chunked evaluation for large populations
+        if (self.config.enable_large_populations and 
+            population_size > self.config.memory_chunk_size):
+            self._setup_chunked_evaluation()
+        
+        logger.debug(f"Advanced evaluation context setup complete")
+    
+    def _setup_multi_timeframe_evaluation(self, timeframe_data: Dict[str, pd.DataFrame]) -> None:
+        """Setup multi-timeframe evaluation with 0.7/0.3 weighting.
+        
+        Based on VectorBT research showing optimal strategic/tactical balance.
+        """
+        strategic_tf, tactical_tf = self.config.timeframe_priorities
+        
+        if strategic_tf not in timeframe_data or tactical_tf not in timeframe_data:
+            logger.warning(f"Missing required timeframes {strategic_tf}/{tactical_tf}, "
+                          f"available: {list(timeframe_data.keys())}")
+            return
+        
+        self._strategic_data = timeframe_data[strategic_tf]
+        self._tactical_data = timeframe_data[tactical_tf]
+        
+        logger.info(f"✅ Multi-timeframe setup: {strategic_tf} (weight: {self.config.strategic_timeframe_weight}) "
+                   f"+ {tactical_tf} (weight: {self.config.tactical_timeframe_weight})")
+    
+    def _setup_chunked_evaluation(self) -> None:
+        """Setup chunked evaluation for memory-efficient large population processing."""
+        # Override the standard evaluation function with chunked version
+        if self.toolbox:
+            original_evaluate = self.toolbox.evaluate
+            self.toolbox.register("evaluate", self._chunked_evaluate_individual)
+            self._original_evaluate = original_evaluate
+        
+        logger.info(f"✅ Chunked evaluation enabled (chunk size: {self.config.memory_chunk_size})")
+    
+    def _chunked_evaluate_individual(self, individual: BaseSeed) -> Tuple[float, float, float, float]:
+        """Evaluate individual using chunked processing for memory efficiency."""
+        try:
+            # Use multi-timeframe evaluation if available
+            if (self.config.enable_multi_timeframe and 
+                hasattr(self, '_strategic_data') and hasattr(self, '_tactical_data')):
+                return self._evaluate_multi_timeframe_fitness(individual)
+            else:
+                # Fall back to standard evaluation
+                return self._evaluate_individual(individual)
+        except Exception as e:
+            logger.error(f"Chunked evaluation failed for {individual.seed_name}: {e}")
+            return 0.0, 0.0, 1.0, 10.0
+    
+    def _evaluate_multi_timeframe_fitness(self, individual: BaseSeed) -> Tuple[float, float, float, float]:
+        """Evaluate fitness across multiple timeframes with 0.7/0.3 weighting.
+        
+        Research-backed pattern for balancing strategic and tactical performance.
+        """
+        try:
+            # Strategic timeframe evaluation (typically 1h)
+            strategic_signals = individual.generate_signals(self._strategic_data)
+            strategic_returns = self._calculate_strategy_returns(strategic_signals, self._strategic_data)
+            strategic_sharpe = self._calculate_sharpe_ratio(strategic_returns)
+            strategic_consistency = self._calculate_consistency(strategic_returns)
+            strategic_drawdown = self._calculate_max_drawdown(strategic_returns)
+            strategic_turnover = self._calculate_turnover(strategic_signals)
+            
+            # Tactical timeframe evaluation (typically 15m)
+            tactical_signals = individual.generate_signals(self._tactical_data)
+            tactical_returns = self._calculate_strategy_returns(tactical_signals, self._tactical_data)
+            tactical_sharpe = self._calculate_sharpe_ratio(tactical_returns)
+            tactical_consistency = self._calculate_consistency(tactical_returns)
+            tactical_drawdown = self._calculate_max_drawdown(tactical_returns)
+            tactical_turnover = self._calculate_turnover(tactical_signals)
+            
+            # Weighted combination (research-backed 0.7/0.3 weighting)
+            strategic_weight = self.config.strategic_timeframe_weight
+            tactical_weight = self.config.tactical_timeframe_weight
+            
+            combined_sharpe = (strategic_weight * strategic_sharpe + 
+                             tactical_weight * tactical_sharpe)
+            combined_consistency = (strategic_weight * strategic_consistency + 
+                                  tactical_weight * tactical_consistency)
+            combined_drawdown = (strategic_weight * strategic_drawdown + 
+                               tactical_weight * tactical_drawdown)
+            combined_turnover = (strategic_weight * strategic_turnover + 
+                               tactical_weight * tactical_turnover)
+            
+            # Apply constraints and bounds
+            combined_sharpe = max(0.0, min(5.0, combined_sharpe))
+            combined_consistency = max(0.0, min(1.0, combined_consistency))
+            combined_drawdown = max(0.0, min(1.0, combined_drawdown))
+            combined_turnover = max(0.0, min(10.0, combined_turnover))
+            
+            # Log evaluation for debugging (10% sample)
+            if random.random() < 0.1:
+                logger.debug(f"Multi-timeframe eval {individual.seed_name}: "
+                           f"Strategic={strategic_sharpe:.3f}, Tactical={tactical_sharpe:.3f}, "
+                           f"Combined={combined_sharpe:.3f}")
+            
+            return combined_sharpe, combined_consistency, combined_drawdown, combined_turnover
+            
+        except Exception as e:
+            logger.error(f"Multi-timeframe evaluation failed for {individual.seed_name}: {e}")
+            return 0.0, 0.0, 1.0, 10.0
+    
+    def _run_walk_forward_evolution(self, population: List[BaseSeed], n_generations: int,
+                                   stats: Any, timeframe_data: Dict[str, pd.DataFrame]) -> Tuple[List[BaseSeed], Any]:
+        """Run evolution with walk-forward validation for overfitting prevention.
+        
+        Based on DEAP research emphasizing multiple validation periods.
+        """
+        logger.info(f"🚶 Starting walk-forward evolution with {self.config.walk_forward_periods} periods")
+        
+        # Use the primary timeframe for walk-forward validation
+        primary_timeframe = self.config.timeframe_priorities[0]
+        primary_data = timeframe_data[primary_timeframe]
+        
+        # Create validation periods
+        total_periods = len(primary_data)
+        window_size = min(
+            len(primary_data) // self.config.walk_forward_periods,
+            self.config.validation_window_days * 24  # Assuming hourly data
+        )
+        
+        validation_periods = []
+        for i in range(self.config.walk_forward_periods):
+            start_idx = i * (total_periods // self.config.walk_forward_periods)
+            end_idx = min(start_idx + window_size, total_periods)
+            validation_periods.append((start_idx, end_idx))
+        
+        logger.info(f"Created {len(validation_periods)} validation periods")
+        
+        # Run evolution for each period and aggregate results
+        all_logbooks = []
+        final_population = population
+        
+        for period_idx, (start_idx, end_idx) in enumerate(validation_periods):
+            logger.info(f"Walk-forward period {period_idx + 1}/{len(validation_periods)}")
+            
+            # Extract period data
+            period_data = {
+                tf: data.iloc[start_idx:end_idx] 
+                for tf, data in timeframe_data.items()
+            }
+            
+            # Update evaluation context for this period
+            self._setup_multi_timeframe_evaluation(period_data)
+            
+            # Run evolution for this period
+            if DEAP_AVAILABLE and self.toolbox:
+                period_population, period_logbook = self._run_deap_evolution(
+                    final_population, n_generations // self.config.walk_forward_periods, stats
+                )
+                all_logbooks.append(period_logbook)
+                final_population = period_population
+            else:
+                period_population, _ = self._run_fallback_evolution(
+                    final_population, n_generations // self.config.walk_forward_periods
+                )
+                final_population = period_population
+        
+        # Combine logbooks
+        combined_logbook = all_logbooks[0] if all_logbooks else None
+        if len(all_logbooks) > 1:
+            for logbook in all_logbooks[1:]:
+                if combined_logbook and logbook:
+                    combined_logbook.extend(logbook)
+        
+        logger.info("✅ Walk-forward evolution completed")
+        return final_population, combined_logbook
+    
     def __del__(self):
-        """Cleanup multiprocessing pool on deletion."""
-        if hasattr(self, 'process_pool') and self.process_pool:
-            self.process_pool.close()
-            self.process_pool.join()
+        """Cleanup method - pools are managed with context managers."""
+        pass

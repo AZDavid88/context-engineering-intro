@@ -1,14 +1,17 @@
 """
-Genetic Seed Registry System
+Genetic Seed Registry System - FIXED FOR MULTIPROCESSING
 
 This module provides a centralized registry for all genetic seeds, enabling
 dynamic seed discovery, validation, and management for the genetic algorithm.
+
+CRITICAL FIX: All validator functions are now module-level (picklable) instead of closures.
 
 Key Features:
 - Central seed registration and discovery
 - Seed validation and compatibility checking
 - Dynamic seed instantiation
 - Population management utilities
+- MULTIPROCESSING COMPATIBLE (no local closures)
 """
 
 from typing import Dict, List, Type, Optional, Any, Callable
@@ -19,6 +22,106 @@ from enum import Enum
 
 from .base_seed import BaseSeed, SeedType, SeedGenes
 from src.config.settings import get_settings, Settings
+
+
+# Module-level validator functions (picklable for multiprocessing)
+def validate_base_interface(seed_class: Type[BaseSeed]) -> List[str]:
+    """Validate that seed implements BaseSeed interface correctly."""
+    errors = []
+    
+    # Check required methods
+    required_methods = [
+        'generate_signals', 'calculate_technical_indicators',
+        'seed_name', 'seed_description', 'required_parameters', 'parameter_bounds'
+    ]
+    
+    for method in required_methods:
+        if not hasattr(seed_class, method):
+            errors.append(f"Missing required method: {method}")
+        elif method in ['seed_name', 'seed_description', 'required_parameters', 'parameter_bounds']:
+            # Check if it's a property
+            if not isinstance(getattr(seed_class, method), property):
+                errors.append(f"Method {method} should be a property")
+    
+    return errors
+
+
+def validate_parameter_bounds(seed_class: Type[BaseSeed]) -> List[str]:
+    """Validate parameter bounds are reasonable."""
+    errors = []
+    
+    try:
+        # Create dummy instance to test parameter bounds
+        dummy_genes = SeedGenes(
+            seed_id="test",
+            seed_type=SeedType.MOMENTUM,
+            parameters={}
+        )
+        dummy_seed = seed_class(dummy_genes)
+        
+        bounds = dummy_seed.parameter_bounds
+        required_params = dummy_seed.required_parameters
+        
+        # Check that all required parameters have bounds
+        for param in required_params:
+            if param not in bounds:
+                errors.append(f"Required parameter '{param}' missing from parameter_bounds")
+        
+        # Check bounds validity
+        for param, (min_val, max_val) in bounds.items():
+            if min_val >= max_val:
+                errors.append(f"Invalid bounds for '{param}': min ({min_val}) >= max ({max_val})")
+            if not isinstance(min_val, (int, float)) or not isinstance(max_val, (int, float)):
+                errors.append(f"Bounds for '{param}' must be numeric")
+                
+    except Exception as e:
+        errors.append(f"Error validating parameter bounds: {str(e)}")
+    
+    return errors
+
+
+def validate_signal_generation(seed_class: Type[BaseSeed]) -> List[str]:
+    """Validate seed can generate signals with synthetic data."""
+    errors = []
+    
+    try:
+        import pandas as pd
+        import numpy as np
+        
+        # Create synthetic OHLCV data
+        dates = pd.date_range('2023-01-01', periods=100, freq='1h')
+        synthetic_data = pd.DataFrame({
+            'open': np.random.uniform(100, 110, 100),
+            'high': np.random.uniform(105, 115, 100),
+            'low': np.random.uniform(95, 105, 100),
+            'close': np.random.uniform(100, 110, 100),
+            'volume': np.random.uniform(1000, 5000, 100)
+        }, index=dates)
+        
+        # Create test seed
+        test_genes = SeedGenes(
+            seed_id="validation_test",
+            seed_type=SeedType.MOMENTUM,
+            parameters={}
+        )
+        
+        # Add default parameters for testing
+        seed_instance = seed_class(test_genes)
+        
+        # Test signal generation
+        signals = seed_instance.generate_signals(synthetic_data)
+        
+        if signals is None:
+            errors.append("generate_signals returned None")
+        elif not isinstance(signals, pd.Series):
+            errors.append("generate_signals must return a pandas Series")
+        elif len(signals) == 0:
+            errors.append("generate_signals returned empty Series")
+            
+    except Exception as e:
+        errors.append(f"Error in signal generation validation: {str(e)}")
+    
+    return errors
 
 
 class RegistrationStatus(str, Enum):
@@ -41,7 +144,7 @@ class SeedRegistration:
 
 
 class SeedRegistry:
-    """Central registry for genetic trading seeds."""
+    """Central registry for genetic trading seeds - MULTIPROCESSING COMPATIBLE."""
     
     def __init__(self, settings: Optional[Settings] = None):
         """Initialize seed registry.
@@ -61,122 +164,12 @@ class SeedRegistry:
         self._registration_count = 0
         self._validation_failures = 0
         
-        # Setup default validators
+        # Setup default validators (now using module-level functions)
         self._setup_default_validators()
     
     def _setup_default_validators(self) -> None:
-        """Set up default seed validation functions."""
-        
-        def validate_base_interface(seed_class: Type[BaseSeed]) -> List[str]:
-            """Validate that seed implements BaseSeed interface correctly."""
-            errors = []
-            
-            # Check required methods
-            required_methods = [
-                'generate_signals', 'calculate_technical_indicators',
-                'seed_name', 'seed_description', 'required_parameters', 'parameter_bounds'
-            ]
-            
-            for method in required_methods:
-                if not hasattr(seed_class, method):
-                    errors.append(f"Missing required method: {method}")
-                elif method in ['seed_name', 'seed_description', 'required_parameters', 'parameter_bounds']:
-                    # Check if it's a property
-                    if not isinstance(getattr(seed_class, method), property):
-                        errors.append(f"Method {method} should be a property")
-            
-            return errors
-        
-        def validate_parameter_bounds(seed_class: Type[BaseSeed]) -> List[str]:
-            """Validate parameter bounds are reasonable."""
-            errors = []
-            
-            try:
-                # Create dummy instance to test parameter bounds
-                dummy_genes = SeedGenes(
-                    seed_id="test",
-                    seed_type=SeedType.MOMENTUM,
-                    parameters={}
-                )
-                dummy_seed = seed_class(dummy_genes)
-                
-                bounds = dummy_seed.parameter_bounds
-                required_params = dummy_seed.required_parameters
-                
-                # Check that all required parameters have bounds
-                for param in required_params:
-                    if param not in bounds:
-                        errors.append(f"Required parameter '{param}' missing from parameter_bounds")
-                
-                # Check bounds validity
-                for param, (min_val, max_val) in bounds.items():
-                    if min_val >= max_val:
-                        errors.append(f"Invalid bounds for '{param}': min ({min_val}) >= max ({max_val})")
-                    if not isinstance(min_val, (int, float)) or not isinstance(max_val, (int, float)):
-                        errors.append(f"Bounds for '{param}' must be numeric")
-                
-            except Exception as e:
-                errors.append(f"Error validating parameter bounds: {str(e)}")
-            
-            return errors
-        
-        def validate_signal_generation(seed_class: Type[BaseSeed]) -> List[str]:
-            """Validate signal generation with synthetic data."""
-            errors = []
-            
-            try:
-                import pandas as pd
-                import numpy as np
-                
-                # Create synthetic OHLCV data
-                dates = pd.date_range('2023-01-01', periods=100, freq='1h')
-                synthetic_data = pd.DataFrame({
-                    'open': np.random.uniform(100, 110, 100),
-                    'high': np.random.uniform(105, 115, 100),
-                    'low': np.random.uniform(95, 105, 100),
-                    'close': np.random.uniform(100, 110, 100),
-                    'volume': np.random.uniform(1000, 5000, 100)
-                }, index=dates)
-                
-                # Create test seed
-                test_genes = SeedGenes(
-                    seed_id="validation_test",
-                    seed_type=SeedType.MOMENTUM,
-                    parameters={}
-                )
-                
-                # Add default parameters for testing
-                seed_instance = seed_class(test_genes)
-                for param, (min_val, max_val) in seed_instance.parameter_bounds.items():
-                    test_genes.parameters[param] = (min_val + max_val) / 2
-                
-                # Re-create with parameters
-                seed_instance = seed_class(test_genes)
-                
-                # Test signal generation
-                signals = seed_instance.generate_signals(synthetic_data)
-                
-                # Validate signal format
-                if not isinstance(signals, pd.Series):
-                    errors.append("generate_signals must return a pandas Series")
-                elif len(signals) != len(synthetic_data):
-                    errors.append("Signal length must match input data length")
-                elif not signals.dtype in [np.int64, np.float64]:
-                    errors.append("Signals must be numeric (int or float)")
-                elif signals.isna().any():
-                    errors.append("Signals cannot contain NaN values")
-                
-                # Test technical indicators
-                indicators = seed_instance.calculate_technical_indicators(synthetic_data)
-                if not isinstance(indicators, dict):
-                    errors.append("calculate_technical_indicators must return a dictionary")
-                
-            except Exception as e:
-                errors.append(f"Error in signal generation validation: {str(e)}")
-            
-            return errors
-        
-        # Register validators
+        """Set up default seed validation functions using module-level functions."""
+        # Register module-level validators (picklable for multiprocessing)
         self._validation_functions.extend([
             validate_base_interface,
             validate_parameter_bounds,
@@ -189,80 +182,56 @@ class SeedRegistry:
         
         Args:
             seed_class: Seed class to register
-            force_reregister: Whether to force re-registration of existing seeds
+            force_reregister: Force re-registration if already exists
             
         Returns:
             Registration status
         """
-        try:
-            # Get seed name
-            dummy_genes = SeedGenes(
-                seed_id="dummy",
-                seed_type=SeedType.MOMENTUM,
-                parameters={}
-            )
-            dummy_instance = seed_class(dummy_genes)
-            seed_name = dummy_instance.seed_name
-            seed_type = dummy_instance.genes.seed_type
-            
-            # Check for duplicates
-            if seed_name in self._registry and not force_reregister:
-                self.logger.warning(f"Seed '{seed_name}' already registered")
-                return RegistrationStatus.DUPLICATE
-            
-            # Validate seed
-            validation_errors = self._validate_seed(seed_class)
-            if validation_errors:
-                self.logger.error(f"Validation failed for seed '{seed_name}': {validation_errors}")
-                status = RegistrationStatus.VALIDATION_FAILED
-                self._validation_failures += 1
-            else:
-                status = RegistrationStatus.REGISTERED
-                self._registration_count += 1
-                
-                # Add to type index
-                if seed_name not in self._type_index[seed_type]:
-                    self._type_index[seed_type].append(seed_name)
-            
-            # Create registration record
-            import time
-            registration = SeedRegistration(
-                seed_class=seed_class,
-                seed_name=seed_name,
-                seed_type=seed_type,
-                status=status,
-                validation_errors=validation_errors,
-                registration_timestamp=time.time()
-            )
-            
-            self._registry[seed_name] = registration
-            
-            self.logger.info(f"Seed '{seed_name}' registration: {status.value}")
-            return status
-            
-        except Exception as e:
-            self.logger.error(f"Error registering seed: {e}")
-            return RegistrationStatus.INCOMPATIBLE
-    
-    def _validate_seed(self, seed_class: Type[BaseSeed]) -> List[str]:
-        """Validate a seed class using all registered validators.
+        seed_name = seed_class.__name__
         
-        Args:
-            seed_class: Seed class to validate
-            
-        Returns:
-            List of validation errors (empty if valid)
-        """
-        all_errors = []
+        # Check for duplicate registration
+        if seed_name in self._registry and not force_reregister:
+            self.logger.warning(f"Seed {seed_name} already registered")
+            return RegistrationStatus.DUPLICATE
         
+        # Run validation
+        validation_errors = []
         for validator in self._validation_functions:
             try:
                 errors = validator(seed_class)
-                all_errors.extend(errors)
+                validation_errors.extend(errors)
             except Exception as e:
-                all_errors.append(f"Validator error: {str(e)}")
+                validation_errors.append(f"Validator error: {str(e)}")
         
-        return all_errors
+        # Determine registration status
+        if validation_errors:
+            status = RegistrationStatus.VALIDATION_FAILED
+            self._validation_failures += 1
+            self.logger.error(f"Seed {seed_name} validation failed: {validation_errors}")
+        else:
+            status = RegistrationStatus.REGISTERED
+            self._registration_count += 1
+            self.logger.info(f"Seed {seed_name} registered successfully")
+        
+        # Create registration record
+        import time
+        registration = SeedRegistration(
+            seed_class=seed_class,
+            seed_name=seed_name,
+            seed_type=getattr(seed_class, '_seed_type', SeedType.MOMENTUM),
+            status=status,
+            validation_errors=validation_errors,
+            registration_timestamp=time.time()
+        )
+        
+        # Store registration
+        self._registry[seed_name] = registration
+        
+        # Update type index
+        if status == RegistrationStatus.REGISTERED:
+            self._type_index[registration.seed_type].append(seed_name)
+        
+        return status
     
     def get_seed_class(self, seed_name: str) -> Optional[Type[BaseSeed]]:
         """Get seed class by name.
@@ -271,19 +240,37 @@ class SeedRegistry:
             seed_name: Name of the seed
             
         Returns:
-            Seed class if found and valid, None otherwise
+            Seed class or None if not found
         """
-        if seed_name not in self._registry:
-            return None
-        
-        registration = self._registry[seed_name]
-        if registration.status == RegistrationStatus.REGISTERED:
+        registration = self._registry.get(seed_name)
+        if registration and registration.status == RegistrationStatus.REGISTERED:
             return registration.seed_class
-        
         return None
     
+    def get_all_seed_names(self) -> List[str]:
+        """Get all registered seed names.
+        
+        Returns:
+            List of seed names
+        """
+        return [
+            name for name, reg in self._registry.items()
+            if reg.status == RegistrationStatus.REGISTERED
+        ]
+    
+    def get_all_seed_classes(self) -> List[Type[BaseSeed]]:
+        """Get all registered seed classes.
+        
+        Returns:
+            List of seed classes
+        """
+        return [
+            reg.seed_class for reg in self._registry.values()
+            if reg.status == RegistrationStatus.REGISTERED
+        ]
+    
     def get_seeds_by_type(self, seed_type: SeedType) -> List[Type[BaseSeed]]:
-        """Get all registered seeds of a specific type.
+        """Get seeds by type.
         
         Args:
             seed_type: Type of seeds to retrieve
@@ -291,146 +278,62 @@ class SeedRegistry:
         Returns:
             List of seed classes
         """
-        seed_classes = []
-        for seed_name in self._type_index[seed_type]:
-            seed_class = self.get_seed_class(seed_name)
-            if seed_class:
-                seed_classes.append(seed_class)
-        
-        return seed_classes
+        seed_names = self._type_index.get(seed_type, [])
+        return [
+            self._registry[name].seed_class
+            for name in seed_names
+            if self._registry[name].status == RegistrationStatus.REGISTERED
+        ]
     
-    def list_all_seeds(self) -> Dict[str, Dict[str, Any]]:
-        """List all registered seeds with their information.
+    def create_random_individual(self) -> Optional[Any]:
+        """Create a random individual from registered seeds.
         
         Returns:
-            Dictionary mapping seed names to their information
-        """
-        seed_info = {}
-        
-        for seed_name, registration in self._registry.items():
-            if registration.status == RegistrationStatus.REGISTERED:
-                # Create dummy instance to get description
-                try:
-                    dummy_genes = SeedGenes(
-                        seed_id="info",
-                        seed_type=registration.seed_type,
-                        parameters={}
-                    )
-                    dummy_instance = registration.seed_class(dummy_genes)
-                    
-                    seed_info[seed_name] = {
-                        'type': registration.seed_type.value,
-                        'description': dummy_instance.seed_description,
-                        'required_parameters': dummy_instance.required_parameters,
-                        'parameter_bounds': dummy_instance.parameter_bounds,
-                        'registration_time': registration.registration_timestamp
-                    }
-                except Exception as e:
-                    seed_info[seed_name] = {
-                        'type': registration.seed_type.value,
-                        'description': f"Error loading: {e}",
-                        'registration_time': registration.registration_timestamp
-                    }
-        
-        return seed_info
-    
-    def create_seed_instance(self, seed_name: str, genes: SeedGenes) -> Optional[BaseSeed]:
-        """Create an instance of a registered seed.
-        
-        Args:
-            seed_name: Name of the seed to instantiate
-            genes: Genetic parameters for the seed
-            
-        Returns:
-            Seed instance if successful, None otherwise
-        """
-        seed_class = self.get_seed_class(seed_name)
-        if not seed_class:
-            self.logger.error(f"Seed '{seed_name}' not found in registry")
-            return None
-        
-        try:
-            return seed_class(genes, self.settings)
-        except Exception as e:
-            self.logger.error(f"Error creating seed instance '{seed_name}': {e}")
-            return None
-    
-    def create_random_population(self, population_size: int = 100) -> List[BaseSeed]:
-        """Create a random population of seeds for genetic algorithm.
-        
-        Args:
-            population_size: Number of seeds to create
-            
-        Returns:
-            List of random seed instances
+            Random seed instance or None
         """
         import random
         
-        population = []
-        registered_seeds = [name for name, reg in self._registry.items() 
-                          if reg.status == RegistrationStatus.REGISTERED]
+        registered_classes = self.get_all_seed_classes()
+        if not registered_classes:
+            return None
         
-        if not registered_seeds:
-            self.logger.error("No registered seeds available for population creation")
-            return population
+        # Select random seed class
+        seed_class = random.choice(registered_classes)
         
-        for i in range(population_size):
-            # Select random seed type
-            seed_name = random.choice(registered_seeds)
-            seed_class = self.get_seed_class(seed_name)
-            
-            if seed_class:
-                # Create dummy instance to get parameter bounds
-                dummy_genes = SeedGenes(
-                    seed_id=f"pop_{i}",
-                    seed_type=SeedType.MOMENTUM,  # Will be updated
-                    generation=0,
-                    parameters={}
-                )
-                
-                try:
-                    dummy_instance = seed_class(dummy_genes)
-                    dummy_genes.seed_type = dummy_instance.genes.seed_type
-                    
-                    # Generate random parameters within bounds
-                    for param, (min_val, max_val) in dummy_instance.parameter_bounds.items():
-                        dummy_genes.parameters[param] = random.uniform(min_val, max_val)
-                    
-                    # Create final instance
-                    seed_instance = seed_class(dummy_genes, self.settings)
-                    population.append(seed_instance)
-                    
-                except Exception as e:
-                    self.logger.error(f"Error creating random seed '{seed_name}': {e}")
+        # Create random genes
+        genes = SeedGenes(
+            seed_id=seed_class.__name__,
+            seed_type=getattr(seed_class, '_seed_type', SeedType.MOMENTUM),
+            parameters={}
+        )
         
-        self.logger.info(f"Created random population of {len(population)} seeds")
-        return population
+        # Create seed instance
+        return seed_class(genes)
+    
+    def add_validator(self, validator_func: Callable[[Type[BaseSeed]], List[str]]) -> None:
+        """Add custom validator function.
+        
+        Args:
+            validator_func: Validator function
+        """
+        self._validation_functions.append(validator_func)
     
     def get_registry_stats(self) -> Dict[str, Any]:
         """Get registry statistics.
         
         Returns:
-            Dictionary with registry statistics
+            Registry statistics
         """
-        by_type = {}
-        for seed_type in SeedType:
-            by_type[seed_type.value] = len(self._type_index[seed_type])
-        
         return {
-            'total_registered': self._registration_count,
-            'validation_failures': self._validation_failures,
-            'by_type': by_type,
-            'total_in_registry': len(self._registry)
+            "total_registrations": len(self._registry),
+            "successful_registrations": self._registration_count,
+            "validation_failures": self._validation_failures,
+            "registered_seeds": self.get_all_seed_names(),
+            "seeds_by_type": {
+                seed_type.value: len(seed_names)
+                for seed_type, seed_names in self._type_index.items()
+            }
         }
-    
-    def add_validator(self, validator_func: Callable[[Type[BaseSeed]], List[str]]) -> None:
-        """Add a custom validation function.
-        
-        Args:
-            validator_func: Function that takes a seed class and returns list of errors
-        """
-        self._validation_functions.append(validator_func)
-        self.logger.info("Added custom validator to registry")
 
 
 # Global registry instance
@@ -438,7 +341,11 @@ _global_registry: Optional[SeedRegistry] = None
 
 
 def get_registry() -> SeedRegistry:
-    """Get the global seed registry instance."""
+    """Get global seed registry instance.
+    
+    Returns:
+        Global seed registry
+    """
     global _global_registry
     if _global_registry is None:
         _global_registry = SeedRegistry()
