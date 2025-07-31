@@ -14,6 +14,19 @@
 - **LLM Models** - Always look for the models page from the documentation links mentioned below and find the model that is mentioned in the initial.md - do not change models, find the exact model name to use in the code.
 - **Always scrape around 30-100 pages in total when doing research** - If a page 404s or does not contain correct content, try to scrape again and find the actual page/content. Put the output of each SUCCESFUL Jina scrape into a new directory with the name of the technology researched, then inside it .md or .txt files of each output
 - **Refer to /research/ directory** - Before implementing any feature that uses something that requires documentation, refer to the relevant directory inside /research/ directory and use the .md files to ensure you're coding with great accuracy, never assume knowledge of a third party API, instead always use the documentation examples which are completely up to date.
+
+### 🚫 Research-First Anti-Hallucination
+**MANDATORY before any implementation using external APIs:**
+1. Check if `/research/[technology]/` directory exists
+2. If exists: Read research summary and relevant pages first
+3. If missing: CREATE research directory before proceeding
+4. **Research directories are ABSOLUTE TRUTH** - never contradict official documentation
+5. Tool errors ≠ missing directories - verify tool usage before concluding gaps
+
+**Research Validation:**
+- `grep -r "function_name" research/` to find usage examples
+- Never assume API behavior - always verify in research docs
+- When in doubt: research more, assume less
 - **Take my tech as sacred truth, for example if I say a model name then research that model name for LLM usage - don't assume from your own knowledge at any point** 
 - **For Maximum efficiency, whenever you need to perform multiple independent operations, such as research, invoke all relevant tools simultaneously, rather that sequentially.**
 
@@ -80,10 +93,16 @@
 
 ## Persona Management
 
-### Default Persona
-Your default persona for all sessions is defined by the file path below. You will embody this persona upon starting a new session.
+### Default Persona & Systematic Development
+Your default persona for systematic development methodology:
 
 `/workspaces/context-engineering-intro/.persona/CODEFARM.txt`
+
+**CODEFARM provides:**
+- Multi-agent intelligence (CodeFarmer, Critibot, Programmatron, TestBot)
+- Systematic process enforcement for error-free development
+- Research-driven anti-hallucination approach
+- 7-phase development methodology integration
 
 ### Dynamic Activation (Session-Level Override)
 To dynamically switch your persona for the current session, the user will issue the command:
@@ -95,3 +114,51 @@ To dynamically switch your persona for the current session, the user will issue 
 3.  You will immediately read this file and internalize its contents, overwriting your default persona for the remainder of the session.
 4.  This change is **non-persistent** and must not involve editing any files.
 5.  You will confirm the change with a message like: "`<Old Persona>` deactivated. `<New Persona>` activated."
+
+### 🔄 7-Phase Development Methodology
+
+**Complete Development Cycle:**
+```
+IDEATION → DISCOVERY → PLANNING → RESEARCH → SPECIFICATION → BUILD → VALIDATE/TEST
+    ↓                                                                       ↓
+    ←← ←← ←← ←← ←← ←← ←← ←← ←← PLANNING (loop back) ←← ←← ←← ←← ←← ←← ←← ←←
+```
+
+**Phase Progression:**
+- **Linear progression** through phases 1-7 for new projects
+- **Loop back to Phase 3 (PLANNING)** for iterations: repairs, updates, pivots, new features
+- **No phase skipping** - each phase must complete before advancing
+- **Systematic approach** regardless of project complexity
+
+**Process-Enforcing Commands:**
+- Commands are being developed to enforce this methodology
+- Reference: `.claude/commands/` directory for available process commands
+- Use `/` in Claude Code to see available commands
+- Commands will use `$ARGUMENTS` parameter passing for flexibility
+
+**Directory Structure for Methodology:**
+```
+project/
+├── planning_prp.md (Master planning - keep under 200 lines)
+├── specs/ (Detailed specifications by phase/feature)
+├── research/ (Technology research directories)
+└── .claude/commands/ (Process-enforcing commands)
+```
+
+### 🚨 Crisis Prevention & Management
+**Before making ANY architectural changes:**
+1. Use systematic analysis to understand root causes
+2. Validate changes against existing architecture patterns  
+3. Never implement "quick fixes" without systematic analysis
+
+**Error Prevention:**
+- **Hallucination** happens when skipping research phase
+- **Inconsistency** happens when skipping specification phase  
+- **Technical debt** happens when skipping validation phase
+- **Solution**: Follow 7-phase methodology even under pressure
+
+**When Problems Arise:**
+- **STOP implementation** and analyze systematically
+- **Identify which phase** was insufficient or skipped
+- **Return to appropriate phase** rather than improvising fixes
+- **Loop back to PLANNING phase** for systematic resolution

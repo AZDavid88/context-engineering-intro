@@ -80,19 +80,30 @@
 
 ## 🔄 CONTEXT RESTORATION AFTER /COMPACT
 
-### **Session Recovery Command**
+### **EMERGENCY CONTEXT RESTORATION**
+**Use this exact sequence in fresh Claude instance:**
+
 ```markdown
 activate CODEFARM
-/codefarm-sync-documentation "current project state"
-# Review @PROCESS_ENFORCING_DEVELOPMENT_METHODOLOGY.md
-# Continue with appropriate phase command
+
+Read these files in exact order:
+1. @.claude/specifications/METHODOLOGY_CONTEXT_REFERENCE.md
+2. @.claude/specifications/PROCESS_ENFORCING_DEVELOPMENT_METHODOLOGY.md  
+3. @.claude/specifications/COMMAND_QUICK_REFERENCE.md
+4. @.claude/specifications/SESSION_RESTORATION_PROTOCOL.md
+
+Confirm understanding of CODEFARM methodology and process-enforcing commands.
 ```
 
-### **Key Files for Context**
-- `@.claude/specifications/PROCESS_ENFORCING_DEVELOPMENT_METHODOLOGY.md`
-- `@planning_prp.md` (project context)
-- `@research/` (research documentation)
-- Current specification files in progress
+### **Context Recovery Master File**
+**CRITICAL**: `@.claude/CONTEXT_RECOVERY_MASTER.md` contains complete restoration procedures.
+
+### **Key Context Files**
+- `@.claude/specifications/METHODOLOGY_CONTEXT_REFERENCE.md` - All definitions
+- `@.claude/specifications/PROCESS_ENFORCING_DEVELOPMENT_METHODOLOGY.md` - Main methodology
+- `@.claude/specifications/SESSION_RESTORATION_PROTOCOL.md` - Restoration procedures
+- `@.claude/CONTEXT_RECOVERY_MASTER.md` - Emergency restoration master
+- `@projects/quant_trading/planning_prp.md` - Current project context
 
 ---
 

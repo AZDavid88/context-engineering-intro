@@ -3,6 +3,12 @@
 **Date**: 2025-07-30  
 **Purpose**: Complete systematic development methodology using CODEFARM + Process-Enforcing Commands
 
+## 📚 REQUIRED CONTEXT READING
+**CRITICAL**: Before implementing this methodology, read the complete context reference:
+`@.claude/specifications/METHODOLOGY_CONTEXT_REFERENCE.md`
+
+This document contains all necessary definitions, principles, and patterns referenced throughout this specification.
+
 ---
 
 ## 🎯 METHODOLOGY OVERVIEW
