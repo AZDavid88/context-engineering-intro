@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
       "Bash(grep:*)",
@@ -49,7 +50,9 @@
       "mcp__playwright__browser_install",
       "WebFetch(domain:docs.prefect.io)",
       "mcp__brightdata__scraping_browser_links",
-      "mcp__brightdata__scrape_as_markdown"
+      "mcp__brightdata__scrape_as_markdown",
+      "mcp__filesystem__read_multiple_files",
+      "mcp__filesystem__list_directory"
     ],
     "deny": []
   },
