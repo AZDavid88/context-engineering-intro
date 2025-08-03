@@ -23,6 +23,8 @@
 - **Tool copying**: Use same tools regardless of actual requirements
 - **Uniform validation**: Apply same quality gates regardless of purpose
 - **Structural rigidity**: Make structure more important than function
+- **Meta-process solutions**: Creating processes to prevent processes (recursive contamination)
+- **Solution theater**: Complex solutions that create problems they then solve
 
 ---
 
@@ -260,6 +262,16 @@ allowed-tools: LS, Glob, Grep, Read, Write, Edit, MultiEdit, Bash, Task
 2. **Tool bloat**: Including tools without specific purpose
 3. **Framework misalignment**: Using complex frameworks for simple tasks
 4. **Validation mismatch**: Applying wrong success criteria to command purpose
+5. **Meta-process solutions**: Creating processes to solve process problems (creates more problems)
+6. **Solution theater**: Commands that create problems then solve the problems they created
+
+### **Critical Learning from /codefarm-forensic-reconstruction:**
+- **Original Problem**: Command auto-executed implementation without user approval
+- **Root Cause**: Missing pause point in Chain of Thought workflow
+- **Solution Applied**: Fixed pause point mechanism to require explicit user confirmation
+- **Successful Resolution**: Command now properly pauses for user approval, executed successfully
+- **Current Status**: Production-ready system validated, forensic reconstruction complete
+- **Key Insight**: Proper pause points essential for user-controlled command execution
 
 ---
 

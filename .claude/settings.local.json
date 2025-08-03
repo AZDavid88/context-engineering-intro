@@ -52,7 +52,8 @@
       "mcp__brightdata__scraping_browser_links",
       "mcp__brightdata__scrape_as_markdown",
       "mcp__filesystem__read_multiple_files",
-      "mcp__filesystem__list_directory"
+      "mcp__filesystem__list_directory",
+      "mcp__filesystem__directory_tree"
     ],
     "deny": []
   },
