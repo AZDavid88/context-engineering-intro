@@ -58,10 +58,10 @@ class NadarayaWatsonSeed(BaseSeed):
     
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'bandwidth': (5.0, 60.0),           # Kernel bandwidth (5-60 periods)
-            'kernel_type': (0.0, 1.0),         # 0=Gaussian, 1=Epanechnikov
+            'bandwidth': (5.0, 40.0),           # Narrower BW for reactivity; crypto-optimized range
+            'kernel_type': (0.0, 1.0),         # 0=Gaussian, 1=Epanechnikov (epi kernel for sharper cutoff)
             'trend_threshold': (0.002, 0.08),   # Minimum trend strength (0.2%-8%)
             'smoothing_factor': (0.1, 0.9),    # Trend smoothing factor
             'volatility_adaptation': (0.0, 1.0) # Adaptive bandwidth weight

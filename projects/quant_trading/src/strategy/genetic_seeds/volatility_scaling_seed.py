@@ -41,17 +41,21 @@ class VolatilityScalingSeed(BaseSeed):
             'regime_threshold',
             'scaling_factor',
             'regime_persistence',
-            'multi_timeframe_weight'
+            'multi_timeframe_weight',
+            'target_volatility',
+            'position_base'
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'volatility_window': (10.0, 100.0),      # Volatility calculation window
-            'regime_threshold': (0.5, 3.0),          # Volatility regime threshold multiplier
-            'scaling_factor': (0.1, 2.0),            # Position scaling factor
-            'regime_persistence': (2.0, 20.0),       # Regime persistence bars
-            'multi_timeframe_weight': (0.0, 1.0)     # Multi-timeframe analysis weight
+            'volatility_window': (10.0, 40.0),       # Volatility calculation window (crypto-responsive)
+            'regime_threshold': (0.8, 2.0),          # Volatility regime threshold (tighter crypto bands)
+            'scaling_factor': (0.2, 0.8),            # Position scaling factor (crypto-conservative)
+            'regime_persistence': (2.0, 10.0),       # Regime persistence bars (crypto-responsive)
+            'multi_timeframe_weight': (0.0, 1.0),    # Multi-timeframe analysis weight
+            'target_volatility': (0.10, 0.20),       # Target volatility (10% conservative, 20% aggressive)
+            'position_base': (0.005, 0.05)           # Base position size (crypto-safe 0.5-5%)
         }
     def __init__(self, genes: SeedGenes, settings: Optional[Settings] = None):
         """Initialize volatility scaling seed.
@@ -68,7 +72,9 @@ class VolatilityScalingSeed(BaseSeed):
                 'regime_threshold': 1.5,
                 'scaling_factor': 0.5,
                 'regime_persistence': 5.0,
-                'multi_timeframe_weight': 0.3
+                'multi_timeframe_weight': 0.3,
+                'target_volatility': 0.15,  # 15% target volatility (balanced)
+                'position_base': 0.02       # 2% base position size (crypto-safe)
             }
         super().__init__(genes, settings)
     def calculate_technical_indicators(self, data: pd.DataFrame) -> Dict[str, pd.Series]:

@@ -45,12 +45,12 @@ class StochasticOscillatorSeed(BaseSeed):
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'k_period': (5.0, 25.0),        # %K period (5-25 bars)
-            'd_period': (2.0, 10.0),        # %D smoothing period (2-10 bars)
-            'overbought_level': (70.0, 90.0), # Overbought threshold
-            'oversold_level': (10.0, 30.0),   # Oversold threshold
+            'k_period': (10.0, 20.0),       # Tighter bounds avoid noise; K tuned for speed
+            'd_period': (2.0, 5.0),         # D tuned for speed; avoid excessive smoothing
+            'overbought_level': (70.0, 85.0), # Highs (85) avoid noise; standard crypto range
+            'oversold_level': (15.0, 30.0),   # Lows (15) avoid noise; tighter crypto bounds
             'divergence_sensitivity': (0.0, 1.0) # Divergence detection weight
         }
     def __init__(self, genes: SeedGenes, settings: Optional[Settings] = None):

@@ -42,17 +42,19 @@ class PCATreeQuantileSeed(BaseSeed):
             'tree_depth',
             'n_estimators',
             'signal_quantile',
-            'feature_window'
+            'feature_window',
+            'quantile_bins'
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'pca_components': (3.0, 20.0),           # Number of PCA components
-            'tree_depth': (3.0, 15.0),               # Maximum tree depth
+            'pca_components': (2.0, 5.0),            # Number of PCA components (crypto anti-overfit)
+            'tree_depth': (3.0, 7.0),                # Maximum tree depth (crypto anti-overfit)
             'n_estimators': (10.0, 200.0),           # Number of trees
             'signal_quantile': (0.1, 0.9),           # Signal threshold quantile
-            'feature_window': (50.0, 500.0)          # Feature calculation window
+            'feature_window': (50.0, 500.0),         # Feature calculation window
+            'quantile_bins': (2.0, 4.0)              # Quantile bins (crypto anti-overfit)
         }
     def __init__(self, genes: SeedGenes, settings: Optional[Settings] = None):
         """Initialize PCA Tree Quantile seed.
@@ -65,11 +67,12 @@ class PCATreeQuantileSeed(BaseSeed):
         # Initialize default parameters if not provided
         if not genes.parameters:
             genes.parameters = {
-                'pca_components': 8.0,
-                'tree_depth': 6.0,
+                'pca_components': 3.0,      # Reduced for crypto anti-overfitting
+                'tree_depth': 5.0,          # Reduced for crypto anti-overfitting
                 'n_estimators': 50.0,
                 'signal_quantile': 0.7,
-                'feature_window': 200.0
+                'feature_window': 200.0,
+                'quantile_bins': 3.0        # Balanced crypto anti-overfitting
             }
         super().__init__(genes, settings)
         # Initialize model and PCA cache

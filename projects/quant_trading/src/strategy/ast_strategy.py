@@ -1,7 +1,4 @@
 
-
-
-
 import operator
 import random
 import math
@@ -15,7 +12,6 @@ import warnings
 
 from src.utils.pandas_compatibility import safe_fillna_false, safe_fillna_zero, safe_fillna
 
-
 # DEAP imports for genetic programming
 from deap import base, creator, tools, gp, algorithms
 import multiprocessing
@@ -26,140 +22,8 @@ import multiprocessing
 # Import our configuration and data systems
 from src.config.settings import get_settings, Settings
 
-
-
 from src.utils.pandas_compatibility import safe_fillna_false, safe_fillna_zero, safe_fillna
 
-    
-
-
-    
-
-
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-    
-    
-        
-        
-        
-        
-
-
-    
-    
-    
-    
-    
-    
-    
-        
-    
-
-
-    
-        
-        
-    
-    
-    
-        
-        
-    
-    
-    
-    
-    
-
-
-    
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-    
-        
-        
-        
-        
-        
-        
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        
-            
-            
-            
-    
-        
-            
-        
-        
-        
-        
-        
-        
-    
-        
-            
-        
-        
-        
-            
-            
-            
-            
-            
-            
-                
-        
-        
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
 """
 AST-Based Trading Strategy Representation with Genetic Programming
 This module provides Abstract Syntax Tree (AST) representation for trading strategies

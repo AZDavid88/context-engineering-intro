@@ -56,10 +56,10 @@ class BollingerBandsSeed(BaseSeed):
     
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'lookback_period': (10.0, 50.0),         # BB calculation period (crypto optimized)
-            'volatility_multiplier': (1.5, 3.0),     # Standard deviation multiplier (fat-tail handling)
+            'lookback_period': (10.0, 40.0),         # Exclude extreme lookbacks>40; crypto-optimized range
+            'volatility_multiplier': (1.5, 2.5),     # Band widths cover typical crypto volatility
             'squeeze_threshold': (0.05, 0.25),       # Volatility squeeze detection (normalized)
             'breakout_strength': (0.01, 0.05),       # Minimum breakout strength (1-5%)
             'position_scaling_factor': (0.5, 1.5)    # Position size scaling based on regime

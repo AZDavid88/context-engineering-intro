@@ -56,7 +56,7 @@ class PopulationManager:
         """Initialize a diverse population of trading strategies."""
         try:
             population = []
-            available_seeds = list(self.seed_registry.get_all_seeds().keys())
+            available_seeds = self.seed_registry.get_all_seed_names()
             
             if not available_seeds:
                 logger.warning("No genetic seeds available")
@@ -74,10 +74,9 @@ class PopulationManager:
                 
                 for _ in range(slots_for_this_type):
                     try:
-                        seed_class = self.seed_registry.get_seed(seed_type)
-                        if seed_class:
-                            individual = seed_class()
-                            
+                        # Use proper seed creation pattern from stability docs
+                        individual = self.seed_registry.create_seed_instance(seed_type)
+                        if individual:
                             # Apply random mutations for diversity
                             if hasattr(individual, 'mutate'):
                                 individual.mutate(rate=0.3)
@@ -93,9 +92,9 @@ class PopulationManager:
             while len(population) < population_size and available_seeds:
                 seed_type = np.random.choice(available_seeds)
                 try:
-                    seed_class = self.seed_registry.get_seed(seed_type)
-                    if seed_class:
-                        individual = seed_class()
+                    # Use proper seed creation pattern from stability docs
+                    individual = self.seed_registry.create_seed_instance(seed_type)
+                    if individual:
                         if hasattr(individual, 'mutate'):
                             individual.mutate(rate=0.5)  # Higher mutation for diversity
                         population.append(individual)

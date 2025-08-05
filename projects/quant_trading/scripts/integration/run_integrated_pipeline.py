@@ -24,7 +24,7 @@ import os
 from datetime import datetime
 
 # Add project root to path
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from src.config.settings import Settings
 from src.data.dynamic_asset_data_collector import IntegratedPipelineOrchestrator

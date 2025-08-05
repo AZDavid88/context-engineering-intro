@@ -45,10 +45,10 @@ class EMACrossoverSeed(BaseSeed):
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'fast_ema_period': (5.0, 50.0),     # Fast EMA period (5-50 bars)
-            'slow_ema_period': (20.0, 200.0),   # Slow EMA period (20-200 bars)
+            'fast_ema_period': (5.0, 15.0),     # Fast EMA period (crypto-optimized: 3x faster response)
+            'slow_ema_period': (18.0, 34.0),    # Slow EMA period (crypto-appropriate timing)
             'momentum_threshold': (0.001, 0.05), # Minimum momentum for signal (0.1%-5%)
             'signal_strength': (0.1, 1.0),      # Signal strength multiplier
             'trend_filter': (0.0, 0.02)         # Trend filter threshold (0-2%)

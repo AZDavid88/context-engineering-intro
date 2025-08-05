@@ -99,12 +99,10 @@ class GeneticEngine:
             best_individual = population[0] if population else None
             results = EvolutionResults(
                 best_individual=best_individual,
-                population=population,
+                final_population=population,
                 fitness_history=[],
-                generation_stats=[],
-                convergence_data={},
-                execution_time=0.0,
-                status=EvolutionStatus.COMPLETED
+                generation_count=0,
+                evolution_time=0.0
             )
             return results
         except Exception as e:

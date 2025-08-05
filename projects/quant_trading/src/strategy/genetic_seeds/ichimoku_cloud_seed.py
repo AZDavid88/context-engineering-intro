@@ -44,11 +44,11 @@ class IchimokuCloudSeed(BaseSeed):
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'tenkan_period': (5.0, 30.0),           # Tenkan-sen period (5-30 bars)
-            'kijun_period': (15.0, 75.0),           # Kijun-sen period (15-75 bars)
-            'senkou_span_b_period': (35.0, 150.0),  # Senkou Span B period (35-150 bars)
+            'tenkan_period': (7.0, 12.0),           # Tighter for day-trades or default for trend clarity
+            'kijun_period': (20.0, 34.0),           # Optimized range for crypto trend detection
+            'senkou_span_b_period': (40.0, 80.0),   # Conservative upper bound for crypto volatility
             'cloud_strength_weight': (0.0, 1.0),    # Cloud analysis weight
             'momentum_confirmation': (0.0, 1.0)     # Momentum confirmation weight
         }

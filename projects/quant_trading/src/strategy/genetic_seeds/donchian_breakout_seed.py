@@ -46,9 +46,9 @@ class DonchianBreakoutSeed(BaseSeed):
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'channel_period': (10.0, 55.0),        # Channel period (10-55 bars)
+            'channel_period': (10.0, 30.0),        # Shorter channels for scalps; longer for swings
             'breakout_threshold': (0.001, 0.02),   # Minimum breakout percentage (0.1%-2%)
             'volume_confirmation': (1.0, 3.0),      # Volume multiplier for confirmation
             'false_breakout_filter': (2.0, 10.0),   # Hours to confirm breakout validity

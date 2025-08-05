@@ -23,6 +23,9 @@ from enum import Enum
 from .base_seed import BaseSeed, SeedType, SeedGenes
 from src.config.settings import get_settings, Settings
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
 
 # Module-level validator functions (picklable for multiprocessing)
 def validate_base_interface(seed_class: Type[BaseSeed]) -> List[str]:
@@ -310,6 +313,67 @@ class SeedRegistry:
         # Create seed instance
         return seed_class(genes)
     
+    def create_seed_instance(self, seed_name: str, genes: Optional[SeedGenes] = None) -> Optional[BaseSeed]:
+        """Create an instance of a seed with given genes.
+        
+        Args:
+            seed_name: Name of the seed to create
+            genes: Genetic parameters for the seed
+            
+        Returns:
+            Seed instance or None if creation fails
+        """
+        seed_class = self.get_seed_class(seed_name)
+        if seed_class:
+            try:
+                if genes:
+                    return seed_class(genes)
+                else:
+                    # Create with properly initialized genes
+                    default_genes = SeedGenes.create_default(
+                        seed_type=SeedType.MOMENTUM  # Default type, will be overridden by seed
+                    )
+                    return seed_class(default_genes)
+            except Exception as e:
+                logger.error(f"Failed to create seed instance {seed_name}: {e}")
+                return None
+        return None
+    
+    def list_all_seeds(self) -> Dict[str, Dict[str, Any]]:
+        """List all seeds with their metadata.
+        
+        Returns:
+            Dictionary mapping seed names to metadata
+        """
+        result = {}
+        for name, registration in self._registry.items():
+            if registration.status == RegistrationStatus.REGISTERED:
+                try:
+                    seed_class = registration.seed_class
+                    result[name] = {
+                        'class': seed_class,
+                        'type': 'unknown',  # Simple fallback
+                        'description': getattr(seed_class, '__doc__', 'No description'),
+                        'status': registration.status.value
+                    }
+                except Exception as e:
+                    logger.warning(f"Error getting metadata for seed {name}: {e}")
+                    result[name] = {
+                        'class': registration.seed_class,
+                        'type': 'unknown',
+                        'description': 'Error getting description',
+                        'status': registration.status.value
+                    }
+        return result
+    
+    def get_all_registered_seeds(self) -> List[Type[BaseSeed]]:
+        """Get all registered seed classes (backward compatibility alias).
+        
+        Returns:
+            List of registered seed classes
+        """
+        return self.get_all_seed_classes()
+
     def add_validator(self, validator_func: Callable[[Type[BaseSeed]], List[str]]) -> None:
         """Add custom validator function.
         

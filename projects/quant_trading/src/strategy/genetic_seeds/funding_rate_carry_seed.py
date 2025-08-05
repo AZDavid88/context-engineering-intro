@@ -45,9 +45,9 @@ class FundingRateCarrySeed(BaseSeed):
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'funding_threshold': (0.0001, 0.01),     # 0.01% to 1% funding threshold
+            'funding_threshold': (-0.005, 0.005),    # Allow slight negative (-0.5%) to earn small carry; up to +0.5%
             'carry_duration': (1.0, 72.0),           # 1 to 72 hours carry duration
             'rate_momentum': (0.0, 1.0),             # Funding rate momentum weight
             'reversal_sensitivity': (0.1, 1.0),      # Sensitivity to rate reversals
@@ -149,8 +149,8 @@ class FundingRateCarrySeed(BaseSeed):
         funding_threshold = self.genes.parameters['funding_threshold']
         rate_momentum = self.genes.parameters['rate_momentum']
         reversal_sensitivity = self.genes.parameters['reversal_sensitivity']
-        # Initialize signals
-        signals = pd.Series(0, index=data.index)
+        # Initialize signals with float dtype to avoid dtype warnings
+        signals = pd.Series(0.0, index=data.index, dtype=float)
         funding_rate = indicators['funding_rate']
         funding_momentum = indicators['funding_momentum']
         reversal_strength = indicators['reversal_strength']

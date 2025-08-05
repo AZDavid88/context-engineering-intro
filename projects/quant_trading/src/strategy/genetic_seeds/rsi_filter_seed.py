@@ -46,11 +46,11 @@ class RSIFilterSeed(BaseSeed):
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'rsi_period': (7.0, 35.0),          # RSI calculation period
-            'oversold_threshold': (15.0, 35.0),  # Oversold level (typically 20-30)
-            'overbought_threshold': (65.0, 85.0), # Overbought level (typically 70-80)
+            'rsi_period': (10.0, 20.0),         # RSI calculation period (crypto noise reduction)
+            'oversold_threshold': (25.0, 40.0), # Oversold level (tighter crypto bands)
+            'overbought_threshold': (60.0, 80.0), # Overbought level (tighter crypto bands)
             'operation_mode': (0.0, 1.0),       # 0=filter mode, 1=signal mode
             'divergence_weight': (0.0, 1.0)     # Weight for divergence signals
         }

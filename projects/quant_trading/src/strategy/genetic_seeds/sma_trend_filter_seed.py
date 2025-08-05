@@ -44,10 +44,10 @@ class SMATrendFilterSeed(BaseSeed):
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'fast_sma_period': (5.0, 50.0),        # Fast SMA period (5-50 bars)
-            'slow_sma_period': (20.0, 200.0),      # Slow SMA period (20-200 bars)
+            'fast_sma_period': (30.0, 80.0),       # Smaller SMAs for fast assets; avoid noise
+            'slow_sma_period': (150.0, 300.0),     # Larger SMAs for big-cap trend clarity
             'trend_strength_period': (10.0, 100.0), # Trend strength lookback (10-100 bars)
             'filter_sensitivity': (0.0, 1.0),       # Filter sensitivity (0=weak, 1=strong)
             'momentum_confirmation': (0.0, 1.0)     # Momentum confirmation weight
@@ -63,8 +63,8 @@ class SMATrendFilterSeed(BaseSeed):
         # Initialize default parameters if not provided
         if not genes.parameters:
             genes.parameters = {
-                'fast_sma_period': 20.0,
-                'slow_sma_period': 50.0,
+                'fast_sma_period': 50.0,    # Updated to fit new bounds [30.0, 80.0]
+                'slow_sma_period': 200.0,   # Updated to fit new bounds [150.0, 300.0]
                 'trend_strength_period': 30.0,
                 'filter_sensitivity': 0.7,
                 'momentum_confirmation': 0.5

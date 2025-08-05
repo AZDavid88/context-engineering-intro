@@ -44,10 +44,10 @@ class VWAPReversionSeed(BaseSeed):
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
             'vwap_period': (10.0, 200.0),           # VWAP calculation period (10-200 bars)
-            'reversion_threshold': (0.5, 3.0),      # Standard deviations for reversion signal
+            'reversion_threshold': (0.008, 0.015),  # Small band (0.8%) for liquid; up to 1.5% for volatile alts
             'volume_confirmation': (0.5, 2.5),      # Volume confirmation multiplier
             'deviation_multiplier': (1.0, 4.0),     # VWAP band multiplier
             'regime_detection_weight': (0.0, 1.0)   # Regime detection importance
@@ -64,7 +64,7 @@ class VWAPReversionSeed(BaseSeed):
         if not genes.parameters:
             genes.parameters = {
                 'vwap_period': 50.0,
-                'reversion_threshold': 1.5,
+                'reversion_threshold': 0.012,  # Updated to fit new bounds [0.008, 0.015] (1.2%)
                 'volume_confirmation': 1.2,
                 'deviation_multiplier': 2.0,
                 'regime_detection_weight': 0.6

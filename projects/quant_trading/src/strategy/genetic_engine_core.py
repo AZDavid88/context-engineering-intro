@@ -215,7 +215,7 @@ class GeneticEngineCore:
         """Create a random individual from available genetic seeds."""
         try:
             # Get available seed types
-            available_seeds = list(self.seed_registry.get_all_seeds().keys())
+            available_seeds = self.seed_registry.get_all_seed_names()
             
             if not available_seeds:
                 logger.warning("No genetic seeds available, creating default seed")
@@ -231,10 +231,12 @@ class GeneticEngineCore:
             
             # Select random seed type and create instance
             seed_type = random.choice(available_seeds)
-            seed_class = self.seed_registry.get_seed(seed_type)
+            seed_class = self.seed_registry.get_seed_class(seed_type)
             
             if seed_class:
-                individual = seed_class()
+                # Create proper genes for the seed
+                genes = SeedGenes.create_default(SeedType.MOMENTUM)
+                individual = seed_class(genes)
                 
                 # Apply random mutations to diversify the initial population
                 if hasattr(individual, 'mutate'):
@@ -260,17 +262,17 @@ class GeneticEngineCore:
     def _crossover(self, ind1: BaseSeed, ind2: BaseSeed) -> Tuple[BaseSeed, BaseSeed]:
         """Perform crossover between two individuals."""
         try:
-            # Create offspring by copying parents
-            child1, child2 = type(ind1)(), type(ind2)()
+            # Create copies of parent genes first
+            genes1 = ind1.genes.copy() if hasattr(ind1.genes, 'copy') else ind1.genes
+            genes2 = ind2.genes.copy() if hasattr(ind2.genes, 'copy') else ind2.genes
             
-            # Copy genes from parents
-            if hasattr(ind1, 'genes') and hasattr(ind2, 'genes'):
-                child1.genes = ind1.genes.copy() if hasattr(ind1.genes, 'copy') else ind1.genes
-                child2.genes = ind2.genes.copy() if hasattr(ind2.genes, 'copy') else ind2.genes
-                
-                # Perform crossover if available
-                if hasattr(child1, 'crossover') and hasattr(child2, 'crossover'):
-                    child1.crossover(child2)
+            # Create offspring with proper genes initialization
+            child1 = type(ind1)(genes1)
+            child2 = type(ind2)(genes2)
+            
+            # Perform crossover if available
+            if hasattr(child1, 'crossover') and hasattr(child2, 'crossover'):
+                child1.crossover(child2)
             
             return child1, child2
             

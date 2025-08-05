@@ -44,10 +44,10 @@ class ATRStopLossSeed(BaseSeed):
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
-            'atr_period': (5.0, 50.0),              # ATR calculation period (5-50 bars)
-            'stop_loss_multiplier': (0.5, 5.0),     # ATR multiplier for stop loss
+            'atr_period': (10.0, 20.0),             # ATR calculation period (crypto noise reduction)
+            'stop_loss_multiplier': (1.2, 2.5),     # ATR multiplier for stop loss (crypto volatility survival)
             'trailing_stop_multiplier': (0.3, 3.0), # ATR multiplier for trailing stops
             'position_size_atr_factor': (0.1, 2.0), # ATR factor for position sizing
             'volatility_adjustment': (0.0, 1.0)     # Volatility regime adjustment weight

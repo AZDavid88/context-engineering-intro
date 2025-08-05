@@ -41,17 +41,19 @@ class LinearSVCClassifierSeed(BaseSeed):
             'feature_count',
             'regularization',
             'ensemble_size',
-            'cross_validation'
+            'cross_validation',
+            'quantile_bins'
         ]
     @property
     def parameter_bounds(self) -> Dict[str, Tuple[float, float]]:
-        """Return bounds for genetic parameters (min, max)."""
+        """Return bounds for genetic parameters (min, max) - CRYPTO-OPTIMIZED."""
         return {
             'lookback_window': (20.0, 200.0),        # Training data window
             'feature_count': (3.0, 15.0),            # Number of features to use
-            'regularization': (0.01, 100.0),         # SVM C parameter
+            'regularization': (0.5, 2.0),            # SVM C parameter (anti-overfitting for crypto)
             'ensemble_size': (1.0, 5.0),             # Number of models in ensemble
-            'cross_validation': (3.0, 10.0)          # CV folds
+            'cross_validation': (3.0, 10.0),         # CV folds
+            'quantile_bins': (2.0, 4.0)              # Quantile bins (crypto anti-overfitting)
         }
     def __init__(self, genes: SeedGenes, settings: Optional[Settings] = None):
         """Initialize Linear SVC classifier seed.
@@ -66,9 +68,10 @@ class LinearSVCClassifierSeed(BaseSeed):
             genes.parameters = {
                 'lookback_window': 100.0,
                 'feature_count': 8.0,
-                'regularization': 1.0,
+                'regularization': 1.0,          # C=1.0 as you specified
                 'ensemble_size': 3.0,
-                'cross_validation': 5.0
+                'cross_validation': 5.0,
+                'quantile_bins': 3.0            # 3 bins as you specified
             }
         super().__init__(genes, settings)
         # Initialize model cache

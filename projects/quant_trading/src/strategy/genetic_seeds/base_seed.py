@@ -73,6 +73,28 @@ class SeedGenes(BaseModel):
             if not isinstance(value, (int, float)):
                 raise ValueError(f"Parameter {key} must be numeric")
         return v
+    
+    @classmethod
+    def create_default(cls, seed_type: SeedType, seed_id: Optional[str] = None) -> 'SeedGenes':
+        """Create SeedGenes with proper defaults to avoid validation errors.
+        
+        Args:
+            seed_type: Type of the trading seed
+            seed_id: Optional seed ID, will generate UUID if not provided
+            
+        Returns:
+            Properly initialized SeedGenes instance
+        """
+        import uuid
+        
+        if seed_id is None:
+            seed_id = str(uuid.uuid4())
+            
+        return cls(
+            seed_id=seed_id,
+            seed_type=seed_type,
+            parameters={}  # Will be populated by seed initialization
+        )
 
 
 class SeedFitness(BaseModel):
