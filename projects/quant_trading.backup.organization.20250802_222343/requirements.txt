@@ -1,0 +1,112 @@
+# Quant Trading Organism - Phase 1 Dependencies
+# Based on comprehensive research from Hyperliquid, DEAP, Vectorbt documentation
+
+# Core Framework
+fastapi>=0.104.1
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
+
+# Hyperliquid Integration - from V3 research
+hyperliquid-python-sdk>=0.16.0
+websockets>=12.0
+aiohttp>=3.9.0
+requests>=2.31.0
+
+# Data Processing & Analysis
+pandas>=2.1.0
+numpy>=1.24.0
+duckdb>=0.9.0
+pyarrow>=14.0.0
+
+# Genetic Programming - DEAP research
+deap>=1.4.1
+scoop>=0.7.1.1  # For distributed computing
+
+# Additional dependencies for AST strategy system
+# talib>=0.4.0  # REMOVED: Package doesn't exist, use ta-lib instead (see line 35)
+scipy>=1.11.0  # Scientific computing for optimization
+
+# Backtesting Engine - Vectorbt research
+vectorbt>=0.26.0
+
+# Technical Analysis - Using vectorbt built-in indicators (PRIMARY)
+# pandas-ta-openbb>=0.4.22  # DISABLED: importlib.metadata issues, fails import  
+# ta-lib>=0.5.0  # REMOVED: Optional dependency, vectorbt has built-in indicators
+
+# CLI & Monitoring - Rich/Textual
+rich>=13.7.0
+textual>=0.45.0
+loguru>=0.7.2
+
+# Process Management - Supervisor research
+supervisor>=4.2.5
+
+# VPN Management
+pexpect>=4.9.0  # For NordVPN CLI automation
+
+# Async & Networking
+asyncio-mqtt>=0.16.1
+uvloop>=0.19.0  # Performance improvement for asyncio
+
+# Data Visualization
+plotly>=5.17.0
+matplotlib>=3.8.0
+
+# Database & Storage
+sqlalchemy>=2.0.23
+asyncpg>=0.29.0  # For TimescaleDB (Phase 2+)
+
+# Testing Framework
+pytest>=7.4.3
+pytest-asyncio>=0.21.1
+pytest-cov>=4.1.0
+pytest-mock>=3.12.0
+
+# Code Quality
+black>=23.11.0
+isort>=5.12.0
+flake8>=6.1.0
+mypy>=1.7.0
+
+# Development Tools
+jupyter>=1.0.0
+ipython>=8.17.0
+
+# Security
+cryptography>=41.0.8
+keyring>=24.3.0
+
+# Performance  
+numba>=0.56.0,<0.57.0  # Compatible with vectorbt requirements
+bottleneck>=1.3.7  # Pandas performance
+
+# HTTP & API
+httpx>=0.25.2
+urllib3>=2.1.0
+
+# Configuration & Environment
+pyyaml>=6.0.1
+toml>=0.10.2
+
+# Parallel Processing
+joblib>=1.3.2
+multiprocess>=0.70.15
+
+# Data Formats
+orjson>=3.9.10  # Fast JSON processing
+msgpack>=1.0.7
+
+# Time & Date
+python-dateutil>=2.8.2
+pytz>=2023.3
+
+# Monitoring & Alerting
+sentry-sdk>=1.38.0  # Error tracking (Phase 2+)
+prometheus-client>=0.19.0  # Metrics (Phase 2+)
+
+# Docker & Containerization (Phase 3+)
+docker>=6.1.3
+
+# Cloud & Distributed Computing (Phase 4+)
+ray[default]>=2.8.0  # For distributed processing scale-out

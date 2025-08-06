@@ -1,0 +1,593 @@
+
+
+
+from typing import Dict, List, Optional, Tuple, Any, Union
+from datetime import datetime, timezone
+import logging
+import pandas as pd
+import numpy as np
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
+
+# VectorBT imports (from comprehensive research)
+import vectorbt as vbt
+
+from .strategy_converter import StrategyConverter, SignalConversionResult
+from .performance_analyzer import PerformanceAnalyzer, PerformanceMetrics
+from src.strategy.genetic_seeds.base_seed import BaseSeed, SeedFitness
+from src.config.settings import get_settings, Settings
+
+
+
+from src.utils.pandas_compatibility import safe_fillna_false, safe_fillna_zero, safe_fillna
+
+    
+    
+
+
+    
+        
+        
+        
+        
+        
+    
+        
+            
+            
+        
+            
+            
+            
+            
+            
+            
+            
+        
+    
+        
+            
+        
+        
+        
+        
+        
+        
+    
+        
+            
+        
+        
+                
+                
+        
+    
+        
+            
+        
+        
+    
+        
+            
+        
+        
+    
+        
+            
+        
+        
+            
+                    
+                        
+        
+    
+        
+            
+        
+                
+                    
+        
+    
+        
+        
+    
+        
+            
+        
+            
+        
+        
+        
+    
+        
+            
+        
+        
+        
+        
+    
+        
+        
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+"""
+VectorBT Backtesting Engine
+This module provides high-performance backtesting using VectorBT with genetic
+fitness calculation and realistic transaction cost modeling.
+Key Features:
+- Vectorized backtesting for 1000+ strategy populations
+- Realistic transaction cost integration (maker/taker fees + slippage)
+- Multi-asset portfolio simulation
+- Genetic fitness calculation pipeline
+- Statistical confidence through comprehensive validation
+"""
+class BacktestResult:
+    """Container for backtest results."""
+    def __init__(self, strategy_id: str, portfolio: vbt.Portfolio, 
+                 performance_metrics: PerformanceMetrics, fitness: SeedFitness):
+        self.strategy_id = strategy_id
+        self.portfolio = portfolio
+        self.performance_metrics = performance_metrics
+        self.fitness = fitness
+        self.backtest_timestamp = datetime.now(timezone.utc)
+    def __str__(self) -> str:
+        return (f"BacktestResult({self.strategy_id}: "
+                f"Return={self.performance_metrics.total_return:.2%}, "
+                f"Sharpe={self.fitness.sharpe_ratio:.3f}, "
+                f"Fitness={self.fitness.composite_fitness:.3f})")
+class VectorBTEngine:
+    """High-performance backtesting engine using VectorBT."""
+    def __init__(self, settings: Optional[Settings] = None):
+        """Initialize VectorBT backtesting engine.
+        Args:
+            settings: Configuration settings
+        """
+        self.settings = settings or get_settings()
+        self.logger = logging.getLogger(f"{__name__}.Engine")
+        # Initialize components
+        self.converter = StrategyConverter(settings)
+        self.analyzer = PerformanceAnalyzer(settings)
+        # Backtesting configuration from settings
+        self.initial_cash = self.settings.backtesting.initial_cash
+        self.commission = self.settings.backtesting.commission
+        # Realistic transaction costs from consultant recommendations
+        self.maker_fee = self.settings.trading.maker_fee
+        self.taker_fee = self.settings.trading.taker_fee
+        self.slippage = self.settings.trading.slippage
+        # Performance tracking
+        self.backtest_stats = {
+            'total_backtests': 0,
+            'successful_backtests': 0,
+            'failed_backtests': 0,
+            'avg_backtest_time': 0.0,
+            'total_strategies_tested': 0
+        }
+    def backtest_seed(self, seed: BaseSeed, data: pd.DataFrame, 
+                     asset_symbol: str = "BTC") -> BacktestResult:
+        """Backtest a single genetic seed.
+        Args:
+            seed: Genetic seed to backtest
+            data: OHLCV market data
+            asset_symbol: Asset symbol for identification
+        Returns:
+            Backtest result with portfolio and fitness
+        Raises:
+            ValueError: If backtesting fails
+        """
+        start_time = time.time()
+        try:
+            # Convert seed to VectorBT signals
+            conversion_result = self.converter.convert_seed_to_signals(seed, data, asset_symbol)
+            # Create VectorBT portfolio with realistic costs
+            portfolio = self._create_realistic_portfolio(conversion_result, data)
+            # Analyze performance and extract fitness
+            performance_metrics = self.analyzer.analyze_portfolio_performance(
+                portfolio, seed.genes.seed_id
+            )
+            fitness = self.analyzer.extract_genetic_fitness(portfolio, seed.genes.seed_id)
+            # Create result
+            result = BacktestResult(
+                strategy_id=seed.genes.seed_id,
+                portfolio=portfolio,
+                performance_metrics=performance_metrics,
+                fitness=fitness
+            )
+            # Update statistics
+            self.backtest_stats['successful_backtests'] += 1
+            backtest_time = time.time() - start_time
+            self._update_timing_stats(backtest_time)
+            self.logger.debug(f"Backtested {seed.seed_name}: "
+                            f"Return={performance_metrics.total_return:.2%}, "
+                            f"Sharpe={fitness.sharpe_ratio:.3f}")
+            return result
+        except Exception as e:
+            self.backtest_stats['failed_backtests'] += 1
+            self.logger.error(f"Backtest failed for {seed.seed_name}: {e}")
+            raise ValueError(f"Backtesting failed: {e}") from e
+        finally:
+            self.backtest_stats['total_backtests'] += 1
+    def backtest_population(self, seeds: List[BaseSeed], data: pd.DataFrame,
+                          parallel: bool = True, max_workers: Optional[int] = None) -> List[BacktestResult]:
+        """Backtest an entire population of genetic seeds.
+        Args:
+            seeds: List of genetic seeds to backtest
+            data: OHLCV market data
+            parallel: Whether to use parallel processing
+            max_workers: Maximum number of worker threads
+        Returns:
+            List of backtest results
+        """
+        self.logger.info(f"Backtesting population of {len(seeds)} seeds...")
+        start_time = time.time()
+        results = []
+        if parallel and len(seeds) > 1:
+            # Parallel backtesting
+            results = self._backtest_parallel(seeds, data, max_workers)
+        else:
+            # Sequential backtesting
+            results = self._backtest_sequential(seeds, data)
+        # Update statistics
+        total_time = time.time() - start_time
+        success_rate = len(results) / len(seeds) if seeds else 0
+        self.backtest_stats['total_strategies_tested'] += len(seeds)
+        self.logger.info(f"Population backtest complete: {len(results)}/{len(seeds)} "
+                        f"successful ({success_rate:.1%}) in {total_time:.2f}s")
+        return results
+    def backtest_multi_asset(self, seed: BaseSeed, 
+                           data_by_asset: Dict[str, pd.DataFrame]) -> Dict[str, BacktestResult]:
+        """Backtest a seed across multiple assets.
+        Args:
+            seed: Genetic seed to test
+            data_by_asset: Dictionary mapping asset symbols to OHLCV data
+        Returns:
+            Dictionary mapping asset symbols to backtest results
+        """
+        results = {}
+        self.logger.info(f"Multi-asset backtest for {seed.seed_name} across {len(data_by_asset)} assets")
+        for asset_symbol, asset_data in data_by_asset.items():
+            try:
+                result = self.backtest_seed(seed, asset_data, asset_symbol)
+                results[asset_symbol] = result
+                self.logger.debug(f"  {asset_symbol}: "
+                                f"Return={result.performance_metrics.total_return:.2%}, "
+                                f"Sharpe={result.fitness.sharpe_ratio:.3f}")
+            except Exception as e:
+                self.logger.warning(f"Failed to backtest {asset_symbol}: {e}")
+                continue
+        return results
+    def _create_realistic_portfolio(self, conversion_result: SignalConversionResult,
+                                  data: pd.DataFrame) -> vbt.Portfolio:
+        """Create VectorBT portfolio with realistic transaction costs.
+        Args:
+            conversion_result: Signal conversion result
+            data: OHLCV market data
+        Returns:
+            VectorBT Portfolio with realistic costs
+        """
+        # Calculate dynamic fees based on order size and market conditions
+        # Larger orders likely to be taker orders (higher fees)
+        dynamic_fees = self._calculate_dynamic_fees(conversion_result, data)
+        # Create portfolio with comprehensive cost modeling
+        portfolio = vbt.Portfolio.from_signals(
+            close=data['close'],
+            entries=conversion_result.entries,
+            exits=conversion_result.exits,
+            size=conversion_result.size,
+            init_cash=self.initial_cash,
+            fees=dynamic_fees,  # Dynamic fee structure
+            slippage=self.slippage,  # Realistic slippage
+            freq='1H',  # Assuming hourly data
+            max_logs=1000  # Limit logging for performance
+        )
+        return portfolio
+    def _calculate_dynamic_fees(self, conversion_result: SignalConversionResult,
+                              data: pd.DataFrame) -> Union[float, pd.Series]:
+        """Calculate dynamic fees based on market conditions and order characteristics.
+        Args:
+            conversion_result: Signal conversion result
+            data: Market data for volume analysis
+        Returns:
+            Fee structure (single value or series)
+        """
+        # Base fees
+        base_fee = (self.maker_fee + self.taker_fee) / 2  # Average fee
+        # For now, return base fee (could be enhanced with dynamic calculation)
+        # Future enhancement: adjust fees based on:
+        # - Order size relative to average volume
+        # - Market volatility (higher vol = likely taker orders)
+        # - Time of day (market hours vs off-hours)
+        return base_fee
+    def _backtest_parallel(self, seeds: List[BaseSeed], data: pd.DataFrame,
+                          max_workers: Optional[int] = None) -> List[BacktestResult]:
+        """Backtest seeds in parallel using ThreadPoolExecutor.
+        Args:
+            seeds: List of seeds to backtest
+            data: Market data
+            max_workers: Maximum number of workers
+        Returns:
+            List of successful backtest results
+        """
+        if max_workers is None:
+            max_workers = min(len(seeds), self.settings.genetic_algorithm.max_workers or 4)
+        results = []
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Submit all backtesting tasks
+            future_to_seed = {
+                executor.submit(self.backtest_seed, seed, data, f"ASSET_{i}"): seed 
+                for i, seed in enumerate(seeds)
+            }
+            # Collect results as they complete
+            for future in as_completed(future_to_seed):
+                seed = future_to_seed[future]
+                try:
+                    result = future.result()
+                    results.append(result)
+                    if len(results) % 50 == 0:  # Progress logging
+                        self.logger.info(f"Completed {len(results)}/{len(seeds)} backtests")
+                except Exception as e:
+                    self.logger.warning(f"Parallel backtest failed for {seed.seed_name}: {e}")
+                    continue
+        return results
+    def _backtest_sequential(self, seeds: List[BaseSeed], 
+                           data: pd.DataFrame) -> List[BacktestResult]:
+        """Backtest seeds sequentially.
+        Args:
+            seeds: List of seeds to backtest
+            data: Market data
+        Returns:
+            List of successful backtest results
+        """
+        results = []
+        for i, seed in enumerate(seeds):
+            try:
+                result = self.backtest_seed(seed, data, f"ASSET_{i}")
+                results.append(result)
+                if (i + 1) % 50 == 0:  # Progress logging
+                    self.logger.info(f"Completed {i + 1}/{len(seeds)} backtests")
+            except Exception as e:
+                self.logger.warning(f"Sequential backtest failed for {seed.seed_name}: {e}")
+                continue
+        return results
+    def _update_timing_stats(self, backtest_time: float) -> None:
+        """Update timing statistics.
+        Args:
+            backtest_time: Time taken for backtest
+        """
+        total_backtests = self.backtest_stats['total_backtests']
+        current_avg = self.backtest_stats['avg_backtest_time']
+        # Update running average
+        new_avg = (current_avg * total_backtests + backtest_time) / (total_backtests + 1)
+        self.backtest_stats['avg_backtest_time'] = new_avg
+    def validate_strategy_robustness(self, seed: BaseSeed, data: pd.DataFrame,
+                                   validation_periods: int = 3) -> Dict[str, Any]:
+        """Validate strategy robustness through multiple time periods.
+        Args:
+            seed: Genetic seed to validate
+            data: Complete market data
+            validation_periods: Number of validation periods
+        Returns:
+            Dictionary with robustness metrics
+        """
+        # Split data into validation periods
+        period_size = len(data) // validation_periods
+        period_results = []
+        for i in range(validation_periods):
+            start_idx = i * period_size
+            end_idx = start_idx + period_size if i < validation_periods - 1 else len(data)
+            period_data = data.iloc[start_idx:end_idx]
+            try:
+                result = self.backtest_seed(seed, period_data, f"PERIOD_{i}")
+                period_results.append(result)
+            except Exception as e:
+                self.logger.warning(f"Validation period {i} failed: {e}")
+                continue
+        if not period_results:
+            return {'validation_failed': True}
+        # Calculate robustness metrics
+        sharpe_ratios = [r.fitness.sharpe_ratio for r in period_results]
+        returns = [r.performance_metrics.total_return for r in period_results]
+        drawdowns = [r.performance_metrics.max_drawdown for r in period_results]
+        return {
+            'validation_periods': len(period_results),
+            'avg_sharpe': np.mean(sharpe_ratios),
+            'sharpe_stability': 1.0 - np.std(sharpe_ratios) / max(np.mean(sharpe_ratios), 0.01),
+            'avg_return': np.mean(returns),
+            'return_consistency': 1.0 - np.std(returns) / max(np.mean(returns), 0.01),
+            'worst_drawdown': max(drawdowns),
+            'avg_drawdown': np.mean(drawdowns),
+            'all_periods_profitable': all(r > 0 for r in returns),
+            'sharpe_above_threshold': all(s > 1.0 for s in sharpe_ratios)
+        }
+    def benchmark_performance(self, results: List[BacktestResult]) -> Dict[str, Any]:
+        """Benchmark performance against buy-and-hold and other baselines.
+        Args:
+            results: List of backtest results to benchmark
+        Returns:
+            Dictionary with benchmark comparisons
+        """
+        if not results:
+            return {'no_results': True}
+        # Extract performance metrics
+        sharpe_ratios = [r.fitness.sharpe_ratio for r in results]
+        returns = [r.performance_metrics.total_return for r in results]
+        drawdowns = [r.performance_metrics.max_drawdown for r in results]
+        # Calculate percentiles
+        sharpe_percentiles = np.percentile(sharpe_ratios, [25, 50, 75, 90, 95])
+        return_percentiles = np.percentile(returns, [25, 50, 75, 90, 95])
+        # Count strategies meeting criteria
+        sharpe_above_2 = sum(1 for s in sharpe_ratios if s >= 2.0)
+        drawdown_below_15 = sum(1 for d in drawdowns if d <= 0.15)
+        profitable_strategies = sum(1 for r in returns if r > 0)
+        return {
+            'total_strategies': len(results),
+            'performance_distribution': {
+                'sharpe_percentiles': sharpe_percentiles.tolist(),
+                'return_percentiles': return_percentiles.tolist(),
+                'avg_sharpe': np.mean(sharpe_ratios),
+                'avg_return': np.mean(returns),
+                'avg_drawdown': np.mean(drawdowns)
+            },
+            'criteria_analysis': {
+                'sharpe_above_2': {'count': sharpe_above_2, 'percentage': sharpe_above_2 / len(results)},
+                'drawdown_below_15': {'count': drawdown_below_15, 'percentage': drawdown_below_15 / len(results)},
+                'profitable': {'count': profitable_strategies, 'percentage': profitable_strategies / len(results)}
+            },
+            'top_performers': {
+                'best_sharpe': max(sharpe_ratios),
+                'best_return': max(returns),
+                'lowest_drawdown': min(drawdowns)
+            }
+        }
+    def get_engine_stats(self) -> Dict[str, Any]:
+        """Get backtesting engine statistics.
+        Returns:
+            Dictionary with engine statistics
+        """
+        total_backtests = self.backtest_stats['total_backtests']
+        success_rate = (self.backtest_stats['successful_backtests'] / 
+                       max(total_backtests, 1))
+        return {
+            'total_backtests': total_backtests,
+            'successful_backtests': self.backtest_stats['successful_backtests'],
+            'failed_backtests': self.backtest_stats['failed_backtests'],
+            'success_rate': success_rate,
+            'avg_backtest_time_ms': self.backtest_stats['avg_backtest_time'] * 1000,
+            'total_strategies_tested': self.backtest_stats['total_strategies_tested'],
+            'converter_stats': self.converter.get_conversion_stats()
+        }
+async def test_vectorbt_engine():
+    """Test function for VectorBT engine."""
+    print("=== VectorBT Engine Test ===")
+    # Import required components
+    from src.strategy.genetic_seeds.ema_crossover_seed import EMACrossoverSeed
+    from src.strategy.genetic_seeds.rsi_filter_seed import RSIFilterSeed
+    from src.strategy.genetic_seeds.base_seed import SeedGenes, SeedType
+    # Create test data
+    dates = pd.date_range('2023-01-01', periods=2000, freq='1H')
+    # Create realistic price data with trend
+    base_price = 50000
+    returns = np.random.normal(0.0001, 0.02, 2000)  # Small positive drift
+    prices = pd.Series(base_price * np.cumprod(1 + returns), index=dates)
+    test_data = pd.DataFrame({
+        'open': prices.shift(1).fillna(base_price),
+        'high': prices * (1 + np.abs(np.random.normal(0, 0.01, 2000))),
+        'low': prices * (1 - np.abs(np.random.normal(0, 0.01, 2000))),
+        'close': prices,
+        'volume': np.random.uniform(1000, 5000, 2000)
+    }, index=dates)
+    # Create test seeds
+    seeds = []
+    # EMA Crossover seed
+    ema_genes = SeedGenes(
+        seed_id="test_ema_1",
+        seed_type=SeedType.MOMENTUM,
+        parameters={
+            'fast_ema_period': 12.0,
+            'slow_ema_period': 26.0,
+            'momentum_threshold': 0.01,
+            'signal_strength': 0.8,
+            'trend_filter': 0.005
+        }
+    )
+    seeds.append(EMACrossoverSeed(ema_genes))
+    # RSI Filter seed
+    rsi_genes = SeedGenes(
+        seed_id="test_rsi_1",
+        seed_type=SeedType.MEAN_REVERSION,
+        parameters={
+            'rsi_period': 14.0,
+            'oversold_threshold': 25.0,
+            'overbought_threshold': 75.0,
+            'operation_mode': 0.7,
+            'divergence_weight': 0.3
+        }
+    )
+    seeds.append(RSIFilterSeed(rsi_genes))
+    # Test single seed backtest
+    engine = VectorBTEngine()
+    print(f"Testing single seed backtest...")
+    result = engine.backtest_seed(seeds[0], test_data, "BTC")
+    print(f"Single Backtest Result:")
+    print(f"  - Strategy: {result.strategy_id}")
+    print(f"  - Total Return: {result.performance_metrics.total_return:.2%}")
+    print(f"  - Sharpe Ratio: {result.fitness.sharpe_ratio:.3f}")
+    print(f"  - Max Drawdown: {result.performance_metrics.max_drawdown:.2%}")
+    print(f"  - Total Trades: {result.performance_metrics.total_trades}")
+    print(f"  - Composite Fitness: {result.fitness.composite_fitness:.3f}")
+    # Test population backtest
+    print(f"\nTesting population backtest...")
+    population_results = engine.backtest_population(seeds, test_data, parallel=False)
+    print(f"Population Backtest Results:")
+    print(f"  - Total Results: {len(population_results)}")
+    for result in population_results:
+        print(f"    {result.strategy_id}: Return={result.performance_metrics.total_return:.2%}, "
+              f"Sharpe={result.fitness.sharpe_ratio:.3f}")
+    # Test robustness validation
+    print(f"\nTesting strategy robustness validation...")
+    robustness = engine.validate_strategy_robustness(seeds[0], test_data, validation_periods=3)
+    print(f"Robustness Analysis:")
+    for key, value in robustness.items():
+        if isinstance(value, float):
+            print(f"  - {key}: {value:.3f}")
+        else:
+            print(f"  - {key}: {value}")
+    # Test benchmark performance
+    print(f"\nTesting benchmark analysis...")
+    benchmark = engine.benchmark_performance(population_results)
+    print(f"Benchmark Analysis:")
+    if 'performance_distribution' in benchmark:
+        perf = benchmark['performance_distribution']
+        print(f"  - Average Sharpe: {perf['avg_sharpe']:.3f}")
+        print(f"  - Average Return: {perf['avg_return']:.2%}")
+        print(f"  - Average Drawdown: {perf['avg_drawdown']:.2%}")
+    if 'criteria_analysis' in benchmark:
+        criteria = benchmark['criteria_analysis']
+        print(f"  - Sharpe > 2.0: {criteria['sharpe_above_2']['count']}/{benchmark['total_strategies']}")
+        print(f"  - Profitable: {criteria['profitable']['count']}/{benchmark['total_strategies']}")
+    # Show engine statistics
+    print(f"\nEngine Statistics:")
+    stats = engine.get_engine_stats()
+    for key, value in stats.items():
+        if isinstance(value, dict):
+            print(f"  {key}:")
+            for subkey, subvalue in value.items():
+                print(f"    - {subkey}: {subvalue}")
+        else:
+            print(f"  - {key}: {value}")
+    print(f"\n✅ VectorBT Engine test completed successfully!")
+if __name__ == "__main__":
+    """Test the VectorBT engine."""
+    import asyncio
+    import logging
+    # Setup logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    # Run test
+    asyncio.run(test_vectorbt_engine())

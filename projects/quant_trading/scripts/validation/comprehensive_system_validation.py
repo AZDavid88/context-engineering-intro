@@ -130,7 +130,7 @@ class SystemValidator:
             registry = get_registry()
             
             # Test registry has correct number of seeds
-            if len(registry._registry) != 12:
+            if len(registry._registry) != 14:
                 return False
             
             # Test all seeds can be instantiated

@@ -142,7 +142,7 @@ async def main():
         if combined_market_data:
             first_asset = list(combined_market_data.keys())[0]
             asset_data = combined_market_data[first_asset]
-            evolution_results = await genetic_engine.evolve(asset_data, genetic_engine.config.n_generations)
+            evolution_results = genetic_engine.evolve(asset_data, genetic_engine.config.n_generations)
         else:
             logger.error("❌ No combined market data available for evolution")
             return 1

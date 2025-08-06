@@ -1,0 +1,47 @@
+..........F
+=================================== FAILURES ===================================
+___ TestIntegratedPipelineOrchestrator.test_pipeline_integration_connection ____
+tests/integration/test_dynamic_asset_data_collector.py:306: in test_pipeline_integration_connection
+    results = await orchestrator.execute_full_pipeline()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/data/dynamic_asset_data_collector.py:850: in execute_full_pipeline
+    'filter_summary': self.asset_filter.get_enhanced_filter_summary(
+src/discovery/enhanced_asset_filter.py:696: in get_enhanced_filter_summary
+    base_summary = self.get_filter_summary(filtered_assets, metrics)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/discovery/asset_universe_filter.py:655: in get_filter_summary
+    "average_liquidity_score": np.mean(liquidity_scores),
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/python/3.12.1/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:3860: in mean
+    return _methods._mean(a, axis=axis, dtype=dtype,
+/usr/local/python/3.12.1/lib/python3.12/site-packages/numpy/_core/_methods.py:135: in _mean
+    ret = umr_sum(arr, axis, dtype, out, keepdims, where=where)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: unsupported operand type(s) for +: 'Mock' and 'Mock'
+------------------------------ Captured log call -------------------------------
+ERROR    src.data.dynamic_asset_data_collector:dynamic_asset_data_collector.py:874 ❌ Integrated pipeline failed: unsupported operand type(s) for +: 'Mock' and 'Mock'
+=============================== warnings summary ===============================
+../../../../usr/local/python/3.12.1/lib/python3.12/site-packages/pydantic/_internal/_config.py:323
+../../../../usr/local/python/3.12.1/lib/python3.12/site-packages/pydantic/_internal/_config.py:323
+../../../../usr/local/python/3.12.1/lib/python3.12/site-packages/pydantic/_internal/_config.py:323
+  /usr/local/python/3.12.1/lib/python3.12/site-packages/pydantic/_internal/_config.py:323: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+../../../../usr/local/python/3.12.1/lib/python3.12/site-packages/pydantic/_internal/_generate_schema.py:298
+../../../../usr/local/python/3.12.1/lib/python3.12/site-packages/pydantic/_internal/_generate_schema.py:298
+  /usr/local/python/3.12.1/lib/python3.12/site-packages/pydantic/_internal/_generate_schema.py:298: PydanticDeprecatedSince20: `json_encoders` is deprecated. See https://docs.pydantic.dev/2.11/concepts/serialization/#custom-serializers for alternatives. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.11/migration/
+    warnings.warn(
+
+src/strategy/genetic_seeds/funding_rate_carry_seed.py:190
+  /workspaces/context-engineering-intro/projects/quant_trading.backup.20250801_151034/src/strategy/genetic_seeds/funding_rate_carry_seed.py:190: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise an error in a future version of pandas. Value '-0.5' has dtype incompatible with int64, please explicitly cast to a compatible dtype first.
+    signals[positive_carry_conditions] = -0.5  # Medium short signal
+
+tests/integration/test_dynamic_asset_data_collector.py::TestDynamicAssetDataCollector::test_asset_dataset_validation
+  /workspaces/context-engineering-intro/projects/quant_trading.backup.20250801_151034/tests/integration/test_dynamic_asset_data_collector.py:188: FutureWarning: 'H' is deprecated and will be removed in a future version, please use 'h' instead.
+    }, index=pd.date_range('2023-01-01', periods=2, freq='H'))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/integration/test_dynamic_asset_data_collector.py::TestIntegratedPipelineOrchestrator::test_pipeline_integration_connection
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 10 passed, 7 warnings in 33.69s
