@@ -103,7 +103,8 @@ class EnhancedAssetFilter(ResearchBackedAssetFilter):
         self, 
         assets: Optional[List[str]] = None,
         refresh_cache: bool = False,
-        enable_optimizations: bool = True
+        enable_optimizations: bool = True,
+        universe_override: Optional[List[str]] = None
     ) -> Tuple[List[str], Dict[str, AssetMetrics]]:
         """
         Enhanced universe filtering with comprehensive rate limiting optimizations.
@@ -112,6 +113,7 @@ class EnhancedAssetFilter(ResearchBackedAssetFilter):
             assets: Asset list to filter (defaults to all discovered assets)
             refresh_cache: Force cache refresh for real-time filtering
             enable_optimizations: Enable advanced optimization features
+            universe_override: Override asset universe with provided list (for testing)
             
         Returns:
             Tuple of (filtered_assets, asset_metrics)
@@ -123,7 +125,9 @@ class EnhancedAssetFilter(ResearchBackedAssetFilter):
         self.enhanced_metrics = EnhancedFilterMetrics()
         
         # Get asset universe if not provided
-        if assets is None:
+        if universe_override is not None:
+            assets = universe_override
+        elif assets is None:
             assets = await self._discover_all_assets_optimized()
         
         self.enhanced_metrics.initial_asset_count = len(assets)

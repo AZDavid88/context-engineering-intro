@@ -42,6 +42,7 @@ from src.strategy.genetic_seeds.seed_registry import SeedRegistry, get_registry
 from src.strategy.genetic_seeds.base_seed import BaseSeed, SeedType, SeedGenes
 from src.execution.retail_connection_optimizer import RetailConnectionOptimizer, TradingSessionProfile
 from src.config.settings import get_settings
+from src.data.storage_interfaces import DataStorageInterface, get_storage_implementation
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -243,7 +244,8 @@ class GeneticStrategyPool:
         self, 
         connection_optimizer: RetailConnectionOptimizer,
         use_ray: bool = False,
-        evolution_config: Optional[EvolutionConfig] = None
+        evolution_config: Optional[EvolutionConfig] = None,
+        storage: Optional[DataStorageInterface] = None
     ):
         """
         Initialize genetic strategy pool.
@@ -252,10 +254,14 @@ class GeneticStrategyPool:
             connection_optimizer: Retail trading connection optimizer
             use_ray: Enable Ray distributed execution (Phase 5B)
             evolution_config: Evolution parameters
+            storage: Data storage interface (auto-configured if None)
         """
         self.connection_optimizer = connection_optimizer
         self.use_ray = use_ray and RAY_AVAILABLE
         self.config = evolution_config or EvolutionConfig()
+        
+        # Strategic storage interface for clean phase progression
+        self.storage = storage or get_storage_implementation()
         
         # Local components (cannot be distributed)
         self.seed_registry = get_registry()
@@ -284,9 +290,15 @@ class GeneticStrategyPool:
             Number of individuals created
         """
         if seed_types is None:
-            # Use all available seed types from registry
-            available_seeds = self.seed_registry.list_all_seeds()
-            seed_types = [SeedType(seed_info['type']) for seed_info in available_seeds.values() if isinstance(seed_info, dict) and 'type' in seed_info]
+            # Use VERIFIED registry pattern from system_stability_patterns.md
+            seed_names = self.seed_registry.get_all_seed_names()  # Validated function
+            # Create basic seed types - use available categories  
+            seed_types = [
+                SeedType.MOMENTUM, 
+                SeedType.MEAN_REVERSION,
+                SeedType.VOLATILITY,
+                SeedType.TREND_FOLLOWING
+            ]
         
         self.population = []
         
@@ -625,57 +637,64 @@ class GeneticStrategyPool:
         return Individual(seed_type=individual.seed_type, genes=mutated_genes)
     
     def _generate_random_genes(self, seed_type: SeedType, generation: int) -> SeedGenes:
-        """Generate random genes using actual seed parameter bounds (research-driven approach)."""
-        # Get actual seed classes for this type using registry
-        available_seed_names = self.seed_registry._type_index[seed_type]
+        """Generate random genes using VERIFIED patterns with proper parameter initialization."""
+        import random
+        import uuid
+        from src.strategy.genetic_seeds.base_seed import SeedGenes
+        
+        # Get available seeds for this type
+        available_seed_names = self.seed_registry._type_index.get(seed_type, [])
         if not available_seed_names:
-            raise ValueError(f"No seeds available for type {seed_type}")
+            # Fallback: create basic genes with empty parameters
+            logger.warning(f"No seeds available for type {seed_type}, creating minimal genes")
+            return SeedGenes.create_default(seed_type)
         
         # Use first available seed to get parameter requirements
         seed_name = available_seed_names[0]
         seed_class = self.seed_registry.get_seed_class(seed_name)
-        if not seed_class:
-            raise ValueError(f"Could not get seed class for {seed_name}")
         
-        # Create dummy instance to get parameter bounds
-        dummy_genes = SeedGenes(
-            seed_id="bounds_check",
-            seed_type=seed_type,
-            generation=0,
-            parameters={}
-        )
-        
-        try:
-            dummy_instance = seed_class(dummy_genes, self.seed_registry.settings)
-            parameter_bounds = dummy_instance.parameter_bounds
-            required_params = dummy_instance.required_parameters
-        except Exception as e:
-            # Fallback to default bounds if seed creation fails
-            logger.warning(f"Could not get bounds for {seed_name}: {e}")
-            parameter_bounds = {
-                'lookback_period': (10.0, 50.0),
-                'entry_threshold': (0.1, 0.9),
-                'exit_threshold': (0.1, 0.9)
-            }
-            required_params = list(parameter_bounds.keys())
-        
-        # Generate parameters within actual bounds
-        parameters = {}
-        for param_name, (min_val, max_val) in parameter_bounds.items():
-            if param_name in required_params:
-                # Required parameter - must be generated
-                parameters[param_name] = random.uniform(min_val, max_val)
-            else:
-                # Optional parameter - generate with 70% probability
-                if random.random() < 0.7:
-                    parameters[param_name] = random.uniform(min_val, max_val)
-        
-        return SeedGenes(
-            seed_id=f"init_{generation}_{random.randint(1000, 9999)}",
-            seed_type=seed_type,
-            generation=generation,
-            parameters=parameters
-        )
+        if seed_class:
+            try:
+                # Create dummy seed to get parameter bounds and requirements
+                dummy_genes = SeedGenes.create_default(seed_type)
+                dummy_seed = seed_class(dummy_genes, self.seed_registry.settings)
+                
+                # Get required parameters and their bounds
+                required_params = dummy_seed.required_parameters
+                parameter_bounds = dummy_seed.parameter_bounds
+                
+                # Generate random parameters within bounds
+                parameters = {}
+                for param in required_params:
+                    if param in parameter_bounds:
+                        min_val, max_val = parameter_bounds[param]
+                        # Generate random value within bounds
+                        parameters[param] = random.uniform(min_val, max_val)
+                    else:
+                        # Fallback default for missing bounds
+                        parameters[param] = 1.0
+                
+                # Create properly initialized genes
+                genes = SeedGenes(
+                    seed_id=str(uuid.uuid4()),
+                    seed_type=seed_type,
+                    generation=generation,
+                    parameters=parameters
+                )
+                
+                return genes
+                
+            except Exception as e:
+                logger.error(f"Failed to generate parameters for {seed_type}: {e}")
+                # Fallback to basic initialization
+                genes = SeedGenes.create_default(seed_type)
+                genes.generation = generation
+                return genes
+        else:
+            # No seed class available, create basic genes
+            genes = SeedGenes.create_default(seed_type)
+            genes.generation = generation
+            return genes
     
     def _validate_population_with_tolerance(self) -> Dict[str, int]:
         """

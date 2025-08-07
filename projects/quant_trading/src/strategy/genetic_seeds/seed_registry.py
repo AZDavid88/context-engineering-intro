@@ -218,10 +218,26 @@ class SeedRegistry:
         
         # Create registration record
         import time
+        
+        # Determine seed type by creating a dummy instance
+        detected_seed_type = SeedType.MOMENTUM  # Default fallback
+        try:
+            # Create dummy genes to instantiate the seed and detect its type
+            dummy_genes = SeedGenes(
+                seed_id="registry_detection",
+                seed_type=SeedType.MOMENTUM,  # Temporary, will be updated
+                parameters={}
+            )
+            dummy_seed = seed_class(dummy_genes, self.settings)
+            # Check if the seed updated the genes.seed_type during initialization
+            detected_seed_type = dummy_genes.seed_type
+        except Exception as e:
+            self.logger.warning(f"Could not detect seed type for {seed_name}, using MOMENTUM default: {e}")
+            
         registration = SeedRegistration(
             seed_class=seed_class,
             seed_name=seed_name,
-            seed_type=getattr(seed_class, '_seed_type', SeedType.MOMENTUM),
+            seed_type=detected_seed_type,
             status=status,
             validation_errors=validation_errors,
             registration_timestamp=time.time()

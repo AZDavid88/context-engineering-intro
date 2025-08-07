@@ -232,6 +232,63 @@ class DatabaseConfig(BaseModel):
     parquet_compression: str = Field(default="snappy", pattern=r"^(snappy|gzip|brotli)$")
 
 
+class CorrelationSettings(BaseModel):
+    """Cross-asset correlation analysis configuration - Phase 2 Implementation."""
+    
+    # Enable/disable correlation features
+    enable_correlation_signals: bool = Field(
+        default=True, 
+        description="Enable correlation signal generation"
+    )
+    
+    # Correlation calculation parameters
+    correlation_window_periods: int = Field(
+        default=60, 
+        ge=20, 
+        le=200, 
+        description="Rolling window for correlation calculation"
+    )
+    
+    min_correlation_data_points: int = Field(
+        default=30, 
+        ge=10, 
+        le=100, 
+        description="Minimum data points for valid correlation"
+    )
+    
+    # Correlation regime detection
+    correlation_regime_thresholds: Dict[str, float] = Field(
+        default={
+            'high_correlation': 0.7,
+            'low_correlation': 0.3
+        },
+        description="Thresholds for correlation regime classification"
+    )
+    
+    # Performance limits
+    max_correlation_pairs: int = Field(
+        default=50, 
+        ge=10, 
+        le=100, 
+        description="Maximum asset pairs for correlation analysis"
+    )
+    
+    # Signal generation parameters
+    correlation_signal_smoothing: int = Field(
+        default=5,
+        ge=1,
+        le=20,
+        description="Smoothing window for correlation signals"
+    )
+    
+    correlation_signal_threshold: float = Field(
+        default=0.1,
+        ge=0.01,
+        le=0.5,
+        description="Minimum correlation signal strength threshold"
+    )
+
+
 class SupervisorConfig(BaseModel):
     """Process management configuration."""
     
@@ -267,6 +324,7 @@ class Settings(BaseSettings):
     genetic_algorithm: GeneticAlgorithmConfig = Field(default_factory=GeneticAlgorithmConfig)
     backtesting: BacktestingConfig = Field(default_factory=BacktestingConfig)
     market_regime: MarketRegimeConfig = Field(default_factory=MarketRegimeConfig)
+    correlation: CorrelationSettings = Field(default_factory=CorrelationSettings)  # Phase 2 Addition
     monitoring: MonitoringConfig = Field(default_factory=MonitoringConfig)
     database: DatabaseConfig = Field(default_factory=DatabaseConfig)
     supervisor: SupervisorConfig = Field(default_factory=SupervisorConfig)

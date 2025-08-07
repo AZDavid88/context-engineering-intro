@@ -75,6 +75,7 @@ class OrderRequest:
     max_slippage: float = 0.005  # 0.5%
     
     # Metadata
+    metadata: Optional[Dict[str, Any]] = None
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     client_order_id: Optional[str] = None
 

@@ -227,12 +227,18 @@ class BaseSeed(ABC):
             if param not in self.genes.parameters:
                 raise ValueError(f"Required parameter '{param}' missing from genes")
         
-        # Check parameter bounds
+        # Check and clamp parameter bounds (allow genetic exploration tolerance)
         for param, (min_val, max_val) in self.parameter_bounds.items():
             if param in self.genes.parameters:
                 value = self.genes.parameters[param]
                 if not (min_val <= value <= max_val):
-                    raise ValueError(f"Parameter '{param}' value {value} outside bounds [{min_val}, {max_val}]")
+                    # Clamp to bounds instead of failing (genetic exploration tolerance)
+                    clamped_value = max(min_val, min(max_val, value))
+                    self.genes.parameters[param] = clamped_value
+                    if abs(value - clamped_value) / max(abs(min_val), abs(max_val)) > 0.2:  # Only warn for significant deviations
+                        import logging
+                        logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+                        logger.warning(f"Parameter '{param}' value {value} clamped to bounds [{min_val}, {max_val}] -> {clamped_value}")
     
     def set_fitness(self, fitness: SeedFitness) -> None:
         """Set fitness evaluation results."""

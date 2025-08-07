@@ -67,9 +67,19 @@ class DataStorage:
         self.settings = settings or get_settings()
         self.logger = logging.getLogger(f"{__name__}.Storage")
         
-        # Database configuration
-        self.db_path = db_path or str(self.settings.database.duckdb_path)
-        self.parquet_root = Path(self.settings.database.parquet_base_path)
+        # Database configuration with fallback defaults
+        if db_path:
+            self.db_path = db_path
+        else:
+            try:
+                self.db_path = str(self.settings.database.duckdb_path)
+            except (AttributeError, TypeError):
+                self.db_path = "data/trading.duckdb"  # Fallback default
+        
+        try:
+            self.parquet_root = Path(self.settings.database.parquet_base_path)
+        except (AttributeError, TypeError):
+            self.parquet_root = Path("data/parquet")  # Fallback default
         
         # Ensure directories exist
         self.parquet_root.mkdir(parents=True, exist_ok=True)
@@ -195,7 +205,7 @@ class DataStorage:
                 volume DOUBLE NOT NULL,
                 side VARCHAR NOT NULL,
                 trade_id VARCHAR,
-                date_partition DATE GENERATED ALWAYS AS (CAST(timestamp AS DATE)) STORED
+                date_partition DATE GENERATED ALWAYS AS (CAST(timestamp AS DATE))
             )
         """)
         
@@ -453,11 +463,34 @@ class DataStorage:
             DataFrame with technical indicators
         """
         query = f"""
-        WITH price_data AS (
+        WITH base_data AS (
             SELECT 
                 timestamp,
                 close,
                 volume,
+                LAG(close, 1) OVER (ORDER BY timestamp) AS prev_close,
+                LAG(close, 5) OVER (ORDER BY timestamp) AS close_5_ago
+            FROM ohlcv_bars 
+            WHERE symbol = ?
+            ORDER BY timestamp DESC
+            LIMIT {lookback_periods}
+        ),
+        price_data AS (
+            SELECT 
+                timestamp,
+                close,
+                volume,
+                prev_close,
+                close_5_ago,
+                -- Price changes for RSI
+                CASE 
+                    WHEN close > prev_close THEN close - prev_close 
+                    ELSE 0 
+                END AS gain,
+                CASE 
+                    WHEN close < prev_close THEN prev_close - close 
+                    ELSE 0 
+                END AS loss,
                 -- Simple Moving Averages
                 AVG(close) OVER (
                     ORDER BY timestamp 
@@ -467,35 +500,38 @@ class DataStorage:
                     ORDER BY timestamp 
                     ROWS BETWEEN 49 PRECEDING AND CURRENT ROW  
                 ) AS sma_50,
-                
-                -- RSI calculation
-                AVG(CASE WHEN close > LAG(close) 
-                    THEN close - LAG(close) ELSE 0 END) OVER (
-                    ORDER BY timestamp 
-                    ROWS BETWEEN 13 PRECEDING AND CURRENT ROW
-                ) AS avg_gain,
-                AVG(CASE WHEN close < LAG(close) 
-                    THEN LAG(close) - close ELSE 0 END) OVER (
-                    ORDER BY timestamp 
-                    ROWS BETWEEN 13 PRECEDING AND CURRENT ROW
-                ) AS avg_loss,
-                
                 -- Bollinger Bands
                 STDDEV(close) OVER (
                     ORDER BY timestamp 
                     ROWS BETWEEN 19 PRECEDING AND CURRENT ROW
                 ) AS bb_std,
-                
                 -- Volume indicators
                 AVG(volume) OVER (
                     ORDER BY timestamp 
                     ROWS BETWEEN 19 PRECEDING AND CURRENT ROW
                 ) AS volume_sma_20
                 
-            FROM ohlcv_bars 
-            WHERE symbol = ?
-            ORDER BY timestamp DESC
-            LIMIT {lookback_periods}
+            FROM base_data
+        ),
+        rsi_data AS (
+            SELECT 
+                timestamp,
+                close,
+                sma_20,
+                sma_50,
+                bb_std,
+                volume_sma_20,
+                close_5_ago,
+                -- RSI calculation (step by step to avoid nested window functions)
+                AVG(gain) OVER (
+                    ORDER BY timestamp 
+                    ROWS BETWEEN 13 PRECEDING AND CURRENT ROW
+                ) AS avg_gain,
+                AVG(loss) OVER (
+                    ORDER BY timestamp 
+                    ROWS BETWEEN 13 PRECEDING AND CURRENT ROW
+                ) AS avg_loss
+            FROM price_data
         )
         SELECT 
             timestamp,
@@ -513,8 +549,12 @@ class DataStorage:
             sma_20 - (2 * bb_std) AS bb_lower,
             volume_sma_20,
             -- Price momentum
-            (close / LAG(close, 5) OVER (ORDER BY timestamp) - 1) * 100 AS momentum_5d
-        FROM price_data
+            CASE 
+                WHEN close_5_ago > 0 
+                THEN (close / close_5_ago - 1) * 100 
+                ELSE 0 
+            END AS momentum_5d
+        FROM rsi_data
         ORDER BY timestamp ASC
         """
         
