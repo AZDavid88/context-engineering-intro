@@ -1,0 +1,486 @@
+{
+  "workflow_tests": {
+    "data_processing": {
+      "status": "passed",
+      "components_tested": [],
+      "workflow_steps": {
+        "storage_initialization": {
+          "status": "passed",
+          "backend": "local_duckdb",
+          "latency_ms": 153.392
+        },
+        "pipeline_creation": {
+          "status": "passed",
+          "pipeline_type": "MarketDataPipeline"
+        },
+        "api_connectivity": {
+          "status": "passed",
+          "connection_type": "mock_test",
+          "note": "Real API testing disabled"
+        },
+        "data_storage_cycle": {
+          "status": "passed",
+          "bars_stored": 50,
+          "bars_retrieved": 50,
+          "data_integrity": true
+        },
+        "technical_indicators": {
+          "status": "passed",
+          "indicators_calculated": 9
+        }
+      },
+      "performance_metrics": {
+        "total_workflow_time": 2.857450246810913,
+        "storage_latency": 153.392,
+        "throughput_bars_per_second": 17.49811744082089
+      }
+    },
+    "genetic_algorithm": {
+      "status": "passed",
+      "evolution_metrics": {
+        "generations_completed": 3,
+        "initial_best_fitness": 0.13474076940863178,
+        "final_best_fitness": 0.13474076940863178,
+        "fitness_improvement": 0.0,
+        "improvement_percentage": 0.0,
+        "evolution_time": 1.4256153106689453,
+        "convergence_achieved": "False"
+      },
+      "population_analysis": {
+        "initial": {
+          "size": 20,
+          "diversity": 4,
+          "seed_types": [
+            "volatility",
+            "momentum",
+            "trend_following",
+            "mean_reversion"
+          ]
+        }
+      },
+      "fitness_progression": [
+        {
+          "generation": 0,
+          "best_fitness": 0.13474076940863178,
+          "average_fitness": 0.01410730402318399,
+          "diversity": 0.0472681309843469
+        },
+        {
+          "generation": 1,
+          "best_fitness": 0.13474076940863178,
+          "average_fitness": 0.04681541190973176,
+          "diversity": 0.05426574851802409
+        },
+        {
+          "generation": 2,
+          "best_fitness": 0.13474076940863178,
+          "average_fitness": 0.09838068711562747,
+          "diversity": 0.046128320662280425
+        }
+      ]
+    },
+    "signal_generation": {
+      "status": "passed",
+      "seeds_tested": 14,
+      "seeds_working": 14,
+      "signal_quality_analysis": {
+        "total_signals": 4200,
+        "meaningful_signals": 2321,
+        "signal_distribution": {},
+        "seeds_with_signals": 14
+      },
+      "seed_results": {
+        "EMACrossoverSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 230,
+          "unique_values": 3,
+          "signal_range": [
+            -0.5,
+            0.5
+          ],
+          "signal_std": 0.4359663595584718,
+          "meaningful": true,
+          "seed_type": "momentum"
+        },
+        "DonchianBreakoutSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 59,
+          "unique_values": 3,
+          "signal_range": [
+            -1.0,
+            1.0
+          ],
+          "signal_std": 0.44315786001027774,
+          "meaningful": true,
+          "seed_type": "breakout"
+        },
+        "RSIFilterSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 35,
+          "unique_values": 36,
+          "signal_range": [
+            -0.682615333485609,
+            0.7
+          ],
+          "signal_std": 0.10139359498891837,
+          "meaningful": true,
+          "seed_type": "mean_reversion"
+        },
+        "StochasticOscillatorSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 212,
+          "unique_values": 126,
+          "signal_range": [
+            -1.0,
+            1.0
+          ],
+          "signal_std": 0.465520154808972,
+          "meaningful": true,
+          "seed_type": "momentum"
+        },
+        "SMATrendFilterSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 99,
+          "unique_values": 71,
+          "signal_range": [
+            -0.3276,
+            0.19560000000000002
+          ],
+          "signal_std": 0.09259317356131302,
+          "meaningful": true,
+          "seed_type": "trend_following"
+        },
+        "ATRStopLossSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 8,
+          "unique_values": 9,
+          "signal_range": [
+            -0.21114002525558326,
+            0.2543459528625287
+          ],
+          "signal_std": 0.029266079175440947,
+          "meaningful": true,
+          "seed_type": "risk_management"
+        },
+        "IchimokuCloudSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 198,
+          "unique_values": 44,
+          "signal_range": [
+            -0.4739999999999999,
+            0.4739999999999999
+          ],
+          "signal_std": 0.12006979094352677,
+          "meaningful": true,
+          "seed_type": "trend_following"
+        },
+        "VWAPReversionSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 170,
+          "unique_values": 16,
+          "signal_range": [
+            -0.2743996042395735,
+            0.12077026972136849
+          ],
+          "signal_std": 0.06552669661356993,
+          "meaningful": true,
+          "seed_type": "mean_reversion"
+        },
+        "VolatilityScalingSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 295,
+          "unique_values": 292,
+          "signal_range": [
+            -0.5522279798638796,
+            0.3
+          ],
+          "signal_std": 0.14789739657750525,
+          "meaningful": true,
+          "seed_type": "volatility"
+        },
+        "FundingRateCarrySeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 174,
+          "unique_values": 5,
+          "signal_range": [
+            -1.0,
+            1.0
+          ],
+          "signal_std": 0.45551862993978876,
+          "meaningful": true,
+          "seed_type": "carry"
+        },
+        "LinearSVCClassifierSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 300,
+          "unique_values": 2,
+          "signal_range": [
+            -1.0,
+            1.0
+          ],
+          "signal_std": 0.9474175425861608,
+          "meaningful": true,
+          "seed_type": "ml_classifier"
+        },
+        "PCATreeQuantileSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 134,
+          "unique_values": 3,
+          "signal_range": [
+            -1.0,
+            1.0
+          ],
+          "signal_std": 0.6642957841872014,
+          "meaningful": true,
+          "seed_type": "ml_classifier"
+        },
+        "BollingerBandsSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 108,
+          "unique_values": 3,
+          "signal_range": [
+            -1.0,
+            1.0
+          ],
+          "signal_std": 0.6,
+          "meaningful": true,
+          "seed_type": "volatility"
+        },
+        "NadarayaWatsonSeed": {
+          "status": "passed",
+          "signals_generated": 300,
+          "non_zero_signals": 299,
+          "unique_values": 3,
+          "signal_range": [
+            -1.0,
+            1.0
+          ],
+          "signal_std": 0.9936408919837298,
+          "meaningful": true,
+          "seed_type": "trend_following"
+        }
+      }
+    },
+    "discovery": {
+      "status": "passed",
+      "discovery_results": {
+        "input_assets": 10,
+        "filtered_assets": 5,
+        "sample_assets": [
+          "SOL",
+          "AAVE",
+          "ETH",
+          "AVAX",
+          "BTC"
+        ]
+      },
+      "filtering_results": {
+        "filter_summary": {
+          "selected_assets": 5,
+          "target_size": 25,
+          "assets": [
+            "SOL",
+            "AAVE",
+            "ETH",
+            "AVAX",
+            "BTC"
+          ],
+          "average_liquidity_score": 0.0,
+          "average_volatility_score": 0.0,
+          "average_composite_score": 0.0,
+          "score_range": {
+            "min": 0.0,
+            "max": 0.0
+          },
+          "top_performers": [
+            [
+              "SOL",
+              0.0
+            ],
+            [
+              "AAVE",
+              0.0
+            ],
+            [
+              "ETH",
+              0.0
+            ],
+            [
+              "AVAX",
+              0.0
+            ],
+            [
+              "BTC",
+              0.0
+            ]
+          ],
+          "optimization_performance": {
+            "total_api_calls_made": 18,
+            "total_api_calls_saved": 4,
+            "optimization_efficiency": "18.2%",
+            "rate_limit_hits": 0,
+            "cache_hit_rate": "0.0%",
+            "average_request_latency": "0.188s"
+          },
+          "optimization_breakdown": {
+            "correlation_eliminations": 0,
+            "priority_skips": 1,
+            "api_calls_saved_by_correlation": 0,
+            "api_calls_saved_by_prioritization": 4,
+            "api_calls_saved_by_caching": 0
+          },
+          "rate_limiter_summary": {
+            "rate_limiting_metrics": {
+              "total_requests": 18,
+              "success_rate": 0.9444444444444444,
+              "rate_limit_hits": 0,
+              "avg_response_time": 0.18844032287597656,
+              "total_delay_seconds": 0.0,
+              "backoff_activations": 0,
+              "retries_performed": 0
+            },
+            "caching_metrics": {
+              "cache_hit_rate": 0.0,
+              "cache_hits": 0,
+              "cache_misses": 18,
+              "cache_size": 18,
+              "cache_categories": {
+                "volatility_data": 10,
+                "correlation_data": 1,
+                "price_data": 1,
+                "liquidity_data": 6
+              }
+            },
+            "optimization_metrics": {
+              "priority_skips": 0,
+              "correlation_eliminations": 0,
+              "correlation_matrix_size": 0
+            },
+            "performance_summary": {
+              "estimated_api_call_reduction": "0.0%",
+              "rate_limit_compliance": "100.0%",
+              "overall_efficiency": "0.0% cache efficiency"
+            }
+          }
+        },
+        "filtering_successful": true
+      }
+    }
+  },
+  "integration_tests": {
+    "discovery_to_strategy": {
+      "status": "passed",
+      "integration_steps": {
+        "discovery": {
+          "status": "passed",
+          "assets_discovered": 4
+        },
+        "strategy_initialization": {
+          "status": "passed",
+          "population_size": 10
+        },
+        "strategy_evolution": {
+          "status": "passed",
+          "best_individuals_count": 10,
+          "primary_asset_tested": "AVAX"
+        }
+      }
+    },
+    "strategy_to_execution": {
+      "status": "partial",
+      "integration_steps": {
+        "strategy_creation": {
+          "status": "passed",
+          "strategies_count": 5
+        },
+        "order_creation": {
+          "status": "passed",
+          "order_symbol": "BTC",
+          "order_side": "buy",
+          "signals_generated": true
+        },
+        "position_sizing": {
+          "status": "failed",
+          "calculated_size": 0,
+          "scaling_method": "unknown"
+        }
+      }
+    },
+    "data_to_modules": {
+      "status": "passed",
+      "data_consumers": {
+        "strategy_module": {
+          "status": "passed",
+          "seed_tested": "EMACrossoverSeed",
+          "signals_generated": 100
+        },
+        "discovery_module": {
+          "status": "passed",
+          "assets_filtered": 2
+        },
+        "execution_module": {
+          "status": "passed",
+          "strategies_evolved": 3
+        }
+      }
+    }
+  },
+  "performance_tests": {
+    "status": "passed",
+    "performance_metrics": {
+      "data_processing": {
+        "bars_stored": 500,
+        "store_time_seconds": 0.11785149574279785,
+        "store_throughput_bars_per_second": 4242.627527538665,
+        "bars_retrieved": 500,
+        "retrieve_time_seconds": 0.0029959678649902344,
+        "retrieve_throughput_bars_per_second": 166890.97564857552
+      },
+      "genetic_algorithm": {
+        "population_size": 30,
+        "initialization_time_seconds": 0.0012230873107910156,
+        "individuals_per_second_init": 24528.09356725146,
+        "evolution_time_seconds": 2.0575473308563232,
+        "generations": 3,
+        "time_per_generation": 0.685849110285441,
+        "individuals_evolved": 10
+      }
+    }
+  },
+  "error_handling_tests": {
+    "status": "partial",
+    "error_scenarios": {
+      "invalid_data": {
+        "status": "passed",
+        "handled_gracefully": true,
+        "error_caught": "'close'"
+      },
+      "empty_population": {
+        "status": "passed",
+        "handled_gracefully": true,
+        "population_size": 0
+      },
+      "storage_connectivity": {
+        "status": "failed",
+        "error": "[Errno 13] Permission denied: '/invalid'"
+      }
+    }
+  },
+  "overall_status": "production_ready",
+  "business_readiness_score": 80.83333333333333,
+  "timestamp": "2025-08-07T02:29:01.954336",
+  "test_duration": 14.846817016601562
+}

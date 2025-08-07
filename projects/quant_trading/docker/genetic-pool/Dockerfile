@@ -36,21 +36,27 @@ RUN apt-get update && apt-get install -y \
     htop \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install Python dependencies
+# OPTIMIZED: Single pip install with timeout and retry settings  
 COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Install additional dependencies for genetic algorithm optimization
+# Create comprehensive requirements with genetic algorithm dependencies
+RUN echo "deap==1.4.1" >> /app/requirements.txt && \
+    echo "scipy==1.11.4" >> /app/requirements.txt && \
+    echo "scikit-learn==1.3.2" >> /app/requirements.txt && \
+    echo "pandas==2.1.4" >> /app/requirements.txt && \
+    echo "numpy==1.24.4" >> /app/requirements.txt && \
+    echo "orjson==3.9.10" >> /app/requirements.txt && \
+    echo "aiofiles==23.2.1" >> /app/requirements.txt && \
+    echo "cryptography==41.0.7" >> /app/requirements.txt && \
+    echo "pyyaml==6.0.1" >> /app/requirements.txt
+
+# SINGLE optimized pip install with timeout handling
 RUN pip install --no-cache-dir \
-    deap==1.4.1 \
-    scipy==1.11.4 \
-    scikit-learn==1.3.2 \
-    pandas==2.1.4 \
-    numpy==1.24.4 \
-    orjson==3.9.10 \
-    aiofiles==23.2.1 \
-    cryptography==41.0.7 \
-    pyyaml==6.0.1
+    --timeout=600 \
+    --retries=3 \
+    --index-url=https://pypi.org/simple \
+    --extra-index-url=https://pypi.org/simple \
+    -r requirements.txt
 
 # Copy source code
 COPY src/ /app/src/

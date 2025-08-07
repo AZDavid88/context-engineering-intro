@@ -18,14 +18,6 @@
       "command": "npx",
       "args": ["-y", "@playwright/mcp@latest"],
       "transport": "stdio"
-    },
-    "brightdata": {
-      "command": "npx",
-      "args": ["-y", "@brightdata/mcp"],
-      "transport": "stdio",
-      "env": {
-        "API_TOKEN": "611fd297-c538-47ee-a21e-53acd3016ff0"
-      }
     }
   }
 }

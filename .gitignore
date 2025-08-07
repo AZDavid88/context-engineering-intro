@@ -70,3 +70,7 @@ test-system.sh
 
 # Keep example files - these override the above exclusions
 !PRPs/ai-powered-crm-system.md
+# Database files
+*.duckdb
+projects/quant_trading/data/
+projects/quant_trading/test_functional.duckdb
