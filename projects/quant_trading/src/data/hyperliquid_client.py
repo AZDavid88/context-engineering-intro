@@ -75,34 +75,7 @@ class MarketDataMessage(BaseModel):
         }
 
 
-class RateLimiter:
-    """Rate limiter for API requests based on Hyperliquid constraints."""
-    
-    def __init__(self, max_requests_per_second: int = 100):
-        """Initialize rate limiter.
-        
-        Args:
-            max_requests_per_second: Maximum requests per second (from settings)
-        """
-        self.max_requests = max_requests_per_second
-        self.requests = []
-        self._lock = asyncio.Lock()
-    
-    async def acquire(self) -> None:
-        """Acquire permission to make a request."""
-        async with self._lock:
-            now = time.time()
-            
-            # Remove requests older than 1 second
-            self.requests = [req_time for req_time in self.requests if now - req_time < 1.0]
-            
-            # Check if we can make a request
-            if len(self.requests) >= self.max_requests:
-                wait_time = 1.0 - (now - self.requests[0])
-                if wait_time > 0:
-                    await asyncio.sleep(wait_time)
-            
-            self.requests.append(now)
+# Old RateLimiter class removed - now using comprehensive research-backed rate limiter from src.config.rate_limiter
 
 
 class HyperliquidRESTClient:
@@ -118,7 +91,7 @@ class HyperliquidRESTClient:
         self.base_url = settings.hyperliquid_api_url  # Auto-selects testnet/mainnet
         self.api_key = settings.hyperliquid.api_key
         self.timeout = aiohttp.ClientTimeout(total=settings.hyperliquid.connection_timeout)
-        self.rate_limiter = RateLimiter(settings.hyperliquid.max_requests_per_second)
+        self.rate_limiter = get_rate_limiter()  # Use comprehensive research-backed rate limiter
         self.session: Optional[aiohttp.ClientSession] = None
         
         # Logger setup
@@ -174,7 +147,11 @@ class HyperliquidRESTClient:
             aiohttp.ClientError: On HTTP errors
             ValueError: On invalid response format
         """
-        await self.rate_limiter.acquire()
+        # Use comprehensive rate limiter with proper endpoint classification
+        await self.rate_limiter.wait_for_rate_limit(
+            endpoint_type=APIEndpointType.INFO_STANDARD,
+            batch_size=1
+        )
         
         if not self.session:
             await self.connect()
@@ -188,6 +165,15 @@ class HyperliquidRESTClient:
                 try:
                     data = await response.json()
                     self.logger.debug(f"Request to {endpoint} successful")
+                    
+                    # Consume rate limit quota after successful request
+                    self.rate_limiter.consume_request(
+                        endpoint_type=APIEndpointType.INFO_STANDARD,
+                        batch_size=1,
+                        require_address_limit=False,
+                        response_code=response.status
+                    )
+                    
                     return data
                 except json.JSONDecodeError as e:
                     error_text = await response.text()
@@ -196,6 +182,16 @@ class HyperliquidRESTClient:
                     
         except aiohttp.ClientError as e:
             self.logger.error(f"HTTP error for {endpoint}: {e}")
+            
+            # Consume rate limit quota for failed requests too (especially 429s)
+            response_code = getattr(e, 'status', None) if hasattr(e, 'status') else None
+            self.rate_limiter.consume_request(
+                endpoint_type=APIEndpointType.INFO_STANDARD,
+                batch_size=1,
+                require_address_limit=False,
+                response_code=response_code
+            )
+            
             raise
     
     async def get_user_state(self, user_address: Optional[str] = None) -> Dict[str, Any]:

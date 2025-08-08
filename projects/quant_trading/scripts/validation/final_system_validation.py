@@ -4,7 +4,9 @@ Final System Validation - Corrected for ML Data Requirements
 Tests all 14 genetic seeds with appropriate data lengths for each seed type
 """
 import sys
-sys.path.append('.')
+import os
+# Add project root to path - fix "No module named 'src'" error
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 import pandas as pd
 import numpy as np
 from src.strategy.genetic_seeds import *

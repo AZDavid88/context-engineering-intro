@@ -20,8 +20,8 @@ import logging
 import importlib
 from datetime import datetime
 
-# Add project root to path
-sys.path.insert(0, os.path.dirname(__file__))
+# Add project root to path - fix "No module named 'src'" error
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 
 class SystemValidator:
@@ -287,7 +287,7 @@ class SystemValidator:
                 self.logger.error("   ❌ Invalid population size")
                 return False
             
-            if genetic_engine.config.n_generations <= 0:
+            if genetic_engine.config.max_generations <= 0:
                 self.logger.error("   ❌ Invalid generations count")
                 return False
             
@@ -322,7 +322,9 @@ class SystemValidator:
             missing_research = []
             
             for research_dir in research_directories:
-                full_path = os.path.join(os.path.dirname(__file__), research_dir)
+                # Calculate path relative to project root, not script directory
+                project_root = os.path.join(os.path.dirname(__file__), '..', '..')
+                full_path = os.path.join(project_root, research_dir)
                 if not os.path.exists(full_path):
                     missing_research.append(research_dir)
             
@@ -340,7 +342,9 @@ class SystemValidator:
             missing_files = []
             
             for file_path in critical_files:
-                full_path = os.path.join(os.path.dirname(__file__), file_path)
+                # Calculate path relative to project root, not script directory
+                project_root = os.path.join(os.path.dirname(__file__), '..', '..')
+                full_path = os.path.join(project_root, file_path)
                 if not os.path.exists(full_path):
                     missing_files.append(file_path)
             

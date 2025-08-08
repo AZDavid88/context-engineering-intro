@@ -343,7 +343,8 @@ def get_storage_implementation() -> DataStorageInterface:
     """
     try:
         settings = get_settings()
-        storage_backend = getattr(settings, 'storage_backend', 'local')
+        # Check environment variable first, then settings attribute
+        storage_backend = os.environ.get('STORAGE_BACKEND') or getattr(settings, 'storage_backend', 'local')
         
         if storage_backend == 'shared':
             shared_path = getattr(settings, 'shared_storage_path', '/shared/data')
@@ -351,9 +352,22 @@ def get_storage_implementation() -> DataStorageInterface:
             return SharedDataStorage(shared_path=shared_path)
         
         elif storage_backend == 'neon':
-            # Phase 4: Import NeonDataStorage when implemented
-            logger.warning("Neon storage backend requested but not yet implemented. Using local storage.")
-            return LocalDataStorage()
+            # Phase 4: NeonHybridStorage implementation
+            try:
+                from .neon_hybrid_storage import create_neon_hybrid_storage
+                logger.info("Using NeonHybridStorage backend")
+                # Create async task to initialize hybrid storage
+                import asyncio
+                hybrid_storage = asyncio.create_task(create_neon_hybrid_storage(settings))
+                # For now, return the hybrid storage instance (initialization happens async)
+                from .neon_hybrid_storage import NeonHybridStorage
+                return NeonHybridStorage(settings, auto_initialize=True)
+            except ImportError as e:
+                logger.warning(f"Neon storage backend not available: {e}. Using local storage.")
+                return LocalDataStorage()
+            except Exception as e:
+                logger.error(f"Failed to initialize Neon storage: {e}. Using local storage.")
+                return LocalDataStorage()
         
         else:
             # Default: Local storage
