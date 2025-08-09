@@ -601,7 +601,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from src.backtesting.vectorbt_engine import VectorBTEngine
-from src.execution.paper_trading import PaperTradingSystem, PaperTradingMode
+from src.execution.paper_trading import PaperTradingEngine as PaperTradingSystem, PaperTradingMode
 from src.backtesting.performance_analyzer import PerformanceAnalyzer
 from src.strategy.genetic_seeds.base_seed import BaseSeed
 
@@ -827,6 +827,7 @@ class TripleValidationPipeline:
         """Perform accelerated replay validation."""
         
         # Use paper trading system in accelerated replay mode
+        # Note: run_accelerated_replay method needs implementation in PaperTradingEngine
         replay_results = await self.paper_trading.run_accelerated_replay(
             strategy=strategy,
             replay_days=90,     # 3 months of data
@@ -848,6 +849,7 @@ class TripleValidationPipeline:
         """Perform live testnet validation."""
         
         # Deploy to testnet for short live validation
+        # Note: deploy_testnet_validation method needs implementation in PaperTradingEngine
         testnet_results = await self.paper_trading.deploy_testnet_validation(
             strategy=strategy,
             validation_hours=0.5,  # 30 minutes of live validation

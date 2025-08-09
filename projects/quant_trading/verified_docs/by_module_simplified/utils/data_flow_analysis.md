@@ -2,6 +2,7 @@
 
 **Generated:** 2025-08-08  
 **Module Path:** `/src/utils/`  
+**Analysis Scope:** 4 Python files, 710 lines total
 **Analysis Focus:** Data flow patterns, processing pipelines, and utility integration points  
 
 ---

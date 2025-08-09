@@ -1,0 +1,41 @@
+{
+  "strategy_pool_sizing": {
+    "base_strategies_per_1k_capital": 1,
+    "min_strategies": 3,
+    "max_strategies": 25,
+    "performance_adjustment": {
+      "high_performance_threshold": 2.0,
+      "high_performance_bonus": 5,
+      "low_performance_threshold": 0.5,
+      "low_performance_penalty": 3
+    }
+  },
+  "strategy_retirement": {
+    "negative_sharpe_days": 7,
+    "max_drawdown_threshold": 0.15,
+    "max_drawdown_days": 3,
+    "low_win_rate_threshold": 0.3,
+    "low_win_rate_days": 14
+  },
+  "new_strategy_approval": {
+    "min_backtest_sharpe": 1.0,
+    "min_paper_trading_days": 3,
+    "min_paper_sharpe": 0.8,
+    "max_drawdown_threshold": 0.12
+  },
+  "emergency_shutdown": {
+    "daily_loss_threshold": 0.05,
+    "weekly_loss_threshold": 0.15,
+    "max_drawdown_threshold": 0.2
+  },
+  "risk_adjustment": {
+    "high_volatility_threshold": 0.05,
+    "high_correlation_threshold": 0.8,
+    "low_volume_threshold": 0.7,
+    "position_size_adjustment": {
+      "high_risk_multiplier": 0.5,
+      "normal_risk_multiplier": 1.0,
+      "low_risk_multiplier": 1.2
+    }
+  }
+}

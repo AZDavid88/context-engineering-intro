@@ -2,6 +2,7 @@
 
 **Generated:** 2025-08-03  
 **Module Path:** `/src/backtesting/`  
+**Analysis Scope:** 4 Python files, 2,078 lines total
 **Analysis Method:** Evidence-based code tracing  
 **Data Flow Confidence:** 95%
 
