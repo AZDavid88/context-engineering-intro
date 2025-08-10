@@ -1,0 +1,94 @@
+# ASCII Execution Graph - Quant Trading System
+
+## Entry Points Layer
+```
+Console Scripts          Docker Services           Shell Scripts
+┌─────────────────┐     ┌─────────────────┐      ┌──────────────┐
+│ quant-trader    │────▶│ ray-head        │──────│ entrypoint.sh│
+│ data-ingest     │     │ ray-worker-1    │      │              │
+│ strategy-evolve │     │ ray-worker-2    │      │ Functions:   │
+│ backtest-runner │     │ genetic-pool    │      │ • start_ray  │
+│ cli-dashboard   │     │ redis/postgres  │      │ • cleanup    │
+└─────────────────┘     └─────────────────┘      └──────────────┘
+        │                        │                       │
+        ▼                        ▼                       ▼
+```
+
+## Execution Layer
+```
+Python Modules (86 files)                 Ray Remote Functions
+┌──────────────────────────────────────┐   ┌─────────────────────┐
+│ Core Execution:                      │   │ @ray.remote         │
+│ • trading_system_manager.py          │──▶│ EvolutionWorker     │
+│ • genetic_engine.py                  │   │ GeneticEvolution    │
+│ • market_data_pipeline.py            │   │ Worker              │
+│ • hyperliquid_client.py              │   └─────────────────────┘
+│ • genetic_strategy_pool.py           │
+│                                      │   Test Suites
+│ Support Modules:                     │   ┌─────────────────────┐
+│ • 81 additional Python files        │   │ Unit Tests: 15      │
+│ • Genetic seeds, analysis tools     │   │ Integration: 18     │
+│ • Data processing, monitoring       │   │ System Tests: 8     │
+└──────────────────────────────────────┘   │ Validation: 14      │
+        │                                  └─────────────────────┘
+        ▼
+```
+
+## External Dependencies
+```
+Databases              APIs                  Monitoring
+┌────────────┐        ┌─────────────┐       ┌─────────────┐
+│ PostgreSQL │        │ Hyperliquid │       │ Prometheus  │
+│ DuckDB     │        │ Fear&Greed  │       │ Grafana     │
+│ Redis      │        │ Index       │       │ Logging     │
+└────────────┘        └─────────────┘       └─────────────┘
+```
+
+## Execution Flow Patterns
+```
+Entry → Module → External Resource
+ │        │            │
+ ▼        ▼            ▼
+┌─────────────────────────────────────────────────┐
+│ 1. console_script:quant-trader                  │
+│    → module:src.main:main                       │
+│    → module:trading_system_manager.py           │
+│    → external:database:postgres                 │
+│                                                 │
+│ 2. service:genetic-pool                         │
+│    → command:distributed                        │
+│    → module:genetic_strategy_pool.py            │
+│    → ray_remote:GeneticEvolutionWorker          │
+│                                                 │
+│ 3. entrypoint.sh                                │
+│    → function:start_ray_head                    │
+│    → command:ray start --head                   │
+│    → service:ray cluster                        │
+└─────────────────────────────────────────────────┘
+```
+
+## Graph Health Assessment
+```
+Metric                  Value    Status
+─────────────────────────────────────────
+Total Nodes             125      ⚠️  High
+Total Edges              19      ❌ Very Low
+Entry Points             14      ⚠️  Many
+Connected Components    106      ❌ Fragmented
+Orphaned Nodes           90      ❌ Critical
+
+Connectivity Ratio: 19/125 = 15% (Poor)
+Fragmentation: 106/125 = 85% (Critical)
+```
+
+## Critical Issues Identified
+1. **Massive Fragmentation**: 85% of graph components are disconnected
+2. **Poor Integration**: Most modules operate in isolation
+3. **Multiple Entry Points**: 14 different startup methods create complexity
+4. **Missing Dependencies**: Many implied connections not captured in static analysis
+
+## Recommendations
+1. Implement dynamic call tracing to capture runtime connections
+2. Consolidate entry points to reduce complexity
+3. Add explicit dependency injection for better graph connectivity
+4. Document implicit module relationships

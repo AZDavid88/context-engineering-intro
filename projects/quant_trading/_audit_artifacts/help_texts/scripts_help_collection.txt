@@ -1,0 +1,664 @@
+🧹 Cleaning whitespace in src/strategy/genetic_engine.py
+📊 Before: 136 total lines, 26 empty lines
+✅ Backup created: src/strategy/genetic_engine.py.cleanup_backup
+✅ Cleaned src/strategy/genetic_engine.py - syntax validation passed
+📊 After: 134 total lines, 24 empty lines
+🎯 Removed 2 excessive empty lines
+✅ Cleanup completed successfully!
+⚠️ Import test failed: attempted relative import with no known parent package
+🧹 Cleaning whitespace in src/strategy/genetic_seeds/vwap_reversion_seed.py
+📊 Before: 660 total lines, 4 empty lines
+✅ Backup created: src/strategy/genetic_seeds/vwap_reversion_seed.py.cleanup_backup
+✅ Cleaned src/strategy/genetic_seeds/vwap_reversion_seed.py - syntax validation passed
+📊 After: 660 total lines, 4 empty lines
+🎯 Removed 0 excessive empty lines
+✅ Cleanup completed successfully!
+⚠️ Import test failed: attempted relative import with no known parent package
+🧪 Test File Migration Utility
+========================================
+
+📋 MIGRATION PLAN:
+
+🏷️ UNIT (7 files):
+   ❌ test_standalone_config.py → tests/unit/test_config.py
+   ❌ test_standalone_data_storage.py → tests/unit/test_data_storage.py
+   ❌ test_standalone_data_pipeline.py → tests/unit/test_data_pipeline.py
+   ❌ test_hyperliquid_assets.py → tests/unit/test_hyperliquid_client.py
+   ❌ test_data_ingestion.py → tests/unit/test_data_ingestion.py
+   ❌ test_asset_universe_filter.py → tests/unit/test_asset_filter.py
+   ❌ test_enhanced_rate_limiting_validation.py → tests/unit/test_rate_limiting.py
+
+🏷️ INTEGRATION (4 files):
+   ❌ test_asset_to_ga_flow.py → tests/integration/test_asset_flow.py
+   ❌ test_genetic_runs.py → tests/integration/test_genetic_engine.py
+   ❌ test_monitoring_integration.py → tests/integration/test_monitoring.py
+   ❌ test_session_management_validation.py → tests/integration/test_session_mgmt.py
+
+🏷️ SYSTEM (1 files):
+   ❌ test_hierarchical_discovery_e2e.py → tests/system/test_hierarchical_discovery.py
+
+🏷️ RESEARCH (6 files):
+   ❌ test_data_storage_simple.py → tests/research_archive/test_data_storage_simple.py
+   ❌ test_data_storage_research_driven.py → tests/research_archive/test_data_storage_research.py
+   ❌ test_strategy_engine_research.py → tests/research_archive/test_strategy_engine_research.py
+   ❌ test_position_sizer_research.py → tests/research_archive/test_position_sizer_research.py
+   ❌ test_order_management_research.py → tests/research_archive/test_order_management_research.py
+   ❌ test_phase_4b_optimization.py → tests/research_archive/test_phase_4b_optimization.py
+
+============================================================
+🔄 Test File Migration (DRY RUN)
+============================================================
+   ⚠️ File not found: test_standalone_config.py
+   ⚠️ File not found: test_standalone_data_storage.py
+   ⚠️ File not found: test_standalone_data_pipeline.py
+   ⚠️ File not found: test_hyperliquid_assets.py
+   ⚠️ File not found: test_data_ingestion.py
+   ⚠️ File not found: test_asset_universe_filter.py
+   ⚠️ File not found: test_enhanced_rate_limiting_validation.py
+   ⚠️ File not found: test_asset_to_ga_flow.py
+   ⚠️ File not found: test_genetic_runs.py
+   ⚠️ File not found: test_monitoring_integration.py
+   ⚠️ File not found: test_session_management_validation.py
+   ⚠️ File not found: test_hierarchical_discovery_e2e.py
+   ⚠️ File not found: test_data_storage_simple.py
+   ⚠️ File not found: test_data_storage_research_driven.py
+   ⚠️ File not found: test_strategy_engine_research.py
+   ⚠️ File not found: test_position_sizer_research.py
+   ⚠️ File not found: test_order_management_research.py
+   ⚠️ File not found: test_phase_4b_optimization.py
+
+============================================================
+📊 MIGRATION SUMMARY:
+   Files to migrate: 0
+   Files missing: 18
+   Total planned: 18
+
+🔄 This was a dry run. Use migrate_test_files(dry_run=False) to execute.
+
+❓ Proceed with migration? (y/N): usage: fix_pandas_deprecation.py [-h] [--dry-run] [--apply] [--verify]
+                                 [--directory DIRECTORY]
+
+Fix pandas .fillna() deprecation warnings
+
+options:
+  -h, --help            show this help message and exit
+  --dry-run             Preview changes without applying them
+  --apply               Apply fixes to files
+  --verify              Verify that fixes work by running tests
+  --directory DIRECTORY
+                        Directory to search for files (default: src)
+usage: complete_system_integration_validator.py [-h] [--real-data]
+                                                [--distributed]
+
+Complete System Integration Validator
+
+options:
+  -h, --help     show this help message and exit
+  --real-data    Enable real data testing
+  --distributed  Enable distributed Ray testing
+Traceback (most recent call last):
+  File "/workspaces/context-engineering-intro/projects/quant_trading/scripts/validation/validate_data_access.py", line 33, in <module>
+    from src.data.hyperliquid_client import HyperliquidClient
+ModuleNotFoundError: No module named 'src'
+usage: validate_complete_system.py [-h] [--testnet] [--verbose]
+
+Validate Complete System
+
+options:
+  -h, --help  show this help message and exit
+  --testnet   Use testnet for validation (default: True)
+  --verbose   Enable verbose logging
+Traceback (most recent call last):
+  File "/workspaces/context-engineering-intro/projects/quant_trading/scripts/validation/verify_stability_test.py", line 43, in run_stability_test
+    from src.execution.genetic_strategy_pool import GeneticStrategyPool, EvolutionConfig
+ModuleNotFoundError: No module named 'src'
+🔍 INDEPENDENT GENETIC ALGORITHM STABILITY VERIFICATION
+============================================================
+This test can be run independently to verify results
+============================================================
+
+❌ FATAL ERROR: No module named 'src'
+
+============================================================
+📋 INDEPENDENT VERIFICATION SUMMARY
+============================================================
+❌ RESULT: STABILITY ISSUES DETECTED
+The following issues were found:
+   - Fatal error: No module named 'src'
+
+📊 Detailed Results: {'initialization': False, 'population_creation': False, 'validation': None, 'parameter_check': False, 'errors': ["Fatal error: No module named 'src'"], 'warnings': []}
+2025-08-10 07:24:11,098 - src.data.storage_interfaces - INFO - Using LocalDataStorage backend
+2025-08-10 07:24:11,098 - src.data.data_storage.Storage - INFO - Data storage initialized: data/trading.duckdb
+2025-08-10 07:24:11,098 - src.data.storage_interfaces - INFO - LocalDataStorage initialized with path: data/trading.duckdb
+2025-08-10 07:24:11,098 - src.execution.genetic_strategy_pool - INFO - GeneticStrategyPool initialized: Ray=disabled
+2025-08-10 07:24:11,099 - src.execution.genetic_strategy_pool - INFO - Initialized population of 8 individuals
+2025-08-10 07:24:11,099 - src.execution.genetic_strategy_pool - INFO - Population validation: 0 critical failures, 0 tolerance warnings
+2025-08-10 07:24:11,099 - src.execution.genetic_strategy_pool - INFO - Starting evolution: 3 generations, mode=local
+2025-08-10 07:24:11,287 - src.execution.genetic_strategy_pool - INFO - Generation 1/3: Best fitness: 0.2921, Avg fitness: 0.0339, Health: 100.0/100
+2025-08-10 07:24:11,483 - src.execution.genetic_strategy_pool - INFO - Generation 2/3: Best fitness: 0.2921, Avg fitness: 0.1190, Health: 100.0/100
+2025-08-10 07:24:11,732 - src.execution.genetic_strategy_pool - INFO - Generation 3/3: Best fitness: 0.2921, Avg fitness: 0.2369, Health: 100.0/100
+2025-08-10 07:24:11,782 - src.execution.genetic_strategy_pool - INFO - GeneticStrategyPool cleanup completed
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+=== COMPREHENSIVE INTEGRATION VALIDATION ===
+Testing complete trading system workflow with synthetic market data...
+✅ Generated realistic market data: 200 candles
+   Price range: $48,904 - $53,916
+   Total return: 6.5%
+
+🧬 Running multi-generation evolution...
+
+📊 EVOLUTION RESULTS:
+   Total strategies: 8
+   Successful evaluations: 8
+   Best Sharpe ratio: 0.2921
+   Average Sharpe ratio: 0.2369
+   Strategies with positive Sharpe: 7
+
+📈 OUT-OF-SAMPLE TESTING:
+   Strategy 1 (mean_reversion):
+     In-sample Sharpe: 0.2921
+     Out-of-sample Sharpe: -0.2256
+     Out-of-sample return: -3.70%
+     Trades executed: 48
+   Strategy 2 (mean_reversion):
+     In-sample Sharpe: 0.2921
+     Out-of-sample Sharpe: -0.2256
+     Out-of-sample return: -3.70%
+     Trades executed: 48
+   Strategy 3 (mean_reversion):
+     In-sample Sharpe: 0.2921
+     Out-of-sample Sharpe: -0.2256
+     Out-of-sample return: -3.70%
+     Trades executed: 48
+
+📋 OUT-OF-SAMPLE SUMMARY:
+   Average OOS Sharpe: -0.2256
+   Profitable strategies: 0/3
+
+🏁 FINAL SYSTEM STATUS:
+   Evolution status: completed
+   Total generations: 3
+   Final health score: 100.0/100
+
+🎯 COMPREHENSIVE SYSTEM VALIDATION: ✅ FUNCTIONAL
+2025-08-10 07:24:15,324 - src.data.storage_interfaces - INFO - Using LocalDataStorage backend
+2025-08-10 07:24:15,324 - src.data.data_storage.Storage - INFO - Data storage initialized: data/trading.duckdb
+2025-08-10 07:24:15,324 - src.data.storage_interfaces - INFO - LocalDataStorage initialized with path: data/trading.duckdb
+2025-08-10 07:24:15,324 - src.config.rate_limiter - INFO - 🚀 Definitive rate limiter initialized
+2025-08-10 07:24:15,324 - src.config.rate_limiter - INFO -    IP limit: 1200/1200 per minute
+2025-08-10 07:24:15,324 - src.config.rate_limiter - INFO -    Address limit: 10000 requests
+2025-08-10 07:24:15,325 - src.data.market_data_pipeline.Pipeline - INFO - Market data pipeline initialized
+2025-08-10 07:24:15,325 - src.discovery.asset_universe_filter - INFO - 🚀 Enhanced Asset Filter initialized with advanced optimizations
+2025-08-10 07:24:15,327 - src.strategy.genetic_engine_core - INFO - Genetic operators registered
+2025-08-10 07:24:15,327 - src.strategy.genetic_engine_core - INFO - DEAP framework setup completed
+2025-08-10 07:24:15,327 - src.strategy.genetic_engine_core - INFO - Genetic engine core initialized
+2025-08-10 07:24:15,328 - src.strategy.genetic_engine_core - INFO - Genetic operators registered
+2025-08-10 07:24:15,328 - src.strategy.genetic_engine_core - INFO - DEAP framework setup completed
+2025-08-10 07:24:15,328 - src.strategy.genetic_engine_core - INFO - Genetic engine core initialized
+2025-08-10 07:24:15,328 - src.strategy.genetic_engine_evaluation - INFO - Fitness evaluator initialized
+2025-08-10 07:24:15,328 - src.strategy.genetic_engine_population - INFO - Population manager initialized with 4 processes
+2025-08-10 07:24:15,328 - src.strategy.genetic_engine - INFO - Unified genetic engine initialized
+2025-08-10 07:24:15,328 - src.execution.position_sizer.PositionSizer - INFO - Genetic position sizer initialized
+2025-08-10 07:24:15,328 - src.strategy.universal_strategy_engine.UniversalEngine - INFO - Universal strategy engine initialized
+🔍 LIVING DOCUMENTATION FUNCTIONALITY VALIDATION
+============================================================
+Docs Path: /workspaces/context-engineering-intro/projects/quant_trading/verified_docs/by_module_simplified
+Source Path: /workspaces/context-engineering-intro/projects/quant_trading/src
+============================================================
+
+📁 Testing Module: analysis
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+   ✅ Module analysis - WORKING
+
+📁 Testing Module: backtesting
+   ✅ Module backtesting - WORKING
+
+📁 Testing Module: config
+   ✅ Module config - WORKING
+
+📁 Testing Module: data
+   ✅ Module data - WORKING
+
+📁 Testing Module: deployment
+   ✅ Module deployment - WORKING
+
+📁 Testing Module: discovery
+   ✅ Module discovery - WORKING
+
+📁 Testing Module: execution
+   ✅ Module execution - WORKING
+
+📁 Testing Module: monitoring
+   ✅ Module monitoring - WORKING
+
+📁 Testing Module: signals
+   ✅ Module signals - WORKING
+
+📁 Testing Module: strategy
+   ✅ Module strategy - WORKING
+
+📁 Testing Module: utils
+   ✅ Module utils - WORKING
+
+📁 Testing Module: validation
+   ✅ Module validation - WORKING
+
+============================================================
+📊 LIVING DOCUMENTATION VALIDATION SUMMARY
+============================================================
+Modules Tested: 12
+Modules Working: 12 ✅
+Modules Broken: 0 ❌
+Module Success Rate: 100.0%
+
+Functions/Components Tested: 18
+Functions Working: 18 ✅
+Functions Broken: 0 ❌
+Function Success Rate: 100.0%
+
+🎯 OVERALL ASSESSMENT:
+   ✅ All documented modules are functional
+   ✅ Living documentation accurately reflects reality
+============================================================
+
+📄 Detailed results saved to: /workspaces/context-engineering-intro/projects/quant_trading/validation_results.json
+2025-08-10 07:24:19,018 - src.config.rate_limiter - INFO - 🚀 Definitive rate limiter initialized
+2025-08-10 07:24:19,018 - src.config.rate_limiter - INFO -    IP limit: 1200/1200 per minute
+2025-08-10 07:24:19,018 - src.config.rate_limiter - INFO -    Address limit: 10000 requests
+2025-08-10 07:24:19,018 - src.discovery.asset_universe_filter - INFO - 🚀 Enhanced Asset Filter initialized with advanced optimizations
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+🔍 COMPREHENSIVE SYSTEM VALIDATION
+============================================================
+Started at: 2025-08-10 07:24:19.018044
+============================================================
+🧪 Testing Package Imports...
+   ✅ PASSED (0.00s)
+🧪 Testing Configuration System...
+   ✅ PASSED (0.00s)
+🧪 Testing Genetic Seeds Complete...
+   ✅ PASSED (0.00s)
+🧪 Testing Discovery System...
+   ✅ PASSED (0.00s)
+🧪 Testing Backtesting System...
+   ✅ PASSED (0.00s)
+🧪 Testing System Integration...
+   ✅ PASSED (0.00s)
+
+============================================================
+📊 VALIDATION SUMMARY
+============================================================
+Total Tests: 6
+Passed: 6 ✅
+Failed: 0 ❌
+Success Rate: 100.0%
+Total Duration: 0.00s
+
+🎉 ALL SYSTEMS OPERATIONAL
+✅ No functionality lost from architectural changes
+2025-08-10 07:24:22,520 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Starting automatic registration of all correlation-enhanced genetic seeds...
+2025-08-10 07:24:22,520 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Discovered 14 genetic seed classes
+2025-08-10 07:24:22,520 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,521 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,525 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_EMACrossoverSeed registered successfully
+2025-08-10 07:24:22,525 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,525 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_EMACrossoverSeed
+2025-08-10 07:24:22,525 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,526 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,544 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_RSIFilterSeed registered successfully
+2025-08-10 07:24:22,545 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,545 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_RSIFilterSeed
+2025-08-10 07:24:22,545 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,545 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,561 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_ATRStopLossSeed registered successfully
+2025-08-10 07:24:22,561 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,562 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_ATRStopLossSeed
+2025-08-10 07:24:22,562 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,562 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,571 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_VolatilityScalingSeed registered successfully
+2025-08-10 07:24:22,571 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,571 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_VolatilityScalingSeed
+2025-08-10 07:24:22,572 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,572 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,719 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_PCATreeQuantileSeed registered successfully
+2025-08-10 07:24:22,719 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,719 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_PCATreeQuantileSeed
+2025-08-10 07:24:22,720 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,720 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,720 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_LinearSVCClassifierSeed registered successfully
+2025-08-10 07:24:22,721 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,721 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_LinearSVCClassifierSeed
+2025-08-10 07:24:22,721 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,722 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,727 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_BollingerBandsSeed registered successfully
+2025-08-10 07:24:22,727 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,727 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_BollingerBandsSeed
+2025-08-10 07:24:22,727 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,727 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,733 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_DonchianBreakoutSeed registered successfully
+2025-08-10 07:24:22,733 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,733 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_DonchianBreakoutSeed
+2025-08-10 07:24:22,734 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,734 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,747 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_StochasticOscillatorSeed registered successfully
+2025-08-10 07:24:22,747 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,747 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_StochasticOscillatorSeed
+2025-08-10 07:24:22,748 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,748 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,769 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_IchimokuCloudSeed registered successfully
+2025-08-10 07:24:22,769 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,769 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_IchimokuCloudSeed
+2025-08-10 07:24:22,769 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,769 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,779 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_NadarayaWatsonSeed registered successfully
+2025-08-10 07:24:22,779 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,779 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_NadarayaWatsonSeed
+2025-08-10 07:24:22,779 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,780 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,793 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_SMATrendFilterSeed registered successfully
+2025-08-10 07:24:22,793 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,793 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_SMATrendFilterSeed
+2025-08-10 07:24:22,794 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,794 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,807 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_VWAPReversionSeed registered successfully
+2025-08-10 07:24:22,807 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,807 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_VWAPReversionSeed
+2025-08-10 07:24:22,807 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,808 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,814 - src.strategy.genetic_seeds.seed_registry.Registry - INFO - Seed Correlation_Enhanced_FundingRateCarrySeed registered successfully
+2025-08-10 07:24:22,814 - src.strategy.genetic_seeds.universal_correlation_enhancer.UniversalEnhancer - WARNING - Could not initialize correlation base: Can't instantiate abstract class CorrelationEnhancedSeed without an implementation for abstract methods 'calculate_technical_indicators', 'generate_signals', 'parameter_bounds', 'required_parameters', 'seed_description', 'seed_name'
+2025-08-10 07:24:22,814 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - Registered enhanced seed: Correlation_Enhanced_FundingRateCarrySeed
+2025-08-10 07:24:22,814 - src.strategy.genetic_seeds.enhanced_seed_factory - INFO - 
+    ╔══════════════════════════════════════════════════════════════╗
+    ║                ENHANCED SEED REGISTRATION COMPLETE           ║
+    ║                                                              ║
+    ║  ✅ Successfully Registered: 14 enhanced seeds               ║
+    ║  ❌ Registration Failures:    0 seeds                      ║
+    ║  📊 Total Discovery:         14 base seeds                   ║
+    ╚══════════════════════════════════════════════════════════════╝
+    
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+usage: ultra_compressed_evolution.py [-h] [--strategies STRATEGIES]
+                                     [--hours HOURS] [--batch-size BATCH_SIZE]
+                                     [--generations GENERATIONS]
+                                     [--validation-mode {full,fast,minimal}]
+                                     [--cost-limit COST_LIMIT] [--test-mode]
+
+Ultra-Compressed Evolution System
+
+options:
+  -h, --help            show this help message and exit
+  --strategies STRATEGIES
+                        Total strategies to generate
+  --hours HOURS         Target execution time in hours
+  --batch-size BATCH_SIZE
+                        Strategies per batch
+  --generations GENERATIONS
+                        Generations per batch
+  --validation-mode {full,fast,minimal}
+                        Validation thoroughness
+  --cost-limit COST_LIMIT
+                        Cost limit in USD
+  --test-mode           Run in test mode with smaller scale
+Traceback (most recent call last):
+  File "/workspaces/context-engineering-intro/projects/quant_trading/scripts/integration/test_advanced_genetic_engine.py", line 23, in <module>
+    from src.strategy.genetic_engine import GeneticEngine, EvolutionConfig, EvolutionStatus
+ModuleNotFoundError: No module named 'src'
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+usage: run_integrated_pipeline.py [-h] [--testnet]
+                                  [--population-size POPULATION_SIZE]
+                                  [--generations GENERATIONS]
+                                  [--enable-optimizations] [--verbose]
+
+Run Integrated Genetic Trading Pipeline
+
+options:
+  -h, --help            show this help message and exit
+  --testnet             Use Hyperliquid testnet instead of mainnet
+  --population-size POPULATION_SIZE
+                        Genetic algorithm population size (default: 1000)
+  --generations GENERATIONS
+                        Number of evolution generations (default: 100)
+  --enable-optimizations
+                        Enable advanced optimizations (default: True)
+  --verbose             Enable verbose logging
+Traceback (most recent call last):
+  File "/workspaces/context-engineering-intro/projects/quant_trading/scripts/integration/test_definitive_fixes.py", line 21, in <module>
+    from src.config.rate_limiter import HyperliquidRateLimiter, APIEndpointType, get_rate_limiter
+ModuleNotFoundError: No module named 'src'
+2025-08-10 07:24:27,814 - __main__ - INFO - 🚀 Genetic Strategy Pool Test Runner - Phase 5B
+2025-08-10 07:24:27,814 - __main__ - INFO - ============================================================
+2025-08-10 07:24:27,814 - __main__ - INFO - 🔍 Validating test environment...
+2025-08-10 07:24:27,815 - __main__ - ERROR - ❌ Missing critical files: ['src/execution/genetic_strategy_pool.py', 'src/strategy/genetic_seeds/base_seed.py', 'src/strategy/genetic_seeds/seed_registry.py', 'tests/test_genetic_strategy_pool.py']
+2025-08-10 07:24:27,815 - __main__ - ERROR - ❌ Environment validation failed - cannot proceed
+Traceback (most recent call last):
+  File "/workspaces/context-engineering-intro/projects/quant_trading/scripts/integration/test_complete_pipeline_integration.py", line 29, in <module>
+    from src.discovery.enhanced_asset_filter import EnhancedAssetFilter
+ModuleNotFoundError: No module named 'src'
+Traceback (most recent call last):
+  File "/workspaces/context-engineering-intro/projects/quant_trading/scripts/integration/test_research_engine.py", line 12, in <module>
+    from src.strategy.genetic_engine_research_compliant import create_research_compliant_engine, ResearchCompliantConfig
+ModuleNotFoundError: No module named 'src'
+Traceback (most recent call last):
+  File "/workspaces/context-engineering-intro/projects/quant_trading/scripts/integration/test_optimized_pipeline_integration.py", line 23, in <module>
+    from src.discovery.enhanced_asset_filter import EnhancedAssetFilter
+ModuleNotFoundError: No module named 'src'
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+=== STOCHASTIC OSCILLATOR DETAILED DEBUG ===
+Parameters: {'k_period': 14.0, 'd_period': 3.0, 'overbought_level': 80.0, 'oversold_level': 20.0, 'divergence_sensitivity': 0.5}
+
+--- TRENDING SCENARIO ---
+%K range: 75.9 to 80.1
+%D range: 75.9 to 80.0
+Oversold threshold: 20.0
+Overbought threshold: 80.0
+Oversold periods: 0
+Overbought periods: 2
+K crosses above D: 0
+K crosses below D: 0
+Crossover signals: 0 / max: 0.000
+Zone signals: 2 / max: 0.203
+Divergence signals: 0 / max: 0.000
+Final signals generated: 2
+Signal range: -0.051 to 0.000
+✅ SUCCESS: 2 signals in trending
+
+--- OSCILLATING SCENARIO ---
+%K range: 5.1 to 93.2
+%D range: 5.1 to 93.1
+Oversold threshold: 20.0
+Overbought threshold: 80.0
+Oversold periods: 42
+Overbought periods: 30
+K crosses above D: 2
+K crosses below D: 1
+Crossover signals: 3 / max: 1.000
+Zone signals: 72 / max: 0.600
+Divergence signals: 17 / max: 0.800
+Final signals generated: 72
+Signal range: -1.000 to 0.735
+✅ SUCCESS: 72 signals in oscillating
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+=== DONCHIAN MATH DEBUG ===
+Parameters: {'channel_period': 20.0, 'breakout_threshold': 0.005, 'volume_confirmation': 1.5, 'false_breakout_filter': 4.0, 'trend_bias': 0.5}
+Breakout threshold: 0.005
+Breakout factor: 1.005
+
+Last 10 periods:
+Period -10: Close=145.45, High=144.95, Factor=145.67, Above_High=True, Above_Breakout=False
+Period -9: Close=145.96, High=145.45, Factor=146.18, Above_High=True, Above_Breakout=False
+Period -8: Close=146.46, High=145.96, Factor=146.69, Above_High=True, Above_Breakout=False
+Period -7: Close=146.97, High=146.46, Factor=147.20, Above_High=True, Above_Breakout=False
+Period -6: Close=147.47, High=146.97, Factor=147.70, Above_High=True, Above_Breakout=False
+Period -5: Close=147.98, High=147.47, Factor=148.21, Above_High=True, Above_Breakout=False
+Period -4: Close=148.48, High=147.98, Factor=148.72, Above_High=True, Above_Breakout=False
+Period -3: Close=148.99, High=148.48, Factor=149.23, Above_High=True, Above_Breakout=False
+Period -2: Close=149.49, High=148.99, Factor=149.73, Above_High=True, Above_Breakout=False
+Period -1: Close=150.00, High=149.49, Factor=150.24, Above_High=True, Above_Breakout=False
+
+Breakout analysis:
+Periods above high channel: 80
+Periods above breakout threshold: 0
+Periods below low channel: 0
+Periods below breakout threshold: 0
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+=== EMA CROSSOVER DEBUG ===
+Parameters: {'fast_ema_period': 12.0, 'slow_ema_period': 26.0, 'momentum_threshold': 0.01, 'signal_strength': 0.5, 'trend_filter': 0.005}
+Fast EMA range: 100.0 to 147.2222250293884
+Slow EMA range: 100.0 to 143.7098384614904
+EMA spread range: 0.0 to 0.026255097213218285
+Crossover up periods: 1
+Crossover down periods: 0
+Fast > Slow periods: 99
+Signals generated: 89
+Signal range: 0.0 to 0.5
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+=== FUNDING RATE CARRY DETAILED DEBUG ===
+Parameters: {'funding_threshold': 0.0001, 'carry_duration': 8.0, 'rate_momentum': 0.3, 'reversal_sensitivity': 0.8, 'funding_persistence': 4.0}
+
+--- TRENDING SCENARIO ---
+Funding rate range: 0.000000 to 0.000653
+Funding threshold: 0.000100
+Reversal sensitivity: 0.80
+Positive funding periods: 76
+Negative funding periods: 0
+Positive persistence periods: 75
+Negative persistence periods: 0
+Low reversal periods: 65
+Positive carry AND conditions: 40
+Negative carry AND conditions: 0
+Final signals generated: 42
+Signal range: -0.500 to 0.000
+✅ SUCCESS: 42 signals in trending
+
+--- BREAKOUT SCENARIO ---
+Funding rate range: -0.000179 to 0.000735
+Funding threshold: 0.000100
+Reversal sensitivity: 0.80
+Positive funding periods: 50
+Negative funding periods: 3
+Positive persistence periods: 70
+Negative persistence periods: 16
+Low reversal periods: 77
+Positive carry AND conditions: 32
+Negative carry AND conditions: 2
+Final signals generated: 35
+Signal range: -0.500 to 0.500
+✅ SUCCESS: 35 signals in breakout
+
+--- OSCILLATING SCENARIO ---
+Funding rate range: -0.001770 to 0.001872
+Funding threshold: 0.000100
+Reversal sensitivity: 0.80
+Positive funding periods: 25
+Negative funding periods: 46
+Positive persistence periods: 26
+Negative persistence periods: 50
+Low reversal periods: 99
+Positive carry AND conditions: 22
+Negative carry AND conditions: 45
+Final signals generated: 71
+Signal range: -0.500 to 0.500
+✅ SUCCESS: 71 signals in oscillating
+✅ sklearn available
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+Traceback (most recent call last):
+  File "/workspaces/context-engineering-intro/projects/quant_trading/scripts/debug/debug_svc_deep.py", line 46, in <module>
+    svc_seed = LinearSVCClassifierSeed(genes)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/context-engineering-intro/projects/quant_trading/src/strategy/genetic_seeds/linear_svc_classifier_seed.py", line 76, in __init__
+    super().__init__(genes, settings)
+  File "/workspaces/context-engineering-intro/projects/quant_trading/src/strategy/genetic_seeds/base_seed.py", line 173, in __init__
+    self._validate_seed()
+  File "/workspaces/context-engineering-intro/projects/quant_trading/src/strategy/genetic_seeds/base_seed.py", line 228, in _validate_seed
+    raise ValueError(f"Required parameter '{param}' missing from genes")
+ValueError: Required parameter 'quantile_bins' missing from genes
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+=== RSI FILTER DETAILED DEBUG ===
+Parameters: {'rsi_period': 14.0, 'oversold_threshold': 25.0, 'overbought_threshold': 75.0, 'operation_mode': 0.7, 'divergence_weight': 0.3}
+
+--- TRENDING SCENARIO ---
+RSI range: 50.0 to 100.0
+Oversold threshold: 25.0
+Overbought threshold: 75.0
+Oversold periods: 0
+Overbought periods: 99
+Signals generated: 99
+Signal range: -0.700 to 0.000
+✅ SUCCESS: 99 signals in trending
+
+--- OSCILLATING SCENARIO ---
+RSI range: 0.0 to 100.0
+Oversold threshold: 25.0
+Overbought threshold: 75.0
+Oversold periods: 42
+Overbought periods: 41
+Signals generated: 83
+Signal range: -0.700 to 0.700
+✅ SUCCESS: 83 signals in oscillating
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+=== DONCHIAN BREAKOUT DETAILED DEBUG ===
+Parameters: {'channel_period': 20.0, 'breakout_threshold': 0.005, 'volume_confirmation': 1.5, 'false_breakout_filter': 4.0, 'trend_bias': 0.5}
+
+--- TRENDING SCENARIO ---
+Close range: 100.00 to 150.00
+High channel range: 109.60 to 149.49
+Low channel range: 100.00 to 139.90
+Periods above high channel: 80
+Periods below low channel: 0
+Signals generated: 80
+Signal range: 0.000 to 1.000
+✅ SUCCESS: 80 signals in trending
+
+--- BREAKOUT SCENARIO ---
+Close range: 98.08 to 124.61
+High channel range: 101.49 to 124.61
+Low channel range: 98.08 to 114.50
+Periods above high channel: 23
+Periods below low channel: 1
+Signals generated: 24
+Signal range: -1.000 to 1.000
+✅ SUCCESS: 24 signals in breakout
+✅ Using official pandas.pydata.org APIs (PRIMARY)
+ℹ️  TA-Lib not available (optional - pandas APIs are primary)
+⚠️  pandas-ta variant detected but DISABLED due to compatibility issues
+    Refer to /research/pandas_ta_openbb/compatibility_analysis.md
+=== LINEAR SVC DEBUG ===
+Parameters: {'lookback_window': 100.0, 'feature_count': 8.0, 'regularization': 1.0, 'ensemble_size': 3.0, 'cross_validation': 5.0, 'quantile_bins': 3.0}
+Signals generated: 0
+Signal range: 0 to 0

@@ -1,0 +1,8 @@
+usage: validate_complete_system.py [-h] [--testnet] [--verbose]
+
+Validate Complete System
+
+options:
+  -h, --help  show this help message and exit
+  --testnet   Use testnet for validation (default: True)
+  --verbose   Enable verbose logging

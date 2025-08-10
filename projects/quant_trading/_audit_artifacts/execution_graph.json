@@ -1,0 +1,480 @@
+{
+  "nodes": {
+    "commands": [
+      "command:distributed",
+      "command:worker",
+      "command:shell",
+      "ray_remote:src/execution/cloud_ga_coordinator.py:_evolve_generation_on_worker",
+      "command:head",
+      "command:--config.file=/etc/prometheus/prometheus.yml",
+      "console_script:quant-trader",
+      "ray_remote:src/execution/genetic_strategy_pool.py:evaluate_individual_distributed",
+      "console_script:backtest-runner",
+      "ray_remote:scripts/evolution/ultra_compressed_evolution.py:_evolve_batch_on_ray",
+      "console_script:strategy-evolve",
+      "console_script:cli-dashboard",
+      "console_script:data-ingest"
+    ],
+    "scripts": [],
+    "modules": [
+      "module:tests/integration/test_complete_system_flow.py",
+      "module:tests/integration/test_dynamic_asset_data_collector.py",
+      "module:scripts/validation/validate_phase1_implementation.py",
+      "module:src/execution/position_sizer.py",
+      "module:tests/unit/test_rate_limiting.py",
+      "module:src/execution/risk_management.py",
+      "module:tests/integration/test_monitoring.py",
+      "module:tests/integration/test_session_mgmt.py",
+      "module:src/config/settings.py",
+      "module:scripts/integration/test_research_engine.py",
+      "module:src/execution/strategy_deployment_manager.py",
+      "module:tests/research_archive/test_strategy_engine_research.py",
+      "module:scripts/evolution/ultra_compressed_evolution.py",
+      "module:scripts/validation/comprehensive_genetic_seed_validation.py",
+      "module:tests/unit/test_data_ingestion.py",
+      "module:tests/integration/test_asset_flow.py",
+      "module:src/execution/trading_system_manager.py",
+      "module:tests/research_archive/test_position_sizer_research.py",
+      "module:tests/research_archive/test_data_storage_simple.py",
+      "module:scripts/validation/final_system_validation.py",
+      "module:src/execution/paper_trading.py",
+      "module:tests/research_archive/test_order_management_research.py",
+      "module:tests/unit/test_genetic_seeds.py",
+      "module:src/utils/technical_analysis_fix.py",
+      "module:scripts/integration/test_advanced_genetic_engine.py",
+      "module:scripts/utilities/cleanup_genetic_engine.py",
+      "module:src/data/s3_historical_loader.py",
+      "module:src/data/fear_greed_client.py",
+      "module:scripts/integration/test_complete_pipeline_integration.py",
+      "module:tests/unit/test_backtesting_engine.py",
+      "module:tests/unit/test_data_pipeline.py",
+      "module:scripts/validation/complete_system_integration_validator.py",
+      "module:scripts/validation/validate_phase4_neon_integration.py",
+      "module:src/utils/pandas_compatibility.py",
+      "module:src/backtesting/performance_analyzer.py",
+      "module:tests/integration/test_automated_decision_engine.py",
+      "module:src/backtesting/strategy_converter.py",
+      "module:scripts/validation/comprehensive_system_validation.py",
+      "module:tests/integration/test_phase3_comprehensive_validation.py",
+      "module:scripts/integration/test_optimized_pipeline_integration.py",
+      "module:tests/integration/test_universal_correlation_enhancer.py",
+      "module:tests/unit/test_config.py",
+      "module:tests/system/test_hierarchical_discovery.py",
+      "module:src/strategy/universal_strategy_engine.py",
+      "module:scripts/utilities/migrate_test_files.py",
+      "module:tests/comprehensive_seed_validation.py",
+      "module:src/backtesting/vectorbt_engine.py",
+      "module:scripts/integration/run_genetic_strategy_pool_tests.py",
+      "module:src/strategy/genetic_seeds/enhanced_seed_factory.py",
+      "module:src/monitoring/system_health_monitor.py",
+      "module:src/discovery/hierarchical_genetic_engine.py",
+      "module:tests/test_genetic_strategy_pool.py",
+      "module:src.backtesting.vectorbt_engine",
+      "module:src/execution/retail_connection_optimizer.py",
+      "module:scripts/utilities/cleanup_seed_whitespace.py",
+      "module:src/data/market_data_pipeline.py",
+      "module:scripts/integration/run_integrated_pipeline.py",
+      "module:src/data/hyperliquid_client.py",
+      "module:tests/research_archive/test_data_storage_research.py",
+      "module:scripts/validation/validate_genetic_seeds.py",
+      "module:scripts/validation/validate_living_docs_functionality.py",
+      "module:src.data.hyperliquid_client",
+      "module:tests/unit/test_data_storage.py",
+      "module:tests/unit/test_asset_filter.py",
+      "module:src.main",
+      "module:src/execution/resilience_manager.py",
+      "module:tests/integration/test_genetic_engine.py",
+      "module:scripts/utilities/fix_pandas_deprecation.py",
+      "module:scripts/integration/test_definitive_fixes.py",
+      "module:tests/comprehensive/test_all_genetic_seeds_validation.py",
+      "module:scripts/validation/validate_phase1_verified_implementation.py",
+      "module:src/validation/triple_validation_pipeline.py",
+      "module:src.strategy.evolution_engine",
+      "module:docker/genetic-pool/health_check.py",
+      "module:tests/unit/test_fear_greed_client.py",
+      "module:src/data/data_storage.py",
+      "module:src/strategy/ast_strategy.py",
+      "module:tests/integration/test_phase3_regime_detection.py",
+      "module:examples/correlation_demo.py",
+      "module:scripts/validation/validate_complete_system.py",
+      "module:scripts/validation/validate_data_access.py",
+      "module:tests/integration/test_phase3_ultra_compressed_evolution.py",
+      "module:src/discovery/crypto_safe_parameters.py",
+      "module:tests/archive/outdated/test_correlation_integration_old.py",
+      "module:src/execution/order_management.py",
+      "module:tests/research_archive/test_phase_4b_optimization.py",
+      "module:tests/unit/test_hyperliquid_client.py",
+      "module:scripts/validation/verify_stability_test.py",
+      "module:scripts/validation/validate_ml_seeds_data_requirements.py",
+      "module:src.monitoring.cli_dashboard",
+      "module:scripts/validation/comprehensive_system_integration_test.py"
+    ],
+    "services": [
+      "service:ray-worker-2",
+      "service:genetic-pool",
+      "service:ray-worker-1",
+      "service:dev-tools",
+      "service:redis",
+      "service:ray-head",
+      "service:prometheus",
+      "service:postgres",
+      "service:grafana"
+    ],
+    "external_resources": [
+      "visualization:grafana",
+      "market_data:fear_greed",
+      "exchange:hyperliquid",
+      "database:postgres",
+      "cache:redis",
+      "monitoring:prometheus"
+    ],
+    "test_suites": [
+      "test_suite:system_tests",
+      "test_suite:comprehensive_tests",
+      "test_suite:unit_tests",
+      "test_suite:integration_tests"
+    ]
+  },
+  "edges": [
+    {
+      "source": "console_script:quant-trader",
+      "target": "module:src.main",
+      "relation": "executes"
+    },
+    {
+      "source": "console_script:data-ingest",
+      "target": "module:src.data.hyperliquid_client",
+      "relation": "executes"
+    },
+    {
+      "source": "console_script:strategy-evolve",
+      "target": "module:src.strategy.evolution_engine",
+      "relation": "executes"
+    },
+    {
+      "source": "console_script:backtest-runner",
+      "target": "module:src.backtesting.vectorbt_engine",
+      "relation": "executes"
+    },
+    {
+      "source": "console_script:cli-dashboard",
+      "target": "module:src.monitoring.cli_dashboard",
+      "relation": "executes"
+    },
+    {
+      "source": "module:src/data/fear_greed_client.py",
+      "target": "market_data:fear_greed",
+      "relation": "uses"
+    },
+    {
+      "source": "module:src/data/hyperliquid_client.py",
+      "target": "exchange:hyperliquid",
+      "relation": "uses"
+    },
+    {
+      "source": "module:scripts/validation/validate_phase4_neon_integration.py",
+      "target": "database:postgres",
+      "relation": "uses"
+    },
+    {
+      "source": "module:scripts/evolution/ultra_compressed_evolution.py",
+      "target": "ray_remote:scripts/evolution/ultra_compressed_evolution.py:_evolve_batch_on_ray",
+      "relation": "defines"
+    },
+    {
+      "source": "module:tests/unit/test_fear_greed_client.py",
+      "target": "market_data:fear_greed",
+      "relation": "uses"
+    },
+    {
+      "source": "module:tests/unit/test_hyperliquid_client.py",
+      "target": "exchange:hyperliquid",
+      "relation": "uses"
+    },
+    {
+      "source": "service:ray-head",
+      "target": "command:head",
+      "relation": "executes"
+    },
+    {
+      "source": "service:ray-worker-1",
+      "target": "command:worker",
+      "relation": "executes"
+    },
+    {
+      "source": "service:ray-worker-2",
+      "target": "command:worker",
+      "relation": "executes"
+    },
+    {
+      "source": "service:genetic-pool",
+      "target": "command:distributed",
+      "relation": "executes"
+    },
+    {
+      "source": "service:prometheus",
+      "target": "command:--config.file=/etc/prometheus/prometheus.yml",
+      "relation": "executes"
+    },
+    {
+      "source": "service:dev-tools",
+      "target": "command:shell",
+      "relation": "executes"
+    },
+    {
+      "source": "module:src/execution/cloud_ga_coordinator.py",
+      "target": "ray_remote:src/execution/cloud_ga_coordinator.py:_evolve_generation_on_worker",
+      "relation": "defines"
+    },
+    {
+      "source": "module:src/execution/genetic_strategy_pool.py",
+      "target": "ray_remote:src/execution/genetic_strategy_pool.py:evaluate_individual_distributed",
+      "relation": "defines"
+    }
+  ],
+  "analysis": {
+    "node_counts": {
+      "commands": 13,
+      "scripts": 0,
+      "modules": 91,
+      "services": 9,
+      "external_resources": 6,
+      "test_suites": 4
+    },
+    "total_nodes": 125,
+    "total_edges": 19,
+    "connected_components": 106,
+    "orphaned_nodes": [
+      "module:examples/correlation_demo.py",
+      "module:tests/comprehensive_seed_validation.py",
+      "module:tests/test_genetic_strategy_pool.py",
+      "module:docker/genetic-pool/health_check.py",
+      "module:src/validation/triple_validation_pipeline.py",
+      "module:src/utils/technical_analysis_fix.py",
+      "module:src/utils/pandas_compatibility.py",
+      "module:src/config/settings.py",
+      "module:src/execution/trading_system_manager.py",
+      "module:src/execution/strategy_deployment_manager.py",
+      "module:src/execution/risk_management.py",
+      "module:src/execution/order_management.py",
+      "module:src/execution/position_sizer.py",
+      "module:src/execution/retail_connection_optimizer.py",
+      "module:src/execution/paper_trading.py",
+      "module:src/execution/resilience_manager.py",
+      "module:src/backtesting/strategy_converter.py",
+      "module:src/backtesting/performance_analyzer.py",
+      "module:src/backtesting/vectorbt_engine.py",
+      "module:src/discovery/crypto_safe_parameters.py",
+      "module:src/discovery/hierarchical_genetic_engine.py",
+      "module:src/data/s3_historical_loader.py",
+      "module:src/data/market_data_pipeline.py",
+      "module:src/data/data_storage.py",
+      "module:src/strategy/universal_strategy_engine.py",
+      "module:src/strategy/ast_strategy.py",
+      "module:src/monitoring/system_health_monitor.py",
+      "module:src/strategy/genetic_seeds/enhanced_seed_factory.py",
+      "module:scripts/utilities/cleanup_genetic_engine.py",
+      "module:scripts/utilities/cleanup_seed_whitespace.py",
+      "module:scripts/utilities/migrate_test_files.py",
+      "module:scripts/utilities/fix_pandas_deprecation.py",
+      "module:scripts/validation/complete_system_integration_validator.py",
+      "module:scripts/validation/validate_data_access.py",
+      "module:scripts/validation/validate_ml_seeds_data_requirements.py",
+      "module:scripts/validation/validate_complete_system.py",
+      "module:scripts/validation/comprehensive_genetic_seed_validation.py",
+      "module:scripts/validation/validate_phase1_verified_implementation.py",
+      "module:scripts/validation/validate_phase1_implementation.py",
+      "module:scripts/validation/verify_stability_test.py",
+      "module:scripts/validation/validate_genetic_seeds.py",
+      "module:scripts/validation/final_system_validation.py",
+      "module:scripts/validation/comprehensive_system_integration_test.py",
+      "module:scripts/validation/validate_living_docs_functionality.py",
+      "module:scripts/validation/comprehensive_system_validation.py",
+      "module:scripts/integration/test_advanced_genetic_engine.py",
+      "module:scripts/integration/run_integrated_pipeline.py",
+      "module:scripts/integration/test_definitive_fixes.py",
+      "module:scripts/integration/run_genetic_strategy_pool_tests.py",
+      "module:scripts/integration/test_complete_pipeline_integration.py",
+      "module:scripts/integration/test_research_engine.py",
+      "module:scripts/integration/test_optimized_pipeline_integration.py",
+      "module:tests/research_archive/test_strategy_engine_research.py",
+      "module:tests/research_archive/test_data_storage_research.py",
+      "module:tests/research_archive/test_order_management_research.py",
+      "module:tests/research_archive/test_position_sizer_research.py",
+      "module:tests/research_archive/test_data_storage_simple.py",
+      "module:tests/research_archive/test_phase_4b_optimization.py",
+      "module:tests/comprehensive/test_all_genetic_seeds_validation.py",
+      "module:tests/system/test_hierarchical_discovery.py",
+      "module:tests/unit/test_rate_limiting.py",
+      "module:tests/unit/test_data_storage.py",
+      "module:tests/unit/test_asset_filter.py",
+      "module:tests/unit/test_data_pipeline.py",
+      "module:tests/unit/test_config.py",
+      "module:tests/unit/test_backtesting_engine.py",
+      "module:tests/unit/test_genetic_seeds.py",
+      "module:tests/unit/test_data_ingestion.py",
+      "module:tests/integration/test_phase3_regime_detection.py",
+      "module:tests/integration/test_genetic_engine.py",
+      "module:tests/integration/test_universal_correlation_enhancer.py",
+      "module:tests/integration/test_complete_system_flow.py",
+      "module:tests/integration/test_dynamic_asset_data_collector.py",
+      "module:tests/integration/test_asset_flow.py",
+      "module:tests/integration/test_phase3_comprehensive_validation.py",
+      "module:tests/integration/test_monitoring.py",
+      "module:tests/integration/test_session_mgmt.py",
+      "module:tests/integration/test_phase3_ultra_compressed_evolution.py",
+      "module:tests/integration/test_automated_decision_engine.py",
+      "module:tests/archive/outdated/test_correlation_integration_old.py",
+      "service:redis",
+      "service:postgres",
+      "service:grafana",
+      "cache:redis",
+      "monitoring:prometheus",
+      "visualization:grafana",
+      "test_suite:unit_tests",
+      "test_suite:integration_tests",
+      "test_suite:comprehensive_tests",
+      "test_suite:system_tests"
+    ],
+    "high_degree_nodes": [
+      [
+        "command:worker",
+        0.016129032258064516
+      ],
+      [
+        "exchange:hyperliquid",
+        0.016129032258064516
+      ],
+      [
+        "market_data:fear_greed",
+        0.016129032258064516
+      ],
+      [
+        "console_script:quant-trader",
+        0.008064516129032258
+      ],
+      [
+        "module:src.main",
+        0.008064516129032258
+      ],
+      [
+        "console_script:data-ingest",
+        0.008064516129032258
+      ],
+      [
+        "module:src.data.hyperliquid_client",
+        0.008064516129032258
+      ],
+      [
+        "console_script:strategy-evolve",
+        0.008064516129032258
+      ],
+      [
+        "module:src.strategy.evolution_engine",
+        0.008064516129032258
+      ],
+      [
+        "console_script:backtest-runner",
+        0.008064516129032258
+      ]
+    ],
+    "execution_paths": [
+      {
+        "entry_point": "console_script:quant-trader",
+        "reachable_count": 1,
+        "reachable_types": [
+          "python_module"
+        ]
+      },
+      {
+        "entry_point": "console_script:data-ingest",
+        "reachable_count": 1,
+        "reachable_types": [
+          "python_module"
+        ]
+      },
+      {
+        "entry_point": "console_script:strategy-evolve",
+        "reachable_count": 1,
+        "reachable_types": [
+          "python_module"
+        ]
+      },
+      {
+        "entry_point": "console_script:backtest-runner",
+        "reachable_count": 1,
+        "reachable_types": [
+          "python_module"
+        ]
+      },
+      {
+        "entry_point": "console_script:cli-dashboard",
+        "reachable_count": 1,
+        "reachable_types": [
+          "python_module"
+        ]
+      },
+      {
+        "entry_point": "service:ray-head",
+        "reachable_count": 1,
+        "reachable_types": [
+          "service_command"
+        ]
+      },
+      {
+        "entry_point": "service:ray-worker-1",
+        "reachable_count": 1,
+        "reachable_types": [
+          "service_command"
+        ]
+      },
+      {
+        "entry_point": "service:ray-worker-2",
+        "reachable_count": 1,
+        "reachable_types": [
+          "service_command"
+        ]
+      },
+      {
+        "entry_point": "service:genetic-pool",
+        "reachable_count": 1,
+        "reachable_types": [
+          "service_command"
+        ]
+      },
+      {
+        "entry_point": "service:redis",
+        "reachable_count": 0,
+        "reachable_types": []
+      },
+      {
+        "entry_point": "service:postgres",
+        "reachable_count": 0,
+        "reachable_types": []
+      },
+      {
+        "entry_point": "service:prometheus",
+        "reachable_count": 1,
+        "reachable_types": [
+          "service_command"
+        ]
+      },
+      {
+        "entry_point": "service:grafana",
+        "reachable_count": 0,
+        "reachable_types": []
+      },
+      {
+        "entry_point": "service:dev-tools",
+        "reachable_count": 1,
+        "reachable_types": [
+          "service_command"
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "generated": "2025-08-10T02:24:00Z",
+    "audit_id": "audit-20250810-022400"
+  }
+}

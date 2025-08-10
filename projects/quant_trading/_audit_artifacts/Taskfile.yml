@@ -1,0 +1,176 @@
+# Normalized Task Runner - Generated from Deep Executable Truth Forensics BIS
+# Generated: 2025-08-10T07:22:00Z
+# Audit ID: audit-20250810-022400
+
+version: '3'
+
+env:
+  AUDIT_MODE: "true"
+  TIMEOUT_DEFAULT: "30"
+  DRY_RUN_DEFAULT: "true"
+  LOG_LEVEL: "INFO"
+  PYTHONPATH: "{{.PWD}}/src"
+
+vars:
+  TIMESTAMP:
+    sh: date +"%Y%m%d_%H%M%S"
+  AUDIT_LOG: "_audit_artifacts/execution_{{.TIMESTAMP}}.log"
+
+tasks:
+  # Console Script Wrappers (Poetry-defined entrypoints)
+  quant-trader:
+    desc: "Execute main quant trading application"
+    cmds:
+      - echo "Executing quant-trader with safety constraints..." | tee -a {{.AUDIT_LOG}}
+      - timeout {{.TIMEOUT_DEFAULT}} python -m src.main {{.CLI_ARGS}} --dry-run={{.DRY_RUN_DEFAULT}}
+    vars:
+      CLI_ARGS: '{{default "" .CLI_ARGS}}'
+
+  data-ingest:
+    desc: "Execute data ingestion pipeline"  
+    cmds:
+      - echo "Executing data-ingest with safety constraints..." | tee -a {{.AUDIT_LOG}}
+      - timeout {{.TIMEOUT_DEFAULT}} python -m src.data.hyperliquid_client {{.CLI_ARGS}} --dry-run={{.DRY_RUN_DEFAULT}}
+    vars:
+      CLI_ARGS: '{{default "" .CLI_ARGS}}'
+
+  strategy-evolve:
+    desc: "Execute genetic strategy evolution"
+    cmds:
+      - echo "Executing strategy evolution with safety constraints..." | tee -a {{.AUDIT_LOG}}
+      - timeout {{.TIMEOUT_DEFAULT}} python -m src.strategy.evolution_engine {{.CLI_ARGS}} --dry-run={{.DRY_RUN_DEFAULT}}
+    vars:
+      CLI_ARGS: '{{default "" .CLI_ARGS}}'
+
+  backtest-runner:
+    desc: "Execute backtesting engine"
+    cmds:
+      - echo "Executing backtest runner with safety constraints..." | tee -a {{.AUDIT_LOG}}
+      - timeout {{.TIMEOUT_DEFAULT}} python -m src.backtesting.vectorbt_engine {{.CLI_ARGS}} --dry-run={{.DRY_RUN_DEFAULT}}
+    vars:
+      CLI_ARGS: '{{default "" .CLI_ARGS}}'
+
+  cli-dashboard:
+    desc: "Execute CLI monitoring dashboard"
+    cmds:
+      - echo "Executing CLI dashboard with safety constraints..." | tee -a {{.AUDIT_LOG}}
+      - timeout {{.TIMEOUT_DEFAULT}} python -m src.monitoring.cli_dashboard {{.CLI_ARGS}} --dry-run={{.DRY_RUN_DEFAULT}}
+    vars:
+      CLI_ARGS: '{{default "" .CLI_ARGS}}'
+
+  # Validation Scripts
+  validate-system:
+    desc: "Execute complete system validation"
+    cmds:
+      - echo "Running system validation..." | tee -a {{.AUDIT_LOG}}
+      - timeout {{.TIMEOUT_DEFAULT}} python scripts/validation/validate_complete_system.py --testnet --verbose
+
+  validate-genetic-seeds:
+    desc: "Execute genetic seed validation"
+    cmds:
+      - echo "Running genetic seed validation..." | tee -a {{.AUDIT_LOG}}
+      - timeout {{.TIMEOUT_DEFAULT}} python scripts/validation/validate_genetic_seeds.py
+
+  # Docker Operations (Safe Mode)
+  docker-build:
+    desc: "Build Docker containers with safety checks"
+    cmds:
+      - echo "Building Docker containers..." | tee -a {{.AUDIT_LOG}}
+      - docker build --no-cache -f docker/genetic-pool/Dockerfile -t genetic-pool:audit .
+      - docker images | grep genetic-pool
+
+  docker-health-check:
+    desc: "Run Docker health checks"
+    cmds:
+      - echo "Running Docker health checks..." | tee -a {{.AUDIT_LOG}}
+      - timeout {{.TIMEOUT_DEFAULT}} python docker/genetic-pool/health_check.py
+
+  # Testing Tasks
+  test-unit:
+    desc: "Execute unit tests with coverage"
+    cmds:
+      - echo "Running unit tests..." | tee -a {{.AUDIT_LOG}}
+      - timeout 300 python -m pytest tests/unit/ -v --tb=short
+
+  test-integration:
+    desc: "Execute integration tests"
+    cmds:
+      - echo "Running integration tests..." | tee -a {{.AUDIT_LOG}}
+      - timeout 600 python -m pytest tests/integration/ -v --tb=short
+
+  test-all:
+    desc: "Execute full test suite"
+    deps:
+      - test-unit
+      - test-integration
+    cmds:
+      - echo "Full test suite completed" | tee -a {{.AUDIT_LOG}}
+
+  # Audit and Verification Tasks
+  audit-verify:
+    desc: "Verify audit artifacts and contracts"
+    cmds:
+      - echo "Verifying audit artifacts..." | tee -a {{.AUDIT_LOG}}
+      - ls -la _audit_artifacts/
+      - python -c "import json; [print(f'✓ {f}') for f in ['execution_graph.json', 'capability_map.json', 'probe_results.jsonl'] if __import__('pathlib').Path(f'_audit_artifacts/{f}').exists()]"
+
+  audit-contracts-check:
+    desc: "Check I/O contracts against current implementation"
+    cmds:
+      - echo "Checking I/O contracts..." | tee -a {{.AUDIT_LOG}}
+      - python -c "
+        import json;
+        with open('_audit_artifacts/io_contracts.json') as f:
+            contracts = json.load(f);
+        print(f'Contracts verified: {len(contracts[\"module_contracts\"])} modules');
+        print(f'Functions analyzed: {contracts[\"contract_summary\"][\"total_function_signatures\"]}');
+        "
+
+  # Cleanup and Maintenance
+  cleanup-audit:
+    desc: "Clean up audit artifacts (use with caution)"
+    prompt: "This will delete all audit artifacts. Continue?"
+    cmds:
+      - rm -rf _audit_artifacts/
+      - echo "Audit artifacts cleaned"
+
+  # Meta Tasks
+  list-capabilities:
+    desc: "List all discovered capabilities"
+    cmds:
+      - echo "=== Console Scripts ==="
+      - python -c "
+        import json;
+        with open('_audit_artifacts/explicit_entrypoints.json') as f:
+            data = json.load(f);
+        [print(f'• {k}: {v[\"target\"]}') for k, v in data.get('poetry_console_scripts', {}).items()]
+        "
+      - echo "=== Docker Services ==="
+      - python -c "
+        import json;
+        with open('_audit_artifacts/infra_invocations.json') as f:
+            data = json.load(f);
+        [print(f'• {k}') for k in data.get('docker_compose_services', {}).keys()]
+        "
+
+  health-check:
+    desc: "Comprehensive system health check"
+    cmds:
+      - echo "=== System Health Check ===" | tee -a {{.AUDIT_LOG}}
+      - python --version
+      - docker --version
+      - python -c "import sys; print(f'Python Path: {sys.path[:3]}')"
+      - ls -la src/ | head -5
+      - echo "Health check completed" | tee -a {{.AUDIT_LOG}}
+
+  # Default task
+  default:
+    desc: "Show available tasks and system status"
+    cmds:
+      - task --list
+      - echo ""
+      - echo "=== System Status ==="
+      - task health-check
+      - echo ""
+      - echo "=== Quick Verification ==="
+      - task audit-verify

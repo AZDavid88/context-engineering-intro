@@ -1,0 +1,6 @@
+type,severity,description,items,action_recommended
+module_redundancy_potential,low,src/execution,8,review_necessity
+module_redundancy_potential,low,src/data,5,review_necessity
+module_redundancy_potential,low,scripts/utilities,4,review_necessity
+module_redundancy_potential,low,scripts/validation,14,review_necessity
+module_redundancy_potential,low,scripts/integration,7,review_necessity

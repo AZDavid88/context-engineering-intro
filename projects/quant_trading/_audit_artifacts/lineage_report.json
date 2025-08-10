@@ -1,0 +1,101 @@
+{
+  "audit_metadata": {
+    "phase": "8_lineage_version_semantics",
+    "generated": "2025-08-10T02:24:00Z"
+  },
+  "file_lineages": {
+    "src/strategy/genetic_engine.py": {
+      "content_hash": "62df53677acf0ed9",
+      "commit_history": [
+        {
+          "hash": "a028689",
+          "message": "feat: Complete Production-Ready Quantitative Trading System with CODEFARM Validation"
+        },
+        {
+          "hash": "268ebdf",
+          "message": "feat: Complete CODEFARM Anti-Hallucination Roadmap with Systematic Documentation"
+        },
+        {
+          "hash": "496a414",
+          "message": "feat: Complete Process-Enforcing Development Methodology with CODEFARM Integration"
+        },
+        {
+          "hash": "08a0509",
+          "message": "feat: Complete system integration with genetic engine restoration and rate limiting fixes"
+        },
+        {
+          "hash": "5108756",
+          "message": "feat: Complete Phase 4B Retail Trading Connection Optimization with Perfect Performance"
+        }
+      ],
+      "total_commits": 5,
+      "lineage_id": "lineage_62df53677acf0ed9"
+    },
+    "src/execution/trading_system_manager.py": {
+      "content_hash": "78570de36a42a6b8",
+      "commit_history": [
+        {
+          "hash": "5108756",
+          "message": "feat: Complete Phase 4B Retail Trading Connection Optimization with Perfect Performance"
+        }
+      ],
+      "total_commits": 1,
+      "lineage_id": "lineage_78570de36a42a6b8"
+    },
+    "src/data/hyperliquid_client.py": {
+      "content_hash": "7a745641882352c7",
+      "commit_history": [
+        {
+          "hash": "e61e14d",
+          "message": "feat: Complete Phase 3 implementation plans with production-ready enhancements"
+        },
+        {
+          "hash": "496a414",
+          "message": "feat: Complete Process-Enforcing Development Methodology with CODEFARM Integration"
+        },
+        {
+          "hash": "ec675bf",
+          "message": "feat: Complete Hyperliquid API validation with genetic algorithm flow verification"
+        },
+        {
+          "hash": "c5c8719",
+          "message": "feat: Complete genetic trading organism architecture with critical gap corrections"
+        }
+      ],
+      "total_commits": 4,
+      "lineage_id": "lineage_7a745641882352c7"
+    },
+    "docker/genetic-pool/entrypoint.sh": {
+      "content_hash": "cf17eb2867fc538a",
+      "commit_history": [
+        {
+          "hash": "02de49b",
+          "message": "feat: Complete Phase 5B.5 Production Infrastructure with Embedded Validation"
+        }
+      ],
+      "total_commits": 1,
+      "lineage_id": "lineage_cf17eb2867fc538a"
+    },
+    "docker-compose.yml": {
+      "content_hash": "b910adf869f98ff5",
+      "commit_history": [],
+      "total_commits": 0,
+      "lineage_id": "lineage_b910adf869f98ff5"
+    },
+    "pyproject.toml": {
+      "content_hash": "d63e1b6504762c2b",
+      "commit_history": [
+        {
+          "hash": "08a0509",
+          "message": "feat: Complete system integration with genetic engine restoration and rate limiting fixes"
+        },
+        {
+          "hash": "c5c8719",
+          "message": "feat: Complete genetic trading organism architecture with critical gap corrections"
+        }
+      ],
+      "total_commits": 2,
+      "lineage_id": "lineage_d63e1b6504762c2b"
+    }
+  }
+}

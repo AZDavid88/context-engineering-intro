@@ -1,0 +1,575 @@
+./phases/completed/automated_decision_engine_implementation_plan.md: Python script, Unicode text, UTF-8 text executable
+./phases/completed/ultra_compressed_evolution_implementation_plan.md: Python script, Unicode text, UTF-8 text executable
+./phases/completed/neon_cloud_database_integration_plan.md: Python script, Unicode text, UTF-8 text executable
+./phases/completed/config_driven_strategy_loader_implementation_plan.md: Python script, Unicode text, UTF-8 text executable
+./phases/completed/market_regime_detection_enhancement_plan.md: Python script, Unicode text, UTF-8 text executable
+./phases/completed/cross_asset_correlation_integration_plan.md: Python script, Unicode text, UTF-8 text executable
+./phases/completed/phase3_architectural_violation_remediation_plan.md: Python script, Unicode text, UTF-8 text executable
+./phases/completed/ray_cluster_scaling_implementation_plan.md: Python script, Unicode text, UTF-8 text executable
+./phases/current/phase4_system_architecture_remediation_plan.md: Python script, Unicode text, UTF-8 text executable, with very long lines (312)
+./phases/current/phase5_genetic_algorithm_production_hardening.md: Python script, Unicode text, UTF-8 text executable
+./phases/current/PHASE4_COMPLETION_REPORT.md: Unicode text, UTF-8 text
+./phases/current/IMPLEMENTATION_ROADMAP.md: Nim source code, Unicode text, UTF-8 text
+./phases/current/phase6_monte_carlo_robustness_implementation.md: Python script, Unicode text, UTF-8 text executable, with very long lines (330)
+./docker/genetic-pool/entrypoint.sh: Bourne-Again shell script, ASCII text executable
+./docker/genetic-pool/Dockerfile: ASCII text
+./docker/genetic-pool/health_check.py: Python script, ASCII text executable
+./docs/planning/legacy_testing_strategy.md: Python script, Unicode text, UTF-8 text executable
+./docs/planning/gordian_progress_tracker.md: Unicode text, UTF-8 text
+./docs/planning/planning_prp.md: Unicode text, UTF-8 text, with very long lines (387)
+./docs/planning/gordian_resolution_master_plan.md: Unicode text, UTF-8 text
+./docs/planning/planning_prp_systematic.md: Unicode text, UTF-8 text
+./docs/planning/risk_mitigation_checklist.md: Unicode text, UTF-8 text
+./docs/planning/methodology_compliance_checklist.md: Unicode text, UTF-8 text, with very long lines (321)
+./docs/planning/gordian_safety_validation.md: Python script, Unicode text, UTF-8 text executable
+./docs/development/AGENTIC_CODING_CONSTRAINTS.md: Python script, Unicode text, UTF-8 text executable
+./docs/development/RESEARCH_TO_CODE_ALIGNMENT_MAP.md: Python script, Unicode text, UTF-8 text executable
+./docs/development/SYSTEMATIC_INTERFACE_DOCUMENTATION.md: Python script, Unicode text, UTF-8 text executable
+./docs/development/ANTI_HALLUCINATION_IMPLEMENTATION_PATTERNS.md: Python script, Unicode text, UTF-8 text executable
+./docs/development/ANTI_HALLUCINATION_DEVELOPMENT_PROTOCOL.md: Python script, Unicode text, UTF-8 text executable
+./docs/systematic_workflow_guide.md: Unicode text, UTF-8 text
+./docs/archive/contaminated/20250803_021133/legacy_health_audit_report_CONTAMINATED.md: Unicode text, UTF-8 text, with very long lines (353)
+./docs/archive/contaminated/20250803_021133/systematization_report_CONTAMINATED.md: Unicode text, UTF-8 text, with very long lines (303)
+./docs/reports/DONCHIAN_ALGORITHMIC_PITFALL_ANALYSIS.md: Python script, Unicode text, UTF-8 text executable, with very long lines (354)
+./docs/reports/genetic_seed_validation_report.md: Unicode text, UTF-8 text
+./docs/reports/FINAL_SEED_VALIDATION_REPORT.md: Unicode text, UTF-8 text
+./docs/reports/codefarm_systematization_analysis_report.md: Unicode text, UTF-8 text
+./docs/infrastructure/PHASE_5B5_INFRASTRUCTURE_ARCHITECTURE.md: Python script, Unicode text, UTF-8 text executable, with very long lines (341)
+./docs/infrastructure/systematic_development_workflow_guide.md: Unicode text, UTF-8 text, with very long lines (345)
+./docs/infrastructure/file_systematization_implementation.md: Python script, Unicode text, UTF-8 text executable
+./config/decision_rules.json: JSON text data
+./forensic_reconstruction_report.md: Unicode text, UTF-8 text
+./src/validation/triple_validation_pipeline.py: Python script, Unicode text, UTF-8 text executable
+./src/validation/__pycache__/triple_validation_pipeline.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 02:00:49 2025 UTC, .py size: 39037 bytes
+./src/utils/shell_safe_operations.py: Python script, ASCII text executable
+./src/utils/technical_analysis_fix.py: Python script, Unicode text, UTF-8 text executable
+./src/utils/__init__.py: Python script, ASCII text executable
+./src/utils/pandas_compatibility.py: Python script, Unicode text, UTF-8 text executable
+./src/utils/__pycache__/shell_safe_operations.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 03:30:08 2025 UTC, .py size: 2469 bytes
+./src/utils/__pycache__/technical_analysis_fix.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Jul 27 16:07:26 2025 UTC, .py size: 9336 bytes
+./src/utils/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 08:41:30 2025 UTC, .py size: 658 bytes
+./src/utils/__pycache__/pandas_compatibility.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Jul 27 16:06:17 2025 UTC, .py size: 12782 bytes
+./src/analysis/__init__.py: Python script, ASCII text executable
+./src/analysis/regime_detectors/volume_regime_detector.py: Python script, Unicode text, UTF-8 text executable
+./src/analysis/regime_detectors/__init__.py: Python script, ASCII text executable
+./src/analysis/regime_detectors/correlation_regime_detector.py: Python script, Unicode text, UTF-8 text executable
+./src/analysis/regime_detectors/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 06:07:19 2025 UTC, .py size: 754 bytes
+./src/analysis/regime_detectors/__pycache__/volume_regime_detector.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 06:12:40 2025 UTC, .py size: 18475 bytes
+./src/analysis/regime_detectors/__pycache__/volatility_regime_detector.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 06:11:41 2025 UTC, .py size: 17683 bytes
+./src/analysis/regime_detectors/__pycache__/correlation_regime_detector.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 06:48:11 2025 UTC, .py size: 13031 bytes
+./src/analysis/regime_detectors/volatility_regime_detector.py: Python script, Unicode text, UTF-8 text executable
+./src/analysis/regime_detection_engine.py: Python script, Unicode text, UTF-8 text executable
+./src/analysis/correlation_engine.py: Python script, Unicode text, UTF-8 text executable
+./src/analysis/__pycache__/correlation_engine.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 02:43:05 2025 UTC, .py size: 18290 bytes
+./src/analysis/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 02:58:43 2025 UTC, .py size: 499 bytes
+./src/analysis/__pycache__/regime_detection_engine.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 06:49:03 2025 UTC, .py size: 30369 bytes
+./src/config/__init__.py: Python script, ASCII text executable
+./src/config/settings.py: Python script, Unicode text, UTF-8 text executable
+./src/config/rate_limiter.py: Python script, Unicode text, UTF-8 text executable
+./src/config/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 08:36:49 2025 UTC, .py size: 282 bytes
+./src/config/__pycache__/rate_limiter.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Wed Jul 30 00:43:06 2025 UTC, .py size: 11538 bytes
+./src/config/__pycache__/settings.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 02:48:06 2025 UTC, .py size: 18222 bytes
+./src/__init__.py: Python script, Unicode text, UTF-8 text executable
+./src/execution/cloud_ga_coordinator.py: Python script, ASCII text executable
+./src/execution/automated_decision_engine.py: Python script, ASCII text executable
+./src/execution/monitoring_core.py: Python script, ASCII text executable
+./src/execution/__init__.py: Python script, ASCII text executable
+./src/execution/genetic_strategy_pool.py: Python script, ASCII text executable
+./src/execution/trading_system_manager.py: Python script, Unicode text, UTF-8 text executable
+./src/execution/strategy_deployment_manager.py: Python script, Unicode text, UTF-8 text executable
+./src/execution/risk_management.py: Python script, Unicode text, UTF-8 text executable
+./src/execution/infrastructure_manager.py: Python script, ASCII text executable
+./src/execution/alerting_system.py: Python script, Unicode text, UTF-8 text executable
+./src/execution/monitoring_dashboard.py: Python script, ASCII text executable
+./src/execution/order_management.py: Python script, Unicode text, UTF-8 text executable
+./src/execution/position_sizer.py: Python script, Unicode text, UTF-8 text executable
+./src/execution/retail_connection_optimizer.py: Python script, Unicode text, UTF-8 text executable
+./src/execution/__pycache__/automated_decision_engine.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  8 21:50:36 2025 UTC, .py size: 25871 bytes
+./src/execution/__pycache__/monitoring_alerts.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  1 15:33:49 2025 UTC, .py size: 24422 bytes
+./src/execution/__pycache__/cloud_ga_coordinator.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 21:57:27 2025 UTC, .py size: 37286 bytes
+./src/execution/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 08:39:03 2025 UTC, .py size: 899 bytes
+./src/execution/__pycache__/order_management.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 01:49:18 2025 UTC, .py size: 28513 bytes
+./src/execution/__pycache__/resilience_manager.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  8 22:28:57 2025 UTC, .py size: 37621 bytes
+./src/execution/__pycache__/risk_management.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Jul 27 17:02:14 2025 UTC, .py size: 27708 bytes
+./src/execution/__pycache__/position_sizer.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 16:54:53 2025 UTC, .py size: 29072 bytes
+./src/execution/__pycache__/paper_trading.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  8 22:36:11 2025 UTC, .py size: 46017 bytes
+./src/execution/__pycache__/monitoring_dashboard.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  1 15:30:03 2025 UTC, .py size: 24443 bytes
+./src/execution/__pycache__/monitoring.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  1 15:35:45 2025 UTC, .py size: 5447 bytes
+./src/execution/__pycache__/infrastructure_manager.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Mon Jul 28 16:40:40 2025 UTC, .py size: 22196 bytes
+./src/execution/__pycache__/monitoring_core.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  1 15:13:39 2025 UTC, .py size: 18893 bytes
+./src/execution/__pycache__/strategy_deployment_manager.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 02:01:22 2025 UTC, .py size: 39983 bytes
+./src/execution/__pycache__/genetic_strategy_pool.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 00:54:06 2025 UTC, .py size: 37902 bytes
+./src/execution/__pycache__/alerting_system.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  8 21:48:54 2025 UTC, .py size: 20683 bytes
+./src/execution/__pycache__/retail_connection_optimizer.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Jul 27 17:22:00 2025 UTC, .py size: 18978 bytes
+./src/execution/__pycache__/trading_system_manager.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Aug 10 00:13:34 2025 UTC, .py size: 31205 bytes
+./src/execution/paper_trading.py: Python script, Unicode text, UTF-8 text executable
+./src/execution/monitoring_alerts.py: Python script, ASCII text executable
+./src/execution/monitoring.py: Python script, ASCII text executable
+./src/execution/resilience_manager.py: Python script, Unicode text, UTF-8 text executable
+./src/backtesting/__init__.py: Python script, ASCII text executable
+./src/backtesting/strategy_converter.py: Python script, Unicode text, UTF-8 text executable
+./src/backtesting/performance_analyzer.py: Python script, Unicode text, UTF-8 text executable
+./src/backtesting/__pycache__/performance_analyzer.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 13:38:15 2025 UTC, .py size: 30643 bytes
+./src/backtesting/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 08:38:13 2025 UTC, .py size: 603 bytes
+./src/backtesting/__pycache__/vectorbt_engine.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Jul 27 16:07:26 2025 UTC, .py size: 23190 bytes
+./src/backtesting/__pycache__/strategy_converter.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Jul 27 16:07:26 2025 UTC, .py size: 25449 bytes
+./src/backtesting/vectorbt_engine.py: Python script, Unicode text, UTF-8 text executable
+./src/discovery/__init__.py: Python script, ASCII text executable
+./src/discovery/enhanced_asset_filter.py: Python script, Unicode text, UTF-8 text executable
+./src/discovery/crypto_safe_parameters.py: Python script, Unicode text, UTF-8 text executable
+./src/discovery/hierarchical_genetic_engine.py: Python script, Unicode text, UTF-8 text executable
+./src/discovery/__pycache__/asset_universe_filter.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 07:23:31 2025 UTC, .py size: 28761 bytes
+./src/discovery/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 07:39:25 2025 UTC, .py size: 1927 bytes
+./src/discovery/__pycache__/hierarchical_genetic_engine.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 07:50:45 2025 UTC, .py size: 42582 bytes
+./src/discovery/__pycache__/optimized_rate_limiter.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 07:33:33 2025 UTC, .py size: 19432 bytes
+./src/discovery/__pycache__/enhanced_asset_filter.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 01:49:06 2025 UTC, .py size: 32318 bytes
+./src/discovery/__pycache__/crypto_safe_parameters.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 06:59:57 2025 UTC, .py size: 17415 bytes
+./src/discovery/optimized_rate_limiter.py: Python script, Unicode text, UTF-8 text executable
+./src/discovery/asset_universe_filter.py: Python script, Unicode text, UTF-8 text executable
+./src/data/neon_schema_manager.py: Python script, ASCII text executable
+./src/data/dynamic_asset_data_collector.py: Python script, Unicode text, UTF-8 text executable
+./src/data/__init__.py: Python script, ASCII text executable
+./src/data/s3_historical_loader.py: Python script, Unicode text, UTF-8 text executable
+./src/data/storage_interfaces.py: Python script, ASCII text executable
+./src/data/fear_greed_client.py: Python script, Unicode text, UTF-8 text executable
+./src/data/market_data_pipeline.py: Python script, Unicode text, UTF-8 text executable
+./src/data/neon_connection_pool.py: Python script, ASCII text executable
+./src/data/hyperliquid_client.py: Python script, Unicode text, UTF-8 text executable
+./src/data/__pycache__/dynamic_asset_data_collector.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 22:01:51 2025 UTC, .py size: 37966 bytes
+./src/data/__pycache__/neon_hybrid_storage.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 21:52:25 2025 UTC, .py size: 28855 bytes
+./src/data/__pycache__/market_data_pipeline.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 16:50:22 2025 UTC, .py size: 23732 bytes
+./src/data/__pycache__/data_storage.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 02:00:08 2025 UTC, .py size: 25464 bytes
+./src/data/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 08:41:01 2025 UTC, .py size: 536 bytes
+./src/data/__pycache__/fear_greed_client.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Mon Jul 28 23:44:42 2025 UTC, .py size: 21232 bytes
+./src/data/__pycache__/hybrid_cache_strategy.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 22:01:42 2025 UTC, .py size: 22945 bytes
+./src/data/__pycache__/neon_schema_manager.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 21:48:55 2025 UTC, .py size: 26859 bytes
+./src/data/__pycache__/hyperliquid_client.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  8 02:38:00 2025 UTC, .py size: 25958 bytes
+./src/data/__pycache__/storage_interfaces.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 22:03:47 2025 UTC, .py size: 16865 bytes
+./src/data/__pycache__/neon_connection_pool.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 21:56:49 2025 UTC, .py size: 20803 bytes
+./src/data/__pycache__/s3_historical_loader.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 15:29:31 2025 UTC, .py size: 20000 bytes
+./src/data/hybrid_cache_strategy.py: Python script, Unicode text, UTF-8 text executable
+./src/data/data_storage.py: Python script, Unicode text, UTF-8 text executable
+./src/data/neon_hybrid_storage.py: Python script, ASCII text executable
+./src/strategy/genetic_engine_research_compliant.py: Python script, ASCII text executable
+./src/strategy/genetic_engine_core.py: Python script, Unicode text, UTF-8 text executable
+./src/strategy/genetic_engine.py.cleanup_backup: Python script, Unicode text, UTF-8 text executable
+./src/strategy/__init__.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/universal_regime_enhancer.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/funding_rate_carry_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/enhanced_seed_factory.py: Python script, Unicode text, UTF-8 text executable
+./src/strategy/genetic_seeds/correlation_enhanced_base.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/__init__.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/sma_trend_filter_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/universal_correlation_enhancer.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/seed_registry.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/pca_tree_quantile_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/rsi_filter_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/regime_aware_base.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/nadaraya_watson_seed.py: Python script, Unicode text, UTF-8 text executable
+./src/strategy/genetic_seeds/ema_crossover_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/bollinger_bands_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/donchian_breakout_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/vwap_reversion_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/atr_stop_loss_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/base_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/ichimoku_cloud_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/seed_registry_backup.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/linear_svc_classifier_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/__pycache__/regime_aware_base.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 06:15:38 2025 UTC, .py size: 17461 bytes
+./src/strategy/genetic_seeds/__pycache__/enhanced_seed_factory.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 03:37:01 2025 UTC, .py size: 13727 bytes
+./src/strategy/genetic_seeds/__pycache__/linear_svc_classifier_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:23:55 2025 UTC, .py size: 17443 bytes
+./src/strategy/genetic_seeds/__pycache__/donchian_breakout_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:41:20 2025 UTC, .py size: 17789 bytes
+./src/strategy/genetic_seeds/__pycache__/rsi_filter_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:13:26 2025 UTC, .py size: 20412 bytes
+./src/strategy/genetic_seeds/__pycache__/ema_crossover_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:11:25 2025 UTC, .py size: 13729 bytes
+./src/strategy/genetic_seeds/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 22:18:35 2025 UTC, .py size: 2763 bytes
+./src/strategy/genetic_seeds/__pycache__/nadaraya_watson_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:48:28 2025 UTC, .py size: 13748 bytes
+./src/strategy/genetic_seeds/__pycache__/pca_tree_quantile_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:22:05 2025 UTC, .py size: 22225 bytes
+./src/strategy/genetic_seeds/__pycache__/vwap_reversion_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:53:23 2025 UTC, .py size: 31314 bytes
+./src/strategy/genetic_seeds/__pycache__/funding_rate_carry_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 03:16:51 2025 UTC, .py size: 16275 bytes
+./src/strategy/genetic_seeds/__pycache__/sma_trend_filter_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:53:03 2025 UTC, .py size: 23300 bytes
+./src/strategy/genetic_seeds/__pycache__/ichimoku_cloud_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:45:42 2025 UTC, .py size: 29428 bytes
+./src/strategy/genetic_seeds/__pycache__/universal_correlation_enhancer.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 03:34:24 2025 UTC, .py size: 36642 bytes
+./src/strategy/genetic_seeds/__pycache__/correlation_enhanced_base.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 02:46:10 2025 UTC, .py size: 16150 bytes
+./src/strategy/genetic_seeds/__pycache__/seed_registry_backup.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 23:47:19 2025 UTC, .py size: 21466 bytes
+./src/strategy/genetic_seeds/__pycache__/universal_regime_enhancer.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 06:19:44 2025 UTC, .py size: 22595 bytes
+./src/strategy/genetic_seeds/__pycache__/seed_registry.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 00:53:04 2025 UTC, .py size: 15790 bytes
+./src/strategy/genetic_seeds/__pycache__/volatility_scaling_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:19:54 2025 UTC, .py size: 13383 bytes
+./src/strategy/genetic_seeds/__pycache__/atr_stop_loss_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:14:09 2025 UTC, .py size: 25475 bytes
+./src/strategy/genetic_seeds/__pycache__/base_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 01:55:17 2025 UTC, .py size: 12204 bytes
+./src/strategy/genetic_seeds/__pycache__/bollinger_bands_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:38:52 2025 UTC, .py size: 10680 bytes
+./src/strategy/genetic_seeds/__pycache__/stochastic_oscillator_seed.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 01:42:32 2025 UTC, .py size: 17519 bytes
+./src/strategy/genetic_seeds/volatility_scaling_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_seeds/stochastic_oscillator_seed.py: Python script, ASCII text executable
+./src/strategy/genetic_engine.py: Python script, ASCII text executable
+./src/strategy/ast_strategy.py.cleanup_backup: Python script, Unicode text, UTF-8 text executable
+./src/strategy/genetic_engine_evaluation.py: Python script, ASCII text executable
+./src/strategy/genetic_engine_population.py: Python script, ASCII text executable
+./src/strategy/universal_strategy_engine.py: Python script, Unicode text, UTF-8 text executable
+./src/strategy/__pycache__/ast_strategy.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Aug  3 23:25:36 2025 UTC, .py size: 32486 bytes
+./src/strategy/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 08:42:28 2025 UTC, .py size: 671 bytes
+./src/strategy/__pycache__/universal_strategy_engine.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 16:59:06 2025 UTC, .py size: 40487 bytes
+./src/strategy/__pycache__/genetic_engine_research_compliant.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Wed Jul 30 01:07:04 2025 UTC, .py size: 18317 bytes
+./src/strategy/__pycache__/genetic_engine_population.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 02:30:56 2025 UTC, .py size: 21143 bytes
+./src/strategy/__pycache__/genetic_engine_evaluation.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  1 15:42:50 2025 UTC, .py size: 16755 bytes
+./src/strategy/__pycache__/genetic_engine.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 03:14:35 2025 UTC, .py size: 5145 bytes
+./src/strategy/__pycache__/genetic_engine_core.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 03:17:07 2025 UTC, .py size: 13883 bytes
+./src/strategy/__pycache__/config_strategy_loader.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  8 21:29:27 2025 UTC, .py size: 13970 bytes
+./src/strategy/ast_strategy.py: Python script, Unicode text, UTF-8 text executable
+./src/strategy/config_strategy_loader.py: Python script, ASCII text executable
+./src/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 08:36:38 2025 UTC, .py size: 962 bytes
+./src/signals/correlation_signals.py: Python script, Unicode text, UTF-8 text executable
+./src/signals/__init__.py: Python script, ASCII text executable
+./src/signals/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 02:44:56 2025 UTC, .py size: 554 bytes
+./src/signals/__pycache__/correlation_signals.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 02:44:23 2025 UTC, .py size: 17726 bytes
+./src/monitoring/__init__.py: Python script, ASCII text executable
+./src/monitoring/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 08:40:09 2025 UTC, .py size: 518 bytes
+./src/monitoring/__pycache__/system_health_monitor.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  8 22:31:53 2025 UTC, .py size: 43503 bytes
+./src/monitoring/system_health_monitor.py: Python script, Unicode text, UTF-8 text executable
+./src/infrastructure/shared_resource_pool.py: Python script, Unicode text, UTF-8 text executable
+./src/infrastructure/__pycache__/shared_resource_pool.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 23:58:30 2025 UTC, .py size: 16040 bytes
+./.gitignore: ASCII text
+./complete_integration_results.json: JSON text data
+./examples/correlation_demo.py: Python script, Unicode text, UTF-8 text executable
+./validation_results.json: JSON text data
+./CODEBASE_VALIDATION_EVIDENCE_REPORT.md: Python script, Unicode text, UTF-8 text executable, with very long lines (312)
+./pytest.ini: ASCII text
+./pyproject.toml: ASCII text
+./genetic_seed_validation_report.md: Unicode text, UTF-8 text
+./scripts/utilities/cleanup_genetic_engine.py: Python script, Unicode text, UTF-8 text executable
+./scripts/utilities/cleanup_seed_whitespace.py: Python script, Unicode text, UTF-8 text executable
+./scripts/utilities/migrate_test_files.py: Python script, Unicode text, UTF-8 text executable
+./scripts/utilities/fix_pandas_deprecation.py: Python script, Unicode text, UTF-8 text executable
+./scripts/utilities/__pycache__/cleanup_genetic_engine.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 08:34:22 2025 UTC, .py size: 5136 bytes
+./scripts/validation/complete_system_integration_validator.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/validate_data_access.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/validate_ml_seeds_data_requirements.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/validate_complete_system.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/comprehensive_genetic_seed_validation.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/validate_phase1_verified_implementation.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/validate_phase1_implementation.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/verify_stability_test.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/validate_genetic_seeds.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/final_system_validation.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/validate_phase4_neon_integration.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/comprehensive_system_integration_test.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/validate_living_docs_functionality.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/comprehensive_system_validation.py: Python script, Unicode text, UTF-8 text executable
+./scripts/validation/__pycache__/comprehensive_system_validation.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 08:55:42 2025 UTC, .py size: 10004 bytes
+./scripts/validation/__pycache__/validate_complete_system.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 22:29:06 2025 UTC, .py size: 15053 bytes
+./scripts/validation/__pycache__/validate_phase4_neon_integration.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 22:04:38 2025 UTC, .py size: 29457 bytes
+./scripts/__init__.py: Python script, ASCII text executable
+./scripts/evolution/__pycache__/ultra_compressed_evolution.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 01:58:28 2025 UTC, .py size: 38573 bytes
+./scripts/evolution/ultra_compressed_evolution.py: Python script, Unicode text, UTF-8 text executable
+./scripts/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  8 02:30:37 2025 UTC, .py size: 1067 bytes
+./scripts/integration/test_advanced_genetic_engine.py: Python script, Unicode text, UTF-8 text executable
+./scripts/integration/run_integrated_pipeline.py: Python script, Unicode text, UTF-8 text executable
+./scripts/integration/test_definitive_fixes.py: Python script, Unicode text, UTF-8 text executable
+./scripts/integration/run_genetic_strategy_pool_tests.py: Python script, Unicode text, UTF-8 text executable
+./scripts/integration/__pycache__/run_integrated_pipeline.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Aug  5 03:28:02 2025 UTC, .py size: 8875 bytes
+./scripts/integration/test_complete_pipeline_integration.py: Python script, Unicode text, UTF-8 text executable
+./scripts/integration/test_research_engine.py: Python script, Unicode text, UTF-8 text executable
+./scripts/integration/test_optimized_pipeline_integration.py: Python script, Unicode text, UTF-8 text executable
+./scripts/debug/debug_stochastic_detailed.py: Python script, Unicode text, UTF-8 text executable
+./scripts/debug/debug_donchian_math.py: Python script, ASCII text executable
+./scripts/debug/debug_ema_seed.py: Python script, ASCII text executable
+./scripts/debug/debug_funding_detailed.py: Python script, Unicode text, UTF-8 text executable
+./scripts/debug/debug_svc_deep.py: Python script, Unicode text, UTF-8 text executable
+./scripts/debug/debug_rsi_detailed.py: Python script, Unicode text, UTF-8 text executable
+./scripts/debug/debug_donchian_detailed.py: Python script, Unicode text, UTF-8 text executable
+./scripts/debug/debug_svc_seed.py: Python script, ASCII text executable
+./research/pydantic/page_2_models_comprehensive.md: Python script, ASCII text executable
+./research/pydantic/research_summary.md: Python script, Unicode text, UTF-8 text executable
+./research/pydantic/page_3_configuration_settings.md: Python script, ASCII text executable
+./research/pydantic/page_1_main_documentation.md: Python script, ASCII text executable
+./research/ray_cluster/research_summary.md: Python script, Unicode text, UTF-8 text executable
+./research/ray_cluster/page_1_cluster_overview.md: Python script, ASCII text executable
+./research/ray_cluster/page_2_ray_core_fundamentals.md: Python script, ASCII text executable
+./research/asyncpg/02_api_reference_connection.md: Unicode text, UTF-8 text
+./research/asyncpg/03_installation_setup.md: Python script, Unicode text, UTF-8 text executable
+./research/asyncpg/01_usage_connection_pools.md: Python script, ASCII text executable, with very long lines (324)
+./research/timescaledb/1_timescaledb_hypertables_documentation.md: ASCII text
+./research/hyperliquid_documentation/4_exchange_endpoint.md: ASCII text
+./research/hyperliquid_documentation/5_websocket_api.md: ASCII text
+./research/hyperliquid_documentation/research_summary.md: Python script, Unicode text, UTF-8 text executable, with very long lines (383)
+./research/hyperliquid_documentation/3_info_endpoint.md: ASCII text
+./research/hyperliquid_documentation/7_order_types_and_execution.md: Python script, Unicode text, UTF-8 text executable
+./research/hyperliquid_documentation/8_historical_data_access.md: Python script, ASCII text executable
+./research/hyperliquid_documentation/1_main_documentation.md: ASCII text, with very long lines (410)
+./research/hyperliquid_documentation/6_rate_limits_and_constraints.md: Python script, ASCII text executable
+./research/hyperliquid_documentation/2_api_overview.md: ASCII text
+./research/neon/05_neon_security_ssl_tls.md: Python script, Unicode text, UTF-8 text executable
+./research/neon/02_neon_architecture.md: Unicode text, UTF-8 text
+./research/neon/01_neon_introduction.md: ASCII text
+./research/neon/07_neon_api_programmatic_management.md: Python script, ASCII text executable
+./research/neon/04_neon_production_deployment.md: Python script, Unicode text, UTF-8 text executable
+./research/neon/03_neon_connection_patterns.md: Python script, ASCII text executable
+./research/deap/3_genetic_programming_comprehensive.md: Python script, Unicode text, UTF-8 text executable
+./research/deap/4_multiprocessing_distributed_evaluation.md: Python script, Unicode text, UTF-8 text executable, with very long lines (335)
+./research/deap/2_overview_framework_basics.md: Python script, Unicode text, UTF-8 text executable
+./research/deap/research_summary.md: Python script, Unicode text, UTF-8 text executable, with very long lines (313)
+./research/deap/5_examples_and_implementation_patterns.md: Python script, Unicode text, UTF-8 text executable
+./research/deap/6_api_reference_core_modules.md: Python script, Unicode text, UTF-8 text executable
+./research/deap/7_operators_definitive_guide.md: Python script, Unicode text, UTF-8 text executable
+./research/deap/1_main_documentation.md: Unicode text, UTF-8 text
+./research/phase4_comprehensive_research_summary.md: Python script, Unicode text, UTF-8 text executable
+./research/pyarrow/page_4_table_array_api.md: Python script, Unicode text, UTF-8 text executable
+./research/pyarrow/page_2_pandas_integration.md: Python script, Unicode text, UTF-8 text executable
+./research/pyarrow/page_5_dataset_streaming.md: Python script, ASCII text executable
+./research/pyarrow/research_summary.md: Unicode text, UTF-8 text
+./research/pyarrow/page_3_compute_functions.md: Python script, Unicode text, UTF-8 text executable
+./research/pyarrow/page_1_parquet_operations.md: ASCII text
+./research/00_IMPLEMENTATION_ROADMAP.md: Python script, Unicode text, UTF-8 text executable
+./research/orjson_v3_comprehensive/vector2_api_documentation_usage.md: Python script, Unicode text, UTF-8 text executable
+./research/orjson_v3_comprehensive/vector4_production_asyncio_patterns.md: Python script, ASCII text executable
+./research/orjson_v3_comprehensive/vector3_performance_benchmarks_optimization.md: Python script, ASCII text executable
+./research/orjson_v3_comprehensive/research_synthesis_comprehensive.md: Python script, Unicode text, UTF-8 text executable, with very long lines (525)
+./research/orjson_v3_comprehensive/vector1_repository_structure.md: Unicode text, UTF-8 text
+./research/duckdb/page_2_python_api.md: Python script, Unicode text, UTF-8 text executable
+./research/duckdb/page_7_window_functions.md: Unicode text, UTF-8 text
+./research/duckdb/research_summary.md: Python script, Unicode text, UTF-8 text executable
+./research/duckdb/page_4_concurrency_patterns.md: Python script, Unicode text, UTF-8 text executable
+./research/duckdb/page_6_data_ingestion_patterns.md: Python script, Unicode text, UTF-8 text executable
+./research/duckdb/page_1_main_documentation.md: Unicode text, UTF-8 text
+./research/duckdb/page_3_parquet_integration.md: Unicode text, UTF-8 text
+./research/duckdb/page_5_performance_optimization.md: Python script, Unicode text, UTF-8 text executable
+./research/genetic_seeds_comprehensive/01_complete_seed_implementations.md: Python script, ASCII text executable
+./research/genetic_seeds_comprehensive/00_GENETIC_SEEDS_INDEX.md: Python script, Unicode text, UTF-8 text executable
+./research/hyperliquid_python_sdk_v3_comprehensive/vector2_api_specs.md: Python script, Unicode text, UTF-8 text executable
+./research/hyperliquid_python_sdk_v3_comprehensive/vector5_examples_implementation_patterns.md: Python script, Unicode text, UTF-8 text executable
+./research/hyperliquid_python_sdk_v3_comprehensive/research_synthesis_extension_v3.md: Unicode text, UTF-8 text
+./research/hyperliquid_python_sdk_v3_comprehensive/research_summary_v3.md: Python script, Unicode text, UTF-8 text executable, with very long lines (471)
+./research/hyperliquid_python_sdk_v3_comprehensive/vector1_repo_structure.md: Python script, Unicode text, UTF-8 text executable
+./research/hyperliquid_python_sdk_v3_comprehensive/vector3_examples.md: Python script, Unicode text, UTF-8 text executable
+./research/hyperliquid_python_sdk_v3_comprehensive/vector4_hyperliquid_core_implementation.md: Python script, Unicode text, UTF-8 text executable
+./research/crypto_fear_greed_index/main_documentation.md: Python script, Unicode text, UTF-8 text executable, with very long lines (316)
+./research/crypto_fear_greed_index/research_summary.md: Python script, Unicode text, UTF-8 text executable
+./research/aws_efs/04_performance_specifications.md: Python script, Unicode text, UTF-8 text executable
+./research/aws_efs/01_introduction_overview.md: Unicode text, UTF-8 text, with very long lines (340)
+./research/aws_efs/02_architecture_implementation.md: Unicode text, UTF-8 text
+./research/aws_efs/02_docker_compose_integration.md: Python script, Unicode text, UTF-8 text executable
+./research/aws_efs/03_getting_started_guide.md: Python script, Unicode text, UTF-8 text executable
+./research/docker_python/research_summary.md: Python script, Unicode text, UTF-8 text executable
+./research/docker_python/page_1_docker_sdk_overview.md: Unicode text, UTF-8 text
+./research/docker_python/page_2_containerization_guide.md: Python script, ASCII text executable
+./research/pandas_comprehensive/page_5_time_series_analysis.md: Python script, ASCII text executable
+./research/pandas_comprehensive/page_3_series_diff_where_fillna_mean.md: Python script, ASCII text executable
+./research/pandas_comprehensive/page_4_dataframe_operations_indexing.md: Python script, ASCII text executable, with very long lines (309)
+./research/pandas_comprehensive/research_summary.md: Python script, Unicode text, UTF-8 text executable, with very long lines (334)
+./research/pandas_comprehensive/page_2_series_ewm.md: Python script, Unicode text, UTF-8 text executable
+./research/pandas_comprehensive/page_1_series_rolling.md: Python script, ASCII text executable
+./research/universal_strategy_patterns/research_synthesis_comprehensive.md: Python script, Unicode text, UTF-8 text executable
+./research/sklearn_v3/vector2_api_specs.md: Python script, ASCII text executable
+./research/sklearn_v3/vector4_cross_reference_validation.md: Python script, Unicode text, UTF-8 text executable, with very long lines (302)
+./research/sklearn_v3/README.md: Unicode text, UTF-8 text
+./research/sklearn_v3/synthesis_ml_genetic_seeds_implementation.md: Python script, Unicode text, UTF-8 text executable
+./research/sklearn_v3/vector1_repo_structure.md: Python script, Unicode text, UTF-8 text executable
+./research/sklearn_v3/vector3_examples.md: Python script, ASCII text executable
+./research/grafana_pyroscope_official/research_summary.md: Unicode text, UTF-8 text, with very long lines (346)
+./research/grafana_pyroscope_official/page_1_python_profiling_guide.md: Python script, Unicode text, UTF-8 text executable, with very long lines (341)
+./research/vectorbt_comprehensive/01_consolidated_research_summary.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/03_universal_strategy_implementation.md: Python script, Unicode text, UTF-8 text executable, with very long lines (343)
+./research/vectorbt_comprehensive/page_1_trading_sessions_analysis.md: Python script, ASCII text executable, with very long lines (359)
+./research/vectorbt_comprehensive/page_1_bitcoin_dmac_implementation.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/1_main_documentation_getting_started.md: Unicode text, UTF-8 text, with very long lines (650)
+./research/vectorbt_comprehensive/page_3_custom_indicator_development.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/page_1_api_reference_comprehensive.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/2_installation_and_usage_guide.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/00_IMPLEMENTATION_INDEX.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/page_4_memory_management_large_scale.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/page_5_production_deployment_patterns.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/research_summary.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/page_1_portfolio_optimization_comprehensive.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/3_signals_and_portfolio_api.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/page_2_performance_optimization_patterns.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/02_genetic_algorithm_integration_guide.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/page_1_comprehensive_stopsignals_analysis.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/04_advanced_risk_management.md: Python script, Unicode text, UTF-8 text executable
+./research/vectorbt_comprehensive/page_1_nbviewer_porting_bt_strategy.md: Python script, ASCII text executable, with very long lines (315)
+./research/vectorbt_comprehensive/page_2_genetic_portfolio_optimization.md: Python script, ASCII text executable, with very long lines (331)
+./research/aiofiles_v3/vector2_api_specs.md: Python script, ASCII text executable
+./research/aiofiles_v3/execution_report_v3.md: Python script, Unicode text, UTF-8 text executable, with very long lines (374)
+./research/aiofiles_v3/vector3_examples_patterns.md: Python script, ASCII text executable
+./research/aiofiles_v3/vector4_asyncio_integration.md: Python script, ASCII text executable
+./research/aiofiles_v3/research_synthesis_comprehensive.md: Python script, Unicode text, UTF-8 text executable, with very long lines (338)
+./research/aiofiles_v3/vector1_repo_structure.md: Unicode text, UTF-8 text, with very long lines (332)
+./research/supervisor/3_events_and_monitoring_system.md: Python script, ASCII text executable
+./research/supervisor/research_summary.md: Python script, Unicode text, UTF-8 text executable
+./research/supervisor/2_installation_and_running_guide.md: Unicode text, UTF-8 text
+./research/supervisor/1_configuration_documentation.md: Unicode text, UTF-8 text
+./research/asyncio_advanced/page_5_exception_handling_recovery.md: Python script, Unicode text, UTF-8 text executable
+./research/asyncio_advanced/page_4_streams_websocket_integration.md: Python script, Unicode text, UTF-8 text executable
+./research/asyncio_advanced/research_summary.md: Python script, Unicode text, UTF-8 text executable
+./research/asyncio_advanced/page_1_main_overview.md: ASCII text, with very long lines (315)
+./research/asyncio_advanced/page_2_queues_producer_consumer.md: Python script, Unicode text, UTF-8 text executable
+./research/asyncio_advanced/page_3_task_management_cancellation.md: Python script, ASCII text executable, with very long lines (404)
+./research/asyncio_advanced/page_6_synchronization_performance.md: Python script, Unicode text, UTF-8 text executable
+./research/anyscale/main_documentation.md: ASCII text, with very long lines (308)
+./research/anyscale/cluster_configuration.md: ASCII text
+./research/anyscale/research_summary.md: Python script, ASCII text executable, with very long lines (363)
+./research/anyscale/aws_deployment_guide.md: ASCII text
+./research/anyscale/monitoring_cost_management.md: ASCII text
+./research/anyscale/developer_guide.md: ASCII text
+./research/anyscale/admin_guide.md: ASCII text
+./research/research_complete.md: Unicode text, UTF-8 text
+./research/prometheus_python_official/page_1_client_libraries_overview.md: Python script, Unicode text, UTF-8 text executable
+./research/prometheus_python_official/page_2_python_client_implementation.md: Python script, Unicode text, UTF-8 text executable
+./research/prometheus_python_official/research_summary.md: Python script, Unicode text, UTF-8 text executable
+./hierarchical_discovery_e2e.log: empty
+./requirements.txt: ASCII text
+./docker-compose.yml: ASCII text
+./test_functional.duckdb: DuckDB database file, version 64
+./verified_docs/by_module/execution/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module/execution/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module/execution/dependency_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module/discovery/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module/discovery/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module/discovery/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module/data/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module/data/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module/data/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module/strategy/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module/strategy/data_flow_analysis.md: Python script, Unicode text, UTF-8 text executable, with very long lines (319)
+./verified_docs/by_module/strategy/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable, with very long lines (333)
+./verified_docs/by_module_simple_test/discovery/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simple_test/discovery/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simple_test/discovery/dependency_analysis.md: Unicode text, UTF-8 text
+./verified_docs/verification_index.md: Unicode text, UTF-8 text, with very long lines (332)
+./verified_docs/by_module_simplified/validation/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/validation/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/validation/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/utils/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/utils/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/utils/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/analysis/function_verification_report.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/analysis/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/analysis/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/config/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/config/data_flow_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/config/README.md: Unicode text, UTF-8 text, with very long lines (353)
+./verified_docs/by_module_simplified/config/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/execution/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/execution/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/execution/CURRENT_STATUS.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/execution/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/backtesting/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/backtesting/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/backtesting/README.md: Unicode text, UTF-8 text, with very long lines (308)
+./verified_docs/by_module_simplified/backtesting/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/discovery/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/discovery/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/discovery/README.md: Unicode text, UTF-8 text, with very long lines (359)
+./verified_docs/by_module_simplified/discovery/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/data/function_verification_report.md: Unicode text, UTF-8 text, with very long lines (301)
+./verified_docs/by_module_simplified/data/data_flow_analysis.md: Unicode text, UTF-8 text, with very long lines (326)
+./verified_docs/by_module_simplified/data/dependency_analysis.md: Unicode text, UTF-8 text, with very long lines (334)
+./verified_docs/by_module_simplified/strategy/function_verification_report.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/strategy/data_flow_analysis.md: Unicode text, UTF-8 text, with very long lines (319)
+./verified_docs/by_module_simplified/strategy/README.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/strategy/system_stability_patterns.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/strategy/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable, with very long lines (350)
+./verified_docs/by_module_simplified/SYSTEM_VALIDATION_SUMMARY.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/signals/function_verification_report.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/signals/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/signals/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/monitoring/function_verification_report.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/monitoring/data_flow_analysis.md: Unicode text, UTF-8 text
+./verified_docs/by_module_simplified/monitoring/dependency_analysis.md: Python script, Unicode text, UTF-8 text executable
+./verified_docs/by_module_simplified/deployment/production_deployment_guidelines.md: Python script, Unicode text, UTF-8 text executable
+./specs/technical_stack.md: Unicode text, UTF-8 text
+./specs/system_architecture.md: Unicode text, UTF-8 text
+./ENHANCED_TEMPORAL_CODEBASE_VALIDATION_REPORT.md: Python script, Unicode text, UTF-8 text executable, with very long lines (356)
+./DEVELOPMENT_STATUS.md: ASCII text
+./.env: ASCII text
+./tests/research_archive/test_strategy_engine_research.py: Python script, Unicode text, UTF-8 text executable
+./tests/research_archive/test_data_storage_research.py: Python script, Unicode text, UTF-8 text executable
+./tests/research_archive/test_order_management_research.py: Python script, Unicode text, UTF-8 text executable
+./tests/research_archive/test_position_sizer_research.py: Python script, Unicode text, UTF-8 text executable
+./tests/research_archive/test_data_storage_simple.py: Python script, Unicode text, UTF-8 text executable
+./tests/research_archive/test_phase_4b_optimization.py: Python script, Unicode text, UTF-8 text executable
+./tests/research_archive/__pycache__/test_data_storage_research.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 17:27:30 2025 UTC, .py size: 7386 bytes
+./tests/research_archive/__pycache__/test_data_storage_simple.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 17:25:38 2025 UTC, .py size: 2414 bytes
+./tests/research_archive/__pycache__/test_phase_4b_optimization.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Jul 27 17:16:53 2025 UTC, .py size: 9660 bytes
+./tests/research_archive/__pycache__/test_position_sizer_research.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 17:35:43 2025 UTC, .py size: 8053 bytes
+./tests/research_archive/__pycache__/test_order_management_research.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 17:37:56 2025 UTC, .py size: 9576 bytes
+./tests/research_archive/__pycache__/test_strategy_engine_research.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 17:29:01 2025 UTC, .py size: 6719 bytes
+./tests/utils/__init__.py: Python script, ASCII text executable
+./tests/utils/market_data_fixtures.py: Python script, ASCII text executable
+./tests/utils/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 02:02:24 2025 UTC, .py size: 767 bytes
+./tests/utils/__pycache__/market_data_fixtures.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 02:02:14 2025 UTC, .py size: 8899 bytes
+./tests/config/pytest.ini: ASCII text
+./tests/config/conftest.py: Python script, Unicode text, UTF-8 text executable
+./tests/comprehensive_seed_validation.py: Python script, Unicode text, UTF-8 text executable
+./tests/__init__.py: Python script, ASCII text executable
+./tests/test_genetic_strategy_pool.py: Python script, ASCII text executable
+./tests/archive/outdated/test_correlation_integration_old.py: Python script, ASCII text executable
+./tests/comprehensive/__init__.py: Python script, ASCII text executable
+./tests/comprehensive/test_all_genetic_seeds_validation.py: Python script, Unicode text, UTF-8 text executable
+./tests/comprehensive/__pycache__/test_all_genetic_seeds_validation.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 03:55:22 2025 UTC, .py size: 31420 bytes
+./tests/comprehensive/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 02:06:59 2025 UTC, .py size: 132 bytes
+./tests/system/__init__.py: Python script, ASCII text executable
+./tests/system/test_hierarchical_discovery.py: Python script, Unicode text, UTF-8 text executable
+./tests/system/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 02:07:00 2025 UTC, .py size: 118 bytes
+./tests/system/__pycache__/test_hierarchical_discovery.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 07:45:50 2025 UTC, .py size: 33490 bytes
+./tests/unit/test_fear_greed_client.py: Python script, ASCII text executable
+./tests/unit/__init__.py: Python script, ASCII text executable
+./tests/unit/test_rate_limiting.py: Python script, Unicode text, UTF-8 text executable
+./tests/unit/test_data_storage.py: Python script, Unicode text, UTF-8 text executable
+./tests/unit/test_asset_filter.py: Python script, Unicode text, UTF-8 text executable
+./tests/unit/test_data_pipeline.py: Python script, Unicode text, UTF-8 text executable
+./tests/unit/test_config.py: Python script, Unicode text, UTF-8 text executable
+./tests/unit/__pycache__/test_fear_greed_client.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Jul 25 23:31:51 2025 UTC, .py size: 15856 bytes
+./tests/unit/__pycache__/test_data_ingestion.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 00:37:07 2025 UTC, .py size: 12417 bytes
+./tests/unit/__pycache__/test_rate_limiting.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 07:42:32 2025 UTC, .py size: 34338 bytes
+./tests/unit/__pycache__/test_asset_filter.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 06:07:47 2025 UTC, .py size: 6673 bytes
+./tests/unit/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 02:06:57 2025 UTC, .py size: 112 bytes
+./tests/unit/__pycache__/test_data_pipeline.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 17:13:59 2025 UTC, .py size: 2101 bytes
+./tests/unit/__pycache__/test_hyperliquid_client.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 00:36:07 2025 UTC, .py size: 8014 bytes
+./tests/unit/__pycache__/test_backtesting_engine.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 13:43:22 2025 UTC, .py size: 22085 bytes
+./tests/unit/__pycache__/test_genetic_seeds.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 16:00:03 2025 UTC, .py size: 24046 bytes
+./tests/unit/__pycache__/test_config.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 17:11:10 2025 UTC, .py size: 1333 bytes
+./tests/unit/__pycache__/test_data_storage.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 17:25:04 2025 UTC, .py size: 4344 bytes
+./tests/unit/test_backtesting_engine.py: Python script, ASCII text executable
+./tests/unit/test_genetic_seeds.py: Python script, ASCII text executable
+./tests/unit/test_data_ingestion.py: Python script, Unicode text, UTF-8 text executable
+./tests/unit/test_hyperliquid_client.py: Python script, Unicode text, UTF-8 text executable
+./tests/__pycache__/conftest.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Aug 10 00:02:20 2025 UTC, .py size: 6719 bytes
+./tests/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 02:06:47 2025 UTC, .py size: 1045 bytes
+./tests/__pycache__/test_genetic_strategy_pool.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Mon Jul 28 18:37:45 2025 UTC, .py size: 44659 bytes
+./tests/integration/test_phase3_regime_detection.py: Python script, ASCII text executable
+./tests/integration/test_genetic_engine.py: Python script, Unicode text, UTF-8 text executable
+./tests/integration/test_universal_correlation_enhancer.py: Python script, ASCII text executable
+./tests/integration/__init__.py: Python script, ASCII text executable
+./tests/integration/test_complete_system_flow.py: Python script, Unicode text, UTF-8 text executable
+./tests/integration/test_dynamic_asset_data_collector.py: Python script, Unicode text, UTF-8 text executable
+./tests/integration/test_asset_flow.py: Python script, Unicode text, UTF-8 text executable
+./tests/integration/test_phase3_comprehensive_validation.py: Python script, Unicode text, UTF-8 text executable
+./tests/integration/test_monitoring.py: Python script, Unicode text, UTF-8 text executable
+./tests/integration/test_config_strategy_loader.py: Python script, Unicode text, UTF-8 text executable
+./tests/integration/test_session_mgmt.py: Python script, Unicode text, UTF-8 text executable
+./tests/integration/test_phase3_ultra_compressed_evolution.py: Python script, Unicode text, UTF-8 text executable
+./tests/integration/__pycache__/test_phase3_ultra_compressed_evolution.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 02:07:22 2025 UTC, .py size: 32202 bytes
+./tests/integration/__pycache__/test_session_mgmt.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Jul 27 16:51:13 2025 UTC, .py size: 11162 bytes
+./tests/integration/__pycache__/test_phase_2b_enhanced_seeds.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 03:10:17 2025 UTC, .py size: 21394 bytes
+./tests/integration/__pycache__/test_complete_system_flow.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Jul 26 17:01:24 2025 UTC, .py size: 26484 bytes
+./tests/integration/__pycache__/test_phase3_regime_detection.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 06:24:12 2025 UTC, .py size: 20119 bytes
+./tests/integration/__pycache__/test_phase_2b_business_impact.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 03:14:10 2025 UTC, .py size: 20057 bytes
+./tests/integration/__pycache__/__init__.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 02:06:56 2025 UTC, .py size: 136 bytes
+./tests/integration/__pycache__/test_phase3_comprehensive_validation.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 06:51:04 2025 UTC, .py size: 16007 bytes
+./tests/integration/__pycache__/test_universal_correlation_enhancer.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Thu Aug  7 03:29:55 2025 UTC, .py size: 17363 bytes
+./tests/integration/__pycache__/test_dynamic_asset_data_collector.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 22:39:29 2025 UTC, .py size: 16232 bytes
+./tests/integration/__pycache__/test_automated_decision_engine.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  8 21:54:06 2025 UTC, .py size: 21340 bytes
+./tests/integration/__pycache__/test_phase3_ultra_compressed_evolution.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 02:07:22 2025 UTC, .py size: 32202 bytes
+./tests/integration/__pycache__/test_config_strategy_loader.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Fri Aug  8 21:30:11 2025 UTC, .py size: 13357 bytes
+./tests/integration/__pycache__/test_genetic_engine.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Mon Jul 28 18:22:07 2025 UTC, .py size: 4379 bytes
+./tests/integration/__pycache__/test_monitoring.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Jul 27 16:21:24 2025 UTC, .py size: 10197 bytes
+./tests/integration/__pycache__/test_asset_flow.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Tue Jul 29 00:37:37 2025 UTC, .py size: 18810 bytes
+./tests/integration/__pycache__/test_trading_system_integration.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sun Aug 10 00:16:08 2025 UTC, .py size: 9932 bytes
+./tests/integration/__pycache__/test_correlation_integration.cpython-312-pytest-8.4.1.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Sat Aug  9 23:57:13 2025 UTC, .py size: 16272 bytes
+./tests/integration/test_automated_decision_engine.py: Python script, Unicode text, UTF-8 text executable
+./infrastructure/core/deployment_interface.py: Python script, ASCII text executable
+./infrastructure/core/config_manager.py: Python script, ASCII text executable
+./infrastructure/core/monitoring_interface.py: Python script, ASCII text executable
+./infrastructure/core/__pycache__/cluster_manager.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Mon Jul 28 16:34:52 2025 UTC, .py size: 19910 bytes
+./infrastructure/core/__pycache__/deployment_interface.cpython-312.pyc: Byte-compiled Python module for CPython 3.12 or newer, timestamp-based, .py timestamp: Mon Jul 28 16:30:55 2025 UTC, .py size: 12195 bytes
+./infrastructure/core/cluster_manager.py: Python script, ASCII text executable
+./COMPREHENSIVE_MULTIDIMENSIONAL_VALIDATION_REPORT.md: Unicode text, UTF-8 text

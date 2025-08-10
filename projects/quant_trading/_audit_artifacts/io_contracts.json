@@ -1,0 +1,195 @@
+{
+  "audit_metadata": {
+    "phase": "10_io_contracts_goldens",
+    "generated": "2025-08-10T07:22:00Z"
+  },
+  "module_contracts": {
+    "src/execution/trading_system_manager.py": {
+      "module_type": "python_module",
+      "functions": [
+        {
+          "name": "__init__",
+          "signature": "def __init__(self, name: str, logger: logging.Logger):"
+        },
+        {
+          "name": "register_resource",
+          "signature": "def register_resource(self, resource: Any, cleanup_callback: Optional[callable] = None):"
+        },
+        {
+          "name": "cleanup_all",
+          "signature": "def cleanup_all(self):"
+        },
+        {
+          "name": "__init__",
+          "signature": "def __init__(self, settings: Optional[Settings] = None, \n                 trading_session: Optional[TradingSessionProfile] = None):"
+        },
+        {
+          "name": "__aenter__",
+          "signature": "def __aenter__(self):"
+        }
+      ],
+      "classes": [
+        {
+          "name": "SessionStatus"
+        },
+        {
+          "name": "SessionHealth"
+        },
+        {
+          "name": "AsyncResourceManager"
+        }
+      ],
+      "imports": [
+        "asyncio",
+        "logging",
+        "time",
+        "sys",
+        "os",
+        "Dict, List, Optional, Any, Tuple",
+        "datetime, timezone",
+        "dataclass",
+        "Enum",
+        "aiohttp"
+      ],
+      "estimated_complexity": 29,
+      "has_main_block": true
+    },
+    "src/data/hyperliquid_client.py": {
+      "module_type": "python_module",
+      "functions": [
+        {
+          "name": "__init__",
+          "signature": "def __init__(self, settings: Settings):"
+        },
+        {
+          "name": "__aenter__",
+          "signature": "def __aenter__(self):"
+        },
+        {
+          "name": "__aexit__",
+          "signature": "def __aexit__(self, exc_type, exc_val, exc_tb):"
+        },
+        {
+          "name": "connect",
+          "signature": "def connect(self) -> None:"
+        },
+        {
+          "name": "disconnect",
+          "signature": "def disconnect(self) -> None:"
+        }
+      ],
+      "classes": [
+        {
+          "name": "ConnectionState"
+        },
+        {
+          "name": "SubscriptionType"
+        },
+        {
+          "name": "MarketDataMessage"
+        }
+      ],
+      "imports": [
+        "asyncio",
+        "json",
+        "logging",
+        "time",
+        "datetime, timezone",
+        "Dict, List, Optional, Callable, Any, Union",
+        "Enum",
+        "aiohttp",
+        "websockets",
+        "ConnectionClosed, InvalidURI"
+      ],
+      "estimated_complexity": 42,
+      "has_main_block": true
+    },
+    "src/strategy/genetic_engine.py": {
+      "module_type": "python_module",
+      "functions": [
+        {
+          "name": "__init__",
+          "signature": "def __init__(self, config: Optional[EvolutionConfig] = None, \n                 settings: Optional[Settings] = None):"
+        },
+        {
+          "name": "evolve",
+          "signature": "def evolve(self, market_data: Optional[pd.DataFrame] = None,\n               n_generations: Optional[int] = None, \n               asset_dataset: Optional[Any] = None) -> EvolutionResults:"
+        },
+        {
+          "name": "get_population_diversity",
+          "signature": "def get_population_diversity(self, population: List[BaseSeed]) -> Dict[str, float]:"
+        },
+        {
+          "name": "get_evolution_status",
+          "signature": "def get_evolution_status(self) -> EvolutionStatus:"
+        },
+        {
+          "name": "get_fitness_weights",
+          "signature": "def get_fitness_weights(self) -> Dict[str, float]:"
+        }
+      ],
+      "classes": [
+        {
+          "name": "GeneticEngine"
+        }
+      ],
+      "imports": [
+        "logging",
+        "Dict, List, Tuple, Optional, Any",
+        "pandas as pd",
+        "(",
+        "FitnessEvaluator",
+        "PopulationManager",
+        "BaseSeed",
+        "get_settings, Settings"
+      ],
+      "estimated_complexity": 7,
+      "has_main_block": false
+    },
+    "scripts/validation/validate_complete_system.py": {
+      "module_type": "python_module",
+      "functions": [
+        {
+          "name": "__init__",
+          "signature": "def __init__(self, use_testnet: bool = True, verbose: bool = False):"
+        },
+        {
+          "name": "_setup_logging",
+          "signature": "def _setup_logging(self) -> logging.Logger:"
+        },
+        {
+          "name": "run_complete_validation",
+          "signature": "def run_complete_validation(self) -> bool:"
+        },
+        {
+          "name": "_validate_imports",
+          "signature": "def _validate_imports(self) -> bool:"
+        },
+        {
+          "name": "_validate_configuration",
+          "signature": "def _validate_configuration(self) -> bool:"
+        }
+      ],
+      "classes": [
+        {
+          "name": "SystemValidator"
+        }
+      ],
+      "imports": [
+        "asyncio",
+        "sys",
+        "os",
+        "logging",
+        "importlib",
+        "datetime"
+      ],
+      "estimated_complexity": 13,
+      "has_main_block": true
+    }
+  },
+  "contract_summary": {
+    "total_modules_analyzed": 4,
+    "total_function_signatures": 20,
+    "total_class_definitions": 8
+  }
+}

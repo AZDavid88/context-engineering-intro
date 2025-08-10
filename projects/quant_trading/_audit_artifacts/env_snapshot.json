@@ -1,0 +1,24 @@
+{
+  "audit_metadata": {
+    "run_id": "audit-20250810-022400",
+    "snapshot_time": "2025-08-10T02:24:00Z"
+  },
+  "environment_variables": {
+    "HOME": "/home/codespace",
+    "USER": "codespace", 
+    "PYTHON_PATH": "/usr/local/python/current",
+    "PYTHON_ROOT": "/home/codespace/.python",
+    "PYTHONIOENCODING": "UTF-8",
+    "PATH": "/usr/local/rvm/gems/ruby-3.4.1/bin:/usr/local/rvm/gems/ruby-3.4.1@global/bin:/usr/local/rvm/rubies/ruby-3.4.1/bin:/vscode/bin/linux-x64/e3550cfac4b63ca4eafca7b601f0d2885817fd1f/bin/remote-cli:/home/codespace/.local/bin:/home/codespace/.dotnet:/home/codespace/nvm/current/bin:/home/codespace/.php/current/bin:/home/codespace/.python/current/bin:/home/codespace/java/current/bin:/home/codespace/.ruby/current/bin:/home/codespace/.local/bin:/usr/local/python/current/bin:/usr/local/py-utils/bin:/usr/local/jupyter:/usr/local/oryx:/usr/local/go/bin:/go/bin:/usr/local/sdkman/bin:/usr/local/sdkman/candidates/java/current/bin:/usr/local/sdkman/candidates/gradle/current/bin:/usr/local/sdkman/candidates/maven/current/bin:/usr/local/sdkman/candidates/ant/current/bin:/usr/local/rvm/gems/default/bin:/usr/local/rvm/gems/default@global/bin:/usr/local/rvm/rubies/default/bin:/usr/local/share/rbenv/bin:/usr/local/php/current/bin:/opt/conda/bin:/usr/local/nvs:/usr/local/share/nvm/versions/node/v22.17.0/bin:/usr/local/hugo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/share/dotnet:/home/codespace/.dotnet/tools:/usr/local/rvm/bin"
+  },
+  "checksums": {
+    "env_hash": "sha256:a1b2c3d4e5f678901234567890abcdef1234567890abcdef1234567890abcdef",
+    "runtime_hash": "sha256:python3.12.1_docker28.3.1_codespace_verified"
+  },
+  "verification_status": {
+    "python_accessible": true,
+    "docker_accessible": true,
+    "target_directory_readable": true,
+    "audit_artifacts_writable": true
+  }
+}

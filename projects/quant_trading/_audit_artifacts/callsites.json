@@ -1,0 +1,112 @@
+{
+  "audit_metadata": {
+    "run_id": "audit-20250810-022400",
+    "phase": "5_implicit_entrypoints",
+    "generated": "2025-08-10T02:24:00Z"
+  },
+  "execution_patterns": {
+    "subprocess_execution": {
+      "count": 2,
+      "files": [
+        {
+          "file": "scripts/utilities/fix_pandas_deprecation.py",
+          "executions": [
+            {
+              "type": "subprocess.run",
+              "target": "python src/utils/pandas_compatibility.py",
+              "purpose": "execute pandas compatibility fix"
+            }
+          ]
+        }
+      ]
+    },
+    "ray_distributed_execution": {
+      "count": 3,
+      "remote_functions": [
+        {
+          "file": "src/execution/cloud_ga_coordinator.py",
+          "function": "EvolutionWorker",
+          "type": "ray_remote_class"
+        },
+        {
+          "file": "src/execution/genetic_strategy_pool.py", 
+          "function": "GeneticEvolutionWorker",
+          "type": "ray_remote_function",
+          "resources": {
+            "num_cpus": 1,
+            "memory": "2GB"
+          }
+        }
+      ],
+      "execution_calls": [
+        "ray.get() - async execution wrapper",
+        "ray.put() - shared data distribution",
+        "asyncio.to_thread(ray.get, task) - async Ray integration"
+      ]
+    },
+    "shell_script_functions": {
+      "count": 1,
+      "file": "docker/genetic-pool/entrypoint.sh",
+      "functions": [
+        "wait_for_ray_cluster",
+        "start_ray_head", 
+        "start_ray_worker",
+        "run_health_check",
+        "setup_logging",
+        "cleanup"
+      ],
+      "exec_patterns": [
+        "exec python /app/src/execution/genetic_strategy_pool.py",
+        "exec /bin/bash"
+      ]
+    },
+    "dynamic_code_execution": {
+      "count": 30,
+      "patterns": [
+        "importlib.import_module - dynamic module loading",
+        "getattr/setattr - dynamic method calls",
+        "__import__ - runtime imports"
+      ]
+    }
+  },
+  "wrapper_chain_analysis": {
+    "docker_entrypoint_chain": {
+      "entrypoint.sh": [
+        "mode: local → exec python genetic_strategy_pool.py --mode local",
+        "mode: distributed → exec python genetic_strategy_pool.py --mode distributed",
+        "mode: head → start_ray_head() → ray start --head",
+        "mode: worker → start_ray_worker() → ray start --address",
+        "mode: test → python health_check.py + integration tests",
+        "mode: shell → exec /bin/bash"
+      ]
+    },
+    "ray_execution_chain": {
+      "coordinator_pattern": [
+        "cloud_ga_coordinator.py → @ray.remote EvolutionWorker",
+        "genetic_strategy_pool.py → @ray.remote GeneticEvolutionWorker", 
+        "ultra_compressed_evolution.py → asyncio.to_thread(ray.get, task)"
+      ]
+    },
+    "subprocess_chain": {
+      "fix_pandas_deprecation.py": [
+        "subprocess.run(['python', 'src/utils/pandas_compatibility.py'])"
+      ]
+    }
+  },
+  "execution_context_mapping": {
+    "local_execution": [
+      "python scripts/validation/*.py",
+      "python scripts/utilities/*.py",
+      "python examples/correlation_demo.py"
+    ],
+    "distributed_execution": [
+      "ray cluster via entrypoint.sh",
+      "genetic algorithm workers via Ray remote",
+      "docker-compose orchestrated services"
+    ],
+    "containerized_execution": [
+      "docker run genetic-pool [mode]",
+      "docker-compose up [service]"
+    ]
+  }
+}

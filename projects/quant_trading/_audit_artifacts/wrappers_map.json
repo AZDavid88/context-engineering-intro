@@ -1,0 +1,789 @@
+{
+  "subprocess_calls": [
+    {
+      "file": "scripts/utilities/fix_pandas_deprecation.py",
+      "matches": [
+        {
+          "pattern": "subprocess\\.(run|call|check_call|check_output|Popen)",
+          "line": 203,
+          "match": "subprocess.run"
+        }
+      ]
+    },
+    {
+      "file": "scripts/validation/comprehensive_system_validation.py",
+      "matches": [
+        {
+          "pattern": "exec\\s*\\(",
+          "line": 107,
+          "match": "exec("
+        }
+      ]
+    }
+  ],
+  "ray_remote_patterns": [
+    {
+      "file": "src/execution/cloud_ga_coordinator.py",
+      "ray_remotes": [
+        {
+          "function": "_evolve_generation_on_worker",
+          "line": 415,
+          "type": "ray_remote_function"
+        }
+      ],
+      "ray_calls": []
+    },
+    {
+      "file": "src/execution/genetic_strategy_pool.py",
+      "ray_remotes": [
+        {
+          "function": "evaluate_individual_distributed",
+          "line": 131,
+          "type": "ray_remote_function"
+        }
+      ],
+      "ray_calls": [
+        {
+          "operation": "get",
+          "line": 154,
+          "type": "ray_operation"
+        },
+        {
+          "operation": "get",
+          "line": 521,
+          "type": "ray_operation"
+        },
+        {
+          "operation": "put",
+          "line": 538,
+          "type": "ray_operation"
+        }
+      ]
+    },
+    {
+      "file": "scripts/evolution/ultra_compressed_evolution.py",
+      "ray_remotes": [
+        {
+          "function": "_evolve_batch_on_ray",
+          "line": 407,
+          "type": "ray_remote_function"
+        }
+      ],
+      "ray_calls": []
+    }
+  ],
+  "shell_functions": [
+    {
+      "file": "docker/genetic-pool/entrypoint.sh",
+      "functions": [
+        {
+          "function": "wait_for_ray_cluster",
+          "line": 38
+        },
+        {
+          "function": "start_ray_head",
+          "line": 59
+        },
+        {
+          "function": "start_ray_worker",
+          "line": 88
+        },
+        {
+          "function": "run_health_check",
+          "line": 116
+        },
+        {
+          "function": "setup_logging",
+          "line": 130
+        },
+        {
+          "function": "cleanup",
+          "line": 140
+        }
+      ],
+      "exec_calls": [
+        {
+          "line": 167,
+          "command": "exec python /app/src/execution/genetic_strategy_pool.py --mode local \"$@\""
+        },
+        {
+          "line": 181,
+          "command": "exec python /app/src/execution/genetic_strategy_pool.py --mode distributed --ray-address \"$RAY_ADDRESS\" \"$@\""
+        },
+        {
+          "line": 278,
+          "command": "exec /bin/bash"
+        }
+      ]
+    }
+  ],
+  "dynamic_imports": [
+    {
+      "file": "tests/comprehensive_seed_validation.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 515,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 523,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "docker/genetic-pool/health_check.py",
+      "dynamic_imports": [
+        {
+          "line": 184,
+          "type": "dynamic_import"
+        }
+      ],
+      "attribute_calls": []
+    },
+    {
+      "file": "src/validation/triple_validation_pipeline.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 218,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 396,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 397,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/analysis/regime_detection_engine.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 105,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 107,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 113,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 114,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 285,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 286,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 287,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/analysis/correlation_engine.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 64,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 65,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 68,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/execution/cloud_ga_coordinator.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 616,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 617,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/execution/strategy_deployment_manager.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 338,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 348,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 349,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 360,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 372,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 374,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 384,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 403,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 404,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 411,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 412,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 415,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 416,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/execution/paper_trading.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 715,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 776,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 810,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 840,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 882,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 986,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/discovery/hierarchical_genetic_engine.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 244,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 245,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 266,
+          "call": "setattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 270,
+          "call": "setattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 300,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 311,
+          "call": "setattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 601,
+          "call": "setattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 712,
+          "call": "setattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 775,
+          "call": "setattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/discovery/optimized_rate_limiter.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 387,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/data/storage_interfaces.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 347,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 350,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 374,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/data/neon_connection_pool.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 489,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 490,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 491,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/data/hyperliquid_client.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 187,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/strategy/genetic_engine_research_compliant.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 101,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 120,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 303,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/strategy/genetic_engine_core.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 319,
+          "call": "setattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/strategy/genetic_engine.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 86,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/strategy/genetic_engine_population.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 180,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/signals/correlation_signals.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 40,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 41,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/analysis/regime_detectors/volume_regime_detector.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 66,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 67,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 70,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 72,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/analysis/regime_detectors/volatility_regime_detector.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 60,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 61,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 64,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 66,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/strategy/genetic_seeds/universal_regime_enhancer.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 280,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 392,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 413,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/strategy/genetic_seeds/enhanced_seed_factory.py",
+      "dynamic_imports": [
+        {
+          "line": 70,
+          "type": "dynamic_import"
+        }
+      ],
+      "attribute_calls": [
+        {
+          "line": 342,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/strategy/genetic_seeds/universal_correlation_enhancer.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 213,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 284,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 285,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/strategy/genetic_seeds/seed_registry.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 46,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 325,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 372,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "src/strategy/genetic_seeds/seed_registry_backup.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 40,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 185,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "scripts/validation/validate_complete_system.py",
+      "dynamic_imports": [
+        {
+          "line": 103,
+          "type": "dynamic_import"
+        }
+      ],
+      "attribute_calls": []
+    },
+    {
+      "file": "scripts/validation/validate_phase4_neon_integration.py",
+      "dynamic_imports": [
+        {
+          "line": 137,
+          "type": "dynamic_import"
+        }
+      ],
+      "attribute_calls": [
+        {
+          "line": 138,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 181,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "scripts/validation/validate_living_docs_functionality.py",
+      "dynamic_imports": [
+        {
+          "line": 432,
+          "type": "dynamic_import"
+        }
+      ],
+      "attribute_calls": []
+    },
+    {
+      "file": "scripts/evolution/ultra_compressed_evolution.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 404,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 528,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 551,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 688,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 752,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 753,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 753,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 754,
+          "call": "getattr",
+          "type": "attribute_access"
+        },
+        {
+          "line": 755,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    },
+    {
+      "file": "tests/research_archive/test_strategy_engine_research.py",
+      "dynamic_imports": [],
+      "attribute_calls": [
+        {
+          "line": 42,
+          "call": "getattr",
+          "type": "attribute_access"
+        }
+      ]
+    }
+  ]
+}

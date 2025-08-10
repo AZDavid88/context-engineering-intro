@@ -1,0 +1,726 @@
+{
+  "poetry_console_scripts": {
+    "quant-trader": {
+      "target": "src.main:main",
+      "type": "poetry_console_script",
+      "module": "src.main",
+      "function": "main"
+    },
+    "data-ingest": {
+      "target": "src.data.hyperliquid_client:main",
+      "type": "poetry_console_script",
+      "module": "src.data.hyperliquid_client",
+      "function": "main"
+    },
+    "strategy-evolve": {
+      "target": "src.strategy.evolution_engine:main",
+      "type": "poetry_console_script",
+      "module": "src.strategy.evolution_engine",
+      "function": "main"
+    },
+    "backtest-runner": {
+      "target": "src.backtesting.vectorbt_engine:main",
+      "type": "poetry_console_script",
+      "module": "src.backtesting.vectorbt_engine",
+      "function": "main"
+    },
+    "cli-dashboard": {
+      "target": "src.monitoring.cli_dashboard:main",
+      "type": "poetry_console_script",
+      "module": "src.monitoring.cli_dashboard",
+      "function": "main"
+    }
+  },
+  "python_main_functions": [
+    {
+      "path": "examples/correlation_demo.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "tests/comprehensive_seed_validation.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/test_genetic_strategy_pool.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "docker/genetic-pool/health_check.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "src/validation/triple_validation_pipeline.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/utils/technical_analysis_fix.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/utils/pandas_compatibility.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/config/settings.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/execution/trading_system_manager.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/execution/strategy_deployment_manager.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/execution/risk_management.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/execution/order_management.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/execution/position_sizer.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/execution/retail_connection_optimizer.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/execution/paper_trading.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/execution/resilience_manager.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/backtesting/strategy_converter.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/backtesting/performance_analyzer.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/backtesting/vectorbt_engine.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/discovery/crypto_safe_parameters.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/discovery/hierarchical_genetic_engine.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/data/s3_historical_loader.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/data/fear_greed_client.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/data/market_data_pipeline.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/data/hyperliquid_client.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/data/data_storage.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/strategy/universal_strategy_engine.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/strategy/ast_strategy.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/monitoring/system_health_monitor.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "src/strategy/genetic_seeds/enhanced_seed_factory.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "scripts/utilities/cleanup_genetic_engine.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/utilities/cleanup_seed_whitespace.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/utilities/migrate_test_files.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/utilities/fix_pandas_deprecation.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/complete_system_integration_validator.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/validate_data_access.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/validate_ml_seeds_data_requirements.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/validate_complete_system.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/comprehensive_genetic_seed_validation.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/validate_phase1_verified_implementation.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/validate_phase1_implementation.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/verify_stability_test.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/validate_genetic_seeds.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "scripts/validation/final_system_validation.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/validate_phase4_neon_integration.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/comprehensive_system_integration_test.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "scripts/validation/validate_living_docs_functionality.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "scripts/validation/comprehensive_system_validation.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/evolution/ultra_compressed_evolution.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "scripts/integration/test_advanced_genetic_engine.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/integration/run_integrated_pipeline.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "scripts/integration/test_definitive_fixes.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "scripts/integration/run_genetic_strategy_pool_tests.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/integration/test_complete_pipeline_integration.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "scripts/integration/test_research_engine.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "scripts/integration/test_optimized_pipeline_integration.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "tests/research_archive/test_strategy_engine_research.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/research_archive/test_data_storage_research.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/research_archive/test_order_management_research.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/research_archive/test_position_sizer_research.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/research_archive/test_data_storage_simple.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/research_archive/test_phase_4b_optimization.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/comprehensive/test_all_genetic_seeds_validation.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/system/test_hierarchical_discovery.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "tests/unit/test_fear_greed_client.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/unit/test_rate_limiting.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "tests/unit/test_data_storage.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/unit/test_asset_filter.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "tests/unit/test_data_pipeline.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/unit/test_config.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/unit/test_backtesting_engine.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/unit/test_genetic_seeds.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/unit/test_data_ingestion.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "tests/unit/test_hyperliquid_client.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "tests/integration/test_phase3_regime_detection.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/integration/test_genetic_engine.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/integration/test_universal_correlation_enhancer.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/integration/test_complete_system_flow.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/integration/test_dynamic_asset_data_collector.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/integration/test_asset_flow.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function"
+      ]
+    },
+    {
+      "path": "tests/integration/test_phase3_comprehensive_validation.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block",
+        "main function",
+        "async main function"
+      ]
+    },
+    {
+      "path": "tests/integration/test_monitoring.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/integration/test_session_mgmt.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/integration/test_phase3_ultra_compressed_evolution.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/integration/test_automated_decision_engine.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    },
+    {
+      "path": "tests/archive/outdated/test_correlation_integration_old.py",
+      "type": "python_module",
+      "entry_patterns": [
+        "__main__ block"
+      ]
+    }
+  ],
+  "docker_entrypoints": [
+    {
+      "path": "docker-compose.yml",
+      "type": "docker_compose",
+      "services": [
+        "ray-head",
+        "ray-worker-1",
+        "ray-worker-2",
+        "genetic-pool",
+        "redis",
+        "postgres",
+        "prometheus",
+        "grafana",
+        "dev-tools"
+      ]
+    },
+    {
+      "path": "docker/genetic-pool/entrypoint.sh",
+      "type": "shell_entrypoint",
+      "modes": [
+        "local",
+        "distributed",
+        "head",
+        "worker",
+        "test",
+        "shell"
+      ]
+    }
+  ],
+  "test_runners": [
+    {
+      "path": "pytest.ini",
+      "type": "pytest_runner",
+      "command": "pytest",
+      "config_file": "pytest.ini"
+    }
+  ]
+}

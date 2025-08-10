@@ -1,0 +1,16 @@
+capability,risk_type,severity,blast_radius,criticality,overall_score,recommended_action
+console_script:quant-trader,operational_risk,low,45,95,78.8,document
+console_script:data-ingest,execution_risk,medium,75,80,63.8,monitor
+console_script:strategy-evolve,execution_risk,medium,75,95,71.2,monitor
+console_script:backtest-runner,operational_risk,low,45,80,71.2,document
+console_script:cli-dashboard,operational_risk,low,45,60,61.2,document
+service:ray-worker-2,operational_risk,low,40,60,63.3,document
+service:genetic-pool,execution_risk,high,85,95,78.3,immediate_review
+service:ray-worker-1,operational_risk,low,40,60,63.3,document
+service:dev-tools,operational_risk,low,40,60,63.3,document
+service:redis,operational_risk,medium,70,90,80.8,monitor
+service:ray-head,execution_risk,high,85,95,78.3,immediate_review
+service:prometheus,operational_risk,low,40,60,63.3,document
+service:postgres,operational_risk,medium,70,90,80.8,monitor
+service:grafana,operational_risk,low,40,60,63.3,document
+orphaned_execution_nodes,architecture_risk,high,30,20,15,cleanup_required

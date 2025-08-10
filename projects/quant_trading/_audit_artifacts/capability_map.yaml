@@ -1,0 +1,21 @@
+# Capability Map - Deduplication and Risk Scoring
+# Generated: 2025-08-10T07:22:00Z
+
+summary:
+  total_duplicates: 0
+  total_shadows: 5
+  total_tombstones: 1
+  total_scored_capabilities: 14
+  high_risk_capabilities: 2
+  medium_risk_capabilities: 4
+  low_risk_capabilities: 8
+
+duplication_issues:
+
+high_risk_capabilities:
+  - capability: service:genetic-pool
+    overall_score: 78.3
+    blast_radius: 85
+  - capability: service:ray-head
+    overall_score: 78.3
+    blast_radius: 85

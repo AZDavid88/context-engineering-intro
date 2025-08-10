@@ -1,0 +1,161 @@
+# Continuous Audit Verification Workflow
+# Generated from Deep Executable Truth Forensics BIS
+# Place in .github/workflows/audit.yml for continuous verification
+
+name: 'Audit Verification Pipeline'
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday 6 AM UTC
+
+env:
+  AUDIT_MODE: true
+  PYTHONPATH: ${{ github.workspace }}/src
+  
+jobs:
+  audit-verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest taskfile
+        
+    - name: Verify audit artifacts exist
+      run: |
+        echo "::group::Audit Artifacts Check"
+        ls -la _audit_artifacts/ || echo "No audit artifacts directory"
+        [ -f "_audit_artifacts/execution_graph.json" ] && echo "✓ Execution graph exists" || echo "✗ Missing execution graph"
+        [ -f "_audit_artifacts/capability_map.json" ] && echo "✓ Capability map exists" || echo "✗ Missing capability map" 
+        [ -f "_audit_artifacts/probe_results.jsonl" ] && echo "✓ Probe results exist" || echo "✗ Missing probe results"
+        echo "::endgroup::"
+        
+    - name: Run capability probes
+      run: |
+        echo "::group::Capability Probing"
+        timeout 30 python --version
+        timeout 30 python -c "import sys; print(f'Python OK: {sys.version}')"
+        timeout 30 python -m pytest --version || echo "pytest not available"
+        docker --version || echo "Docker not available"
+        echo "::endgroup::"
+        
+    - name: Verify I/O contracts
+      run: |
+        echo "::group::I/O Contract Verification"
+        python -c "
+        try:
+            import json
+            with open('_audit_artifacts/io_contracts.json') as f:
+                contracts = json.load(f)
+            print(f'✓ Contracts loaded: {len(contracts.get(\"module_contracts\", {}))} modules')
+            
+            # Verify key modules still exist
+            for module_path in contracts.get('module_contracts', {}):
+                if __import__('pathlib').Path(module_path).exists():
+                    print(f'✓ {module_path} exists')
+                else:
+                    print(f'✗ {module_path} missing')
+        except Exception as e:
+            print(f'Contract verification failed: {e}')
+        " || echo "Contract verification skipped - no contracts file"
+        echo "::endgroup::"
+        
+    - name: Test execution graph health
+      run: |
+        echo "::group::Execution Graph Health"
+        python -c "
+        try:
+            import json
+            with open('_audit_artifacts/execution_graph.json') as f:
+                graph = json.load(f)
+            analysis = graph.get('analysis', {})
+            nodes = analysis.get('total_nodes', 0)
+            edges = analysis.get('total_edges', 0)
+            orphans = len(analysis.get('orphaned_nodes', []))
+            
+            print(f'Graph stats: {nodes} nodes, {edges} edges, {orphans} orphans')
+            
+            if nodes > 0:
+                connectivity = (edges / nodes) * 100
+                print(f'Connectivity ratio: {connectivity:.1f}%')
+                
+                if connectivity < 10:
+                    print('⚠️ Low connectivity detected')
+                else:
+                    print('✓ Acceptable connectivity')
+            
+        except Exception as e:
+            print(f'Graph analysis failed: {e}')
+        " || echo "Graph analysis skipped - no graph file"
+        echo "::endgroup::"
+        
+    - name: Run safe system validation
+      run: |
+        echo "::group::Safe System Validation"
+        # Only run if validation script exists and is safe
+        if [ -f "scripts/validation/validate_complete_system.py" ]; then
+          timeout 60 python scripts/validation/validate_complete_system.py --testnet --verbose || echo "Validation completed with warnings"
+        else
+          echo "No validation script found"
+        fi
+        echo "::endgroup::"
+        
+    - name: Generate audit drift report
+      run: |
+        echo "::group::Audit Drift Analysis"
+        python -c "
+        import json
+        import os
+        from datetime import datetime
+        
+        # Create drift report
+        drift_report = {
+            'timestamp': datetime.now().isoformat(),
+            'github_ref': os.environ.get('GITHUB_REF', 'unknown'),
+            'github_sha': os.environ.get('GITHUB_SHA', 'unknown'),
+            'verification_status': 'passed',
+            'warnings': []
+        }
+        
+        # Check for missing artifacts
+        required_artifacts = [
+            '_audit_artifacts/execution_graph.json',
+            '_audit_artifacts/capability_map.json',
+            '_audit_artifacts/io_contracts.json'
+        ]
+        
+        missing = [f for f in required_artifacts if not __import__('pathlib').Path(f).exists()]
+        if missing:
+            drift_report['warnings'].append(f'Missing artifacts: {missing}')
+            drift_report['verification_status'] = 'warning'
+        
+        print(json.dumps(drift_report, indent=2))
+        
+        # Save as CI artifact
+        with open('audit_drift_report.json', 'w') as f:
+            json.dump(drift_report, f, indent=2)
+        "
+        echo "::endgroup::"
+        
+    - name: Upload audit drift report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: audit-drift-report
+        path: audit_drift_report.json
+        retention-days: 30

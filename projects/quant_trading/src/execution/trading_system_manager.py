@@ -39,7 +39,7 @@ from src.data.fear_greed_client import FearGreedClient
 from src.execution.risk_management import GeneticRiskManager, GeneticRiskGenome
 from src.execution.paper_trading import PaperTradingEngine, PaperTradingMode
 from src.execution.position_sizer import GeneticPositionSizer
-from src.execution.monitoring import RealTimeMonitoringSystem
+from src.execution.monitoring import UnifiedMonitoringSystem
 from src.execution.retail_connection_optimizer import (
     RetailConnectionOptimizer, TradingSessionProfile, TradingTimeframe, 
     ConnectionUsagePattern, SCALPING_SESSION, INTRADAY_SESSION, SWING_SESSION
@@ -174,7 +174,7 @@ class TradingSystemManager:
         self.risk_manager: Optional[GeneticRiskManager] = None
         self.paper_trading: Optional[PaperTradingEngine] = None
         self.position_sizer: Optional[GeneticPositionSizer] = None
-        self.monitoring: Optional[RealTimeMonitoringSystem] = None
+        self.monitoring: Optional[UnifiedMonitoringSystem] = None
         
         # Session management state
         self.active_sessions: Dict[str, Any] = {}
@@ -381,13 +381,13 @@ class TradingSystemManager:
         """Initialize monitoring system."""
         self.logger.info("📈 Initializing monitoring system...")
         
-        # Initialize monitoring system
-        self.monitoring = RealTimeMonitoringSystem(self.settings)
+        # Initialize unified monitoring system
+        self.monitoring = UnifiedMonitoringSystem(self.settings)
         
-        # Inject all components for monitoring
-        self.monitoring.inject_components(
+        # Start monitoring with all components
+        self.monitoring.start_monitoring(
             risk_manager=self.risk_manager,
-            paper_trading=self.paper_trading,
+            paper_trading_engine=self.paper_trading,
             position_sizer=self.position_sizer
         )
         

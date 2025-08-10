@@ -1,0 +1,123 @@
+# Contract Testing Configuration
+# Generated from Deep Executable Truth Forensics BIS
+# Tests I/O contracts against golden references
+
+version: '3'
+
+contracts:
+  python_version_check:
+    command: "python --version"
+    timeout: 10
+    expected_pattern: "Python \\d+\\.\\d+\\.\\d+"
+    golden_reference: "Python 3.12.1"
+    test_type: "version_check"
+    
+  pytest_availability:
+    command: "python -m pytest --version"
+    timeout: 10
+    expected_pattern: "pytest \\d+\\.\\d+\\.\\d+"
+    golden_reference: "pytest 8.4.1"
+    test_type: "tool_availability"
+    
+  docker_availability:
+    command: "docker --version"
+    timeout: 10
+    expected_pattern: "Docker version \\d+"
+    golden_reference: "Docker version 28.3.1"
+    test_type: "tool_availability"
+    
+  module_import_tests:
+    - command: "python -c 'import sys; print(\"IMPORT_SUCCESS\")'"
+      timeout: 5
+      expected_output: "IMPORT_SUCCESS"
+      test_type: "import_verification"
+      
+    - command: "python -c 'import json; print(\"IMPORT_SUCCESS\")'"
+      timeout: 5
+      expected_output: "IMPORT_SUCCESS"
+      test_type: "import_verification"
+      
+    - command: "python -c 'import pathlib; print(\"IMPORT_SUCCESS\")'"
+      timeout: 5
+      expected_output: "IMPORT_SUCCESS"
+      test_type: "import_verification"
+
+  validation_script_interfaces:
+    validate_complete_system:
+      command: "python scripts/validation/validate_complete_system.py --help"
+      timeout: 10
+      expected_patterns:
+        - "--testnet"
+        - "--verbose"
+        - "options:"
+      test_type: "interface_validation"
+      
+  console_script_dry_runs:
+    quant_trader_dry:
+      command: "python -m src.main --help 2>/dev/null || echo 'MODULE_NOT_RUNNABLE'"
+      timeout: 10
+      expected_alternatives:
+        - "usage:"
+        - "MODULE_NOT_RUNNABLE"
+      test_type: "dry_run_validation"
+
+golden_references:
+  execution_outputs:
+    python_version_format: "Python X.Y.Z"
+    pytest_version_format: "pytest X.Y.Z"  
+    docker_version_format: "Docker version X.Y.Z"
+    import_success_format: "IMPORT_SUCCESS"
+    
+  interface_contracts:
+    validation_help_required_flags:
+      - "--testnet"
+      - "--verbose"
+      - "-h, --help"
+      
+  error_patterns:
+    module_import_failure:
+      - "ModuleNotFoundError"
+      - "ImportError" 
+      - "No module named"
+    timeout_indicators:
+      - "TIMEOUT_EXPIRED"
+      - "Command timed out"
+    permission_errors:
+      - "Permission denied"
+      - "Access denied"
+
+test_execution:
+  safety_constraints:
+    max_timeout: 30
+    network_isolation: true
+    dry_run_preferred: true
+    no_state_modification: true
+    
+  validation_schedule:
+    on_commit: true
+    on_pr: true
+    weekly: true
+    on_dependency_change: true
+    
+  failure_handling:
+    max_retries: 2
+    retry_delay: 5
+    escalation_threshold: 3
+    notification_required: true
+
+continuous_verification:
+  contract_drift_detection:
+    enabled: true
+    comparison_method: "fuzzy_match"
+    drift_threshold: 0.8
+    alert_on_drift: true
+    
+  golden_reference_updates:
+    manual_approval_required: true
+    change_tracking: true
+    rollback_capability: true
+    
+  regression_prevention:
+    baseline_preservation: true
+    interface_stability_check: true
+    backward_compatibility_validation: true

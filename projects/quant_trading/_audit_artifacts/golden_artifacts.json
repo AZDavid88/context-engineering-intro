@@ -1,0 +1,22 @@
+{
+  "audit_metadata": {
+    "phase": "10_golden_artifacts"
+  },
+  "golden_artifacts": {
+    "python_version_check": {
+      "command": "python --version",
+      "expected_pattern": "Python 3.x.x format",
+      "reference_output": "Python 3.12.1"
+    },
+    "pytest_version_check": {
+      "command": "python -m pytest --version",
+      "expected_pattern": "pytest version format",
+      "reference_output": "pytest 8.4.1"
+    },
+    "docker_version_check": {
+      "command": "docker --version",
+      "expected_pattern": "Docker version format",
+      "reference_output": "Docker version 28.3.1"
+    }
+  }
+}

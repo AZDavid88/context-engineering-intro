@@ -1,0 +1,24 @@
+# Container Environment Digest
+# Generated: 2025-08-10T02:24:00Z
+# Audit ID: audit-20250810-022400
+
+# Base Container Information
+CONTAINER_TYPE=github_codespace
+HOST_OS=Linux 6.8.0-1030-azure
+ARCHITECTURE=x64
+
+# Docker Images (with digests for reproducibility)
+grafana/grafana:latest@sha256:1bf0ac005f1bf15bb5840c94cea715516526fb98dc28d0c630db24d02cd2ef17
+prom/prometheus:latest@sha256:63805ebb8d2b3920190daf1cb14a60871b16fd38bed42b857a3182bc621f4996
+redis:7-alpine@sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08
+postgres:15-alpine@sha256:1414298ea93186123a6dcf872f778ba3bd2347edcbd2f31aa7bb2d9814ff5393
+
+# Runtime Versions
+PYTHON_VERSION=3.12.1
+PIP_VERSION=25.1.1
+DOCKER_VERSION=28.3.1-1
+
+# Environment Verification
+HOME=/home/codespace
+USER=codespace
+PYTHON_PATH=/usr/local/python/current

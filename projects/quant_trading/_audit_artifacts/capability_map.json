@@ -1,0 +1,206 @@
+{
+  "audit_metadata": {
+    "phase": "11_deduplication_scoring",
+    "generated": "2025-08-10T07:22:00Z"
+  },
+  "deduplication_results": {
+    "duplicates": [],
+    "shadows": [
+      {
+        "type": "module_redundancy_potential",
+        "directory": "src/execution",
+        "module_count": 8,
+        "modules": [
+          "src/execution/trading_system_manager.py",
+          "src/execution/strategy_deployment_manager.py",
+          "src/execution/risk_management.py",
+          "src/execution/order_management.py",
+          "src/execution/position_sizer.py",
+          "src/execution/retail_connection_optimizer.py",
+          "src/execution/paper_trading.py",
+          "src/execution/resilience_manager.py"
+        ],
+        "severity": "low"
+      },
+      {
+        "type": "module_redundancy_potential",
+        "directory": "src/data",
+        "module_count": 5,
+        "modules": [
+          "src/data/s3_historical_loader.py",
+          "src/data/fear_greed_client.py",
+          "src/data/market_data_pipeline.py",
+          "src/data/hyperliquid_client.py",
+          "src/data/data_storage.py"
+        ],
+        "severity": "low"
+      },
+      {
+        "type": "module_redundancy_potential",
+        "directory": "scripts/utilities",
+        "module_count": 4,
+        "modules": [
+          "scripts/utilities/cleanup_genetic_engine.py",
+          "scripts/utilities/cleanup_seed_whitespace.py",
+          "scripts/utilities/migrate_test_files.py",
+          "scripts/utilities/fix_pandas_deprecation.py"
+        ],
+        "severity": "low"
+      },
+      {
+        "type": "module_redundancy_potential",
+        "directory": "scripts/validation",
+        "module_count": 14,
+        "modules": [
+          "scripts/validation/complete_system_integration_validator.py",
+          "scripts/validation/validate_data_access.py",
+          "scripts/validation/validate_ml_seeds_data_requirements.py",
+          "scripts/validation/validate_complete_system.py",
+          "scripts/validation/comprehensive_genetic_seed_validation.py",
+          "scripts/validation/validate_phase1_verified_implementation.py",
+          "scripts/validation/validate_phase1_implementation.py",
+          "scripts/validation/verify_stability_test.py",
+          "scripts/validation/validate_genetic_seeds.py",
+          "scripts/validation/final_system_validation.py",
+          "scripts/validation/validate_phase4_neon_integration.py",
+          "scripts/validation/comprehensive_system_integration_test.py",
+          "scripts/validation/validate_living_docs_functionality.py",
+          "scripts/validation/comprehensive_system_validation.py"
+        ],
+        "severity": "low"
+      },
+      {
+        "type": "module_redundancy_potential",
+        "directory": "scripts/integration",
+        "module_count": 7,
+        "modules": [
+          "scripts/integration/test_advanced_genetic_engine.py",
+          "scripts/integration/run_integrated_pipeline.py",
+          "scripts/integration/test_definitive_fixes.py",
+          "scripts/integration/run_genetic_strategy_pool_tests.py",
+          "scripts/integration/test_complete_pipeline_integration.py",
+          "scripts/integration/test_research_engine.py",
+          "scripts/integration/test_optimized_pipeline_integration.py"
+        ],
+        "severity": "low"
+      }
+    ],
+    "tombstones": [
+      {
+        "type": "orphaned_execution_nodes",
+        "count": 90,
+        "percentage": 72.0,
+        "severity": "high"
+      }
+    ]
+  },
+  "capability_scores": {
+    "console_script:quant-trader": {
+      "reliability": 85,
+      "blast_radius": 45,
+      "criticality": 95,
+      "overall_score": 78.8,
+      "risk_category": "low"
+    },
+    "console_script:data-ingest": {
+      "reliability": 85,
+      "blast_radius": 75,
+      "criticality": 80,
+      "overall_score": 63.8,
+      "risk_category": "medium"
+    },
+    "console_script:strategy-evolve": {
+      "reliability": 85,
+      "blast_radius": 75,
+      "criticality": 95,
+      "overall_score": 71.2,
+      "risk_category": "medium"
+    },
+    "console_script:backtest-runner": {
+      "reliability": 85,
+      "blast_radius": 45,
+      "criticality": 80,
+      "overall_score": 71.2,
+      "risk_category": "low"
+    },
+    "console_script:cli-dashboard": {
+      "reliability": 85,
+      "blast_radius": 45,
+      "criticality": 60,
+      "overall_score": 61.2,
+      "risk_category": "low"
+    },
+    "service:ray-worker-2": {
+      "reliability": 80,
+      "blast_radius": 40,
+      "criticality": 60,
+      "overall_score": 63.3,
+      "risk_category": "low"
+    },
+    "service:genetic-pool": {
+      "reliability": 90,
+      "blast_radius": 85,
+      "criticality": 95,
+      "overall_score": 78.3,
+      "risk_category": "high"
+    },
+    "service:ray-worker-1": {
+      "reliability": 80,
+      "blast_radius": 40,
+      "criticality": 60,
+      "overall_score": 63.3,
+      "risk_category": "low"
+    },
+    "service:dev-tools": {
+      "reliability": 80,
+      "blast_radius": 40,
+      "criticality": 60,
+      "overall_score": 63.3,
+      "risk_category": "low"
+    },
+    "service:redis": {
+      "reliability": 95,
+      "blast_radius": 70,
+      "criticality": 90,
+      "overall_score": 80.8,
+      "risk_category": "medium"
+    },
+    "service:ray-head": {
+      "reliability": 90,
+      "blast_radius": 85,
+      "criticality": 95,
+      "overall_score": 78.3,
+      "risk_category": "high"
+    },
+    "service:prometheus": {
+      "reliability": 80,
+      "blast_radius": 40,
+      "criticality": 60,
+      "overall_score": 63.3,
+      "risk_category": "low"
+    },
+    "service:postgres": {
+      "reliability": 95,
+      "blast_radius": 70,
+      "criticality": 90,
+      "overall_score": 80.8,
+      "risk_category": "medium"
+    },
+    "service:grafana": {
+      "reliability": 80,
+      "blast_radius": 40,
+      "criticality": 60,
+      "overall_score": 63.3,
+      "risk_category": "low"
+    }
+  },
+  "summary_statistics": {
+    "total_duplicates": 0,
+    "total_shadows": 5,
+    "total_tombstones": 1,
+    "total_scored_capabilities": 14,
+    "high_risk_capabilities": 2,
+    "medium_risk_capabilities": 4,
+    "low_risk_capabilities": 8
+  }
+}

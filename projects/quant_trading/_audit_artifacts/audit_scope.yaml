@@ -1,0 +1,96 @@
+---
+# Deep Executable Truth Forensics BIS - Audit Scope Configuration
+# Generated: 2025-08-10T02:24:00Z
+# Target: /workspaces/context-engineering-intro/projects/quant_trading
+
+audit_metadata:
+  run_id: "audit-20250810-022400"
+  target_path: "/workspaces/context-engineering-intro/projects/quant_trading"
+  audit_type: "comprehensive_executable_forensics"
+  version: "1.0"
+
+scope_definition:
+  # In-scope roots and patterns
+  included_roots:
+    - "/workspaces/context-engineering-intro/projects/quant_trading"
+  
+  included_patterns:
+    - "**/*.py"           # Python executables
+    - "**/*.sh"           # Shell scripts
+    - "**/*.yml"          # YAML configs
+    - "**/*.yaml"         # YAML configs  
+    - "**/*.json"         # JSON configs
+    - "**/*.toml"         # TOML configs
+    - "**/Makefile"       # Make targets
+    - "**/Dockerfile"     # Docker builds
+    - "**/docker-compose*" # Compose files
+    - "**/*.sql"          # SQL scripts
+    - "**/requirements*.txt" # Dependencies
+    - "**/pyproject.toml" # Poetry configs
+    - "**/pytest.ini"    # Test configs
+    - "**/.github/workflows/*" # CI workflows
+
+  # Exclusions for safety and relevance
+  excluded_patterns:
+    - "**/__pycache__/**"
+    - "**/.pytest_cache/**" 
+    - "**/node_modules/**"
+    - "**/.git/**"
+    - "**/*.pyc"
+    - "**/*.pyo"
+    - "**/*.duckdb"       # Database files
+    - "**/*.parquet"      # Data files
+    - "**/logs/**"        # Log files
+    - "**/data/**"        # Data directories
+
+assumptions:
+  runtime_environment:
+    - "containerized_execution_preferred"
+    - "repository_mounted_read_only"
+    - "network_disabled_by_default" 
+    - "writable_audit_artifacts_only"
+  
+  execution_constraints:
+    - "dry_run_preferred"
+    - "no_state_modification"
+    - "timeout_enforcement_required"
+    - "sandbox_isolation_mandatory"
+
+  project_context:
+    - "quantitative_trading_system"
+    - "genetic_algorithm_optimization"
+    - "ray_distributed_computing"
+    - "production_trading_components"
+
+safety_guardrails:
+  network_policy:
+    - "disable_external_connectivity"
+    - "local_container_networking_only"
+    - "no_api_calls_during_probe"
+  
+  execution_policy:
+    - "read_only_repository_access"
+    - "help_version_flags_only"
+    - "maximum_timeout_30_seconds"
+    - "process_isolation_required"
+  
+  data_protection:
+    - "no_credentials_exposure"
+    - "no_trading_execution"
+    - "audit_artifacts_segregated"
+    - "structured_logging_required"
+
+timeouts:
+  per_command: 30
+  per_phase: 600
+  global_audit: 3600
+  
+artifact_management:
+  base_path: "/workspaces/context-engineering-intro/projects/quant_trading/_audit_artifacts"
+  structured_logs: true
+  output_formats:
+    - "json"
+    - "yaml" 
+    - "markdown"
+    - "csv"
+  retention_policy: "preserve_all"
